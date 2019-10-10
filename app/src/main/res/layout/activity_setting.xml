@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/baseBackgroundColorWhite">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:text="설정"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:background="#FFA07F"
+        android:gravity="center_horizontal"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:src="@drawable/user_icon"
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:text="홍길동" />
+    <Button
+        android:id="@+id/infoEditBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="80dp"
+        android:text="회원정보 수정"
+        android:background="#87CEEB"/>
+    <Button
+        android:id="@+id/logoutBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:text="로그아웃"
+        android:background="#87CEEB"/>
+    <Button
+        android:id="@+id/noticeSetBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:text="알림설정"
+        android:background="#87CEEB"/>
+    <Button
+        android:id="@+id/inquiryBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:text="고객지원"
+        android:background="#87CEEB"/>
+    <Button
+        android:id="@+id/exitBtn"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:text="나가기"
+        android:background="#87CEEB"/>
+</LinearLayout>
