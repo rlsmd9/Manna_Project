@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="baseBackgroundColorWhite">#ffffff</color>
-    <color name="baseBackgroundColorGraylight">#f5f5f5</color>
+    <color name="baseBackgroundColorLightGray">#f5f5f5</color>
     <color name="lineColor">#a6A6a6</color>
 
 </resources>
