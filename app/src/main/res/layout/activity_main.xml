@@ -15,20 +15,12 @@
         android:layout_marginRight="10dp"
         android:gravity="center">
 
-        <TextView
-            android:id="@+id/loginTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:textStyle="bold"
-            android:text="Manna"
-            android:textAlignment="center"/>
+
 
         <LinearLayout
             android:id="@+id/idLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/loginTitle">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/loginIDLabel"
@@ -46,7 +38,7 @@
                 android:layout_alignBaseline="@id/loginIDLabel"
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
-                android:hint="Input your ID"
+                android:hint="아이디 입력"
                 android:textSize="20dp"
                 android:singleLine="true"/>
         </LinearLayout>
@@ -72,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toRightOf="@id/loginPWLabel"
                 android:layout_alignBaseline="@id/loginPWLabel"
-                android:hint="Input your Password"
+                android:hint="비밀번호 입력"
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
                 android:singleLine="true"
@@ -83,22 +75,38 @@
             android:id="@+id/loginSignLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/pwLayout"
-            android:gravity="right">
+            android:layout_below="@id/pwLayout">
 
-            <TextView
-                android:id="@+id/loginsignup"
-                android:text="sign up"
-                android:layout_marginRight="16dp"
+            <CheckBox
+                android:id="@+id/autoLogin"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:text="자동 로그인"
+                />
 
-            <TextView
-                android:id="@+id/loginfindpw"
-                android:text="find pw"
-                android:layout_marginRight="16dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+            <LinearLayout
+                android:layout_marginRight="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="right|center">
+
+                <TextView
+                    android:id="@+id/loginsignup"
+                    android:text="회원가입"
+                    android:layout_marginRight="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/loginfindpw"
+                    android:text="ID/PW 찾기"
+                    android:layout_marginRight="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+
         </LinearLayout>
 
 
@@ -106,7 +114,7 @@
             android:id="@+id/loginSignInBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Sign in"
+            android:text="로그인"
             android:layout_below="@id/loginSignLayout"/>
     </RelativeLayout>
 
