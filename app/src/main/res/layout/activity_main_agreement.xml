@@ -9,16 +9,48 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/baseBackgroundColorWhite"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/tab01_friend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Tab1"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tab02_friend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Tab2"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tab03_friend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Tab3"
+                android:gravity="center"/>
+
+            <TextView
+                android:id="@+id/tab04_friend"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="Tab4"
+                android:gravity="center"/>
+        </FrameLayout>
+
         <TabWidget
-            android:id="@+id/tabs"
+            android:id="@android:id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/baseBackgroundColorLightGray"/>
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </FrameLayout>
     </LinearLayout>
 </TabHost>
