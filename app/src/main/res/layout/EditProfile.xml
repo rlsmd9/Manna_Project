@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFF0	">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:background="#FFA07F"
+        android:text="내 프로필"/>
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/user_icon"/>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:text="이름"
+            android:textSize="15sp"/>
+
+        <EditText
+            android:id="@+id/inputName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="60dp"
+            android:layout_toRightOf="@id/name"
+            android:layout_alignBaseline="@id/name"
+            android:hint="이름을 입력하세요"
+            android:textSize="15sp" />
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/name"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="30dp"
+            android:text="주소"
+            android:textSize="15sp"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/inputName"
+            android:layout_toRightOf="@id/address"
+            android:layout_alignTop="@id/address"
+            android:layout_alignBaseline="@id/address"
+            android:hint="주소를 입력하세요"
+            android:textSize="15sp" />
+        <TextView
+            android:id="@+id/bornDay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/address"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="30dp"
+            android:text="생년월일"
+            android:textSize="15sp"/>
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/inputName"
+            android:layout_marginLeft="30dp"
+            android:layout_toRightOf="@id/bornDay"
+            android:layout_alignTop="@id/bornDay"
+            android:layout_alignBaseline="@id/bornDay"
+            android:hint="생년월일을 입력하세요"
+            android:textSize="15sp" />
+    </RelativeLayout>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:text="저장" />
+
+
+</LinearLayout>
