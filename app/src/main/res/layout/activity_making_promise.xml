@@ -1,64 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:orientation="vertical"
     android:background="@color/baseBackgroundColorWhite">
+
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/makePromise"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="설정"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:background="#FFA07F"
-        android:gravity="center_horizontal"/>
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        android:text="약속만들기"
+        android:textSize="20sp"/>
 
     <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        android:src="@drawable/user_icon"
-        />
+        android:layout_width="25dp"
+        android:layout_height="27dp"
+        android:layout_alignTop="@id/makePromise"
+        android:layout_marginRight="10dp"
+        android:layout_toLeftOf="@id/makePromise"
+        android:src="@drawable/plus" />
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/promiseName"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/makePromise"
         android:layout_marginTop="50dp"
-        android:gravity="center"
-        android:text="홍길동" />
-    <Button
-        android:id="@+id/infoEditBtn"
+        android:layout_marginLeft="50dp"
+        android:textSize="15sp"
+        android:text="약속 명"/>
+    <EditText
+        android:id="@+id/inputPromiseName"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@id/promiseName"
+        android:layout_alignBaseline="@id/promiseName"
+        android:hint="이름을 입력하세요"
+        android:textSize="15sp" />
+    <TextView
+        android:id="@+id/specification"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/promiseName"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="50dp"
+        android:textSize="15sp"
+        android:text="상세 설명"/>
+    <EditText
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_toRightOf="@id/promiseName"
+        android:layout_alignBaseline="@id/specification"
+        android:hint="약속에 대한 상세 설명을 입력하세요"
+        android:textSize="15sp" />
+    <Button
+        android:id="@+id/selectDay"
         android:layout_width="match_parent"
-        android:layout_marginTop="80dp"
-        android:text="회원정보 수정"
+        android:layout_height="wrap_content"
+        android:text="날짜 선택"
+        android:layout_alignLeft="@id/promiseName"
+        android:layout_alignRight="@id/inputPromiseName"
+        android:layout_below="@id/specification"
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal"
         android:background="#87CEEB"/>
     <Button
-        android:id="@+id/logoutBtn"
-        android:layout_height="wrap_content"
+        android:id="@+id/addAttendee"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:text="로그아웃"
+        android:layout_height="wrap_content"
+        android:text="참여자 추가"
+
+        android:layout_alignLeft="@id/promiseName"
+        android:layout_alignRight="@id/inputPromiseName"
+        android:layout_below="@id/selectDay"
+        android:layout_marginTop="20dp"
+        android:gravity="center_horizontal"
         android:background="#87CEEB"/>
+    <CheckBox
+        android:id="@+id/OptimalPlaceRecommend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/addAttendee"
+        android:text="최적 장소 추천"
+        android:layout_alignLeft="@id/promiseName"
+        android:layout_marginTop="20dp"/>
+    <CheckBox
+        android:id="@+id/selectPlace"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/OptimalPlaceRecommend"
+        android:text="장소 직접 선택"
+        android:layout_alignLeft="@id/promiseName"
+        android:layout_marginTop="20dp"/>
     <Button
-        android:id="@+id/noticeSetBtn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:text="알림설정"
-        android:background="#87CEEB"/>
-    <Button
-        android:id="@+id/inquiryBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:text="고객지원"
-        android:background="#87CEEB"/>
-    <Button
-        android:id="@+id/exitBtn"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
-        android:text="나가기"
-        android:background="#87CEEB"/>
-</LinearLayout>
+        android:layout_toRightOf="@id/selectPlace"
+        android:layout_alignTop="@id/selectPlace"
+        android:layout_marginLeft="50dp"
+        android:layout_alignBaseline="@id/selectPlace"
+        android:text="장소 고르기"/>
+
+</RelativeLayout>
