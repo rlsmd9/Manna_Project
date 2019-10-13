@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "418790926140",
+    "firebase_url": "https://manna-67a85.firebaseio.com",
+    "project_id": "manna-67a85",
+    "storage_bucket": "manna-67a85.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:418790926140:android:cd3dda96641fa4afec6039",
+        "android_client_info": {
+          "package_name": "com.example.manna_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "418790926140-bv2rcs0begn79kgltrvt07llitglrm68.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB0CZqW3tY1nzcAVf5eaySRkkVJRLaJRAI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "418790926140-bv2rcs0begn79kgltrvt07llitglrm68.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
