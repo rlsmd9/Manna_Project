@@ -37,5 +37,4 @@
 
         <activity android:name=".Friend_List" />
     </application>
-
 </manifest>
