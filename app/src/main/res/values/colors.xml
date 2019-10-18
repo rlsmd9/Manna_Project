@@ -6,5 +6,6 @@
     <color name="baseBackgroundColorWhite">#ffffff</color>
     <color name="baseBackgroundColorLightGray">#f5f5f5</color>
     <color name="lineColor">#a6A6a6</color>
-
+    <color name="lightGrayButton">#9F9F9F</color>
+    <color name="white">#FFFFFF</color>
 </resources>

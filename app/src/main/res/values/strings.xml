@@ -3,4 +3,10 @@
     <string name="title_activity_main_tab_agreement">main_tab_agreement</string>
     <string name="tab_text_1">Tab 1</string>
     <string name="tab_text_2">Tab 2</string>
+
+    <string name="login_id_label">"아이디 입력"</string>
+    <string name="login_pw_label">"비밀번호 입력"</string>
+    <string name="login_autologin_label">자동 로그인</string>
+    <string name="login_findidpw_label">ID/PW 찾기</string>
+    <string name="login_confirm">로그인</string>
 </resources>

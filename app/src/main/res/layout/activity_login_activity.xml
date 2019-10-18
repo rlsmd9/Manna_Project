@@ -1,129 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/baseBackgroundColorWhite">
+    android:layout_height="match_parent">
 
-    <ImageView
-        android:id="@+id/LoginLogo"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:background="@color/baseBackgroundColorLightGray"
-        android:layout_marginTop="80dp"
-        android:layout_marginBottom="120dp"
-        />
-
-    <RelativeLayout
-        android:id="@+id/loginLayout"
-        android:layout_below="@id/LoginLogo"
+    <LinearLayout
+        android:id="@+id/login_Logo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/round_shape"
-        android:padding="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:orientation="vertical"
+        android:layout_marginTop="130dp"
         android:gravity="center">
 
-        <LinearLayout
-            android:id="@+id/idLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/logo_sample"
+            android:background="#FFFFFF"/>
 
-            <TextView
-                android:id="@+id/loginIDLabel"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:textSize="20dp"
-                android:text="ID" />
-
-            <EditText
-                android:id="@+id/loginIDText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/loginIDLabel"
-                android:layout_alignBaseline="@id/loginIDLabel"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:hint="아이디 입력"
-                android:textSize="20dp"
-                android:singleLine="true"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/pwLayout"
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/idLayout">
+            android:text="MANNA"
+            android:textAlignment="center"
+            android:textSize="20dp"/>
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/loginPWLabel"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="16dp"
-                android:layout_below="@id/loginIDLabel"
-                android:text="PW"
-                android:textSize="20dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_Logo"
+        android:layout_marginTop="100dp"
+        android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/loginPWText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/loginPWLabel"
-                android:layout_alignBaseline="@id/loginPWLabel"
-                android:hint="비밀번호 입력"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:singleLine="true"
-                android:textSize="20dp"/>
-        </LinearLayout>
+        <EditText
+            android:id="@+id/login_id"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:hint="@string/login_id_label"
+            android:background="@drawable/round_edittext_shape"/>
+
+        <EditText
+            android:id="@+id/login_pw"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:hint="@string/login_pw_label"
+            android:background="@drawable/round_edittext_shape"/>
 
         <LinearLayout
-            android:id="@+id/loginSignLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/pwLayout">
+            android:orientation="horizontal">
 
             <CheckBox
-                android:id="@+id/autoLogin"
+                android:id="@+id/login_autoLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:checked="true"
-                android:text="자동 로그인" />
+                android:layout_marginLeft="20dp"
+                android:text="@string/login_autologin_label"/>
 
-            <LinearLayout
-                android:layout_marginRight="15dp"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="right|center">
+            <androidx.legacy.widget.Space
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:id="@+id/loginsignup"
-                    android:text="회원가입"
-                    android:layout_marginRight="16dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_marginRight="25dp"
+                android:layout_height="wrap_content"
 
-                <TextView
-                    android:id="@+id/loginfindpw"
-                    android:text="ID/PW 찾기"
-                    android:layout_marginRight="16dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-            </LinearLayout>
-
-
+                android:gravity="right"
+                android:text="@string/login_findidpw_label"/>
         </LinearLayout>
 
-
         <Button
-            android:id="@+id/loginSignInBtn"
+            android:id="@+id/login_confirm"
+            android:text="@string/login_confirm"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="로그인"
-            android:layout_below="@id/loginSignLayout"/>
-    </RelativeLayout>
-
+            android:background="@drawable/round_button_shape"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+    </LinearLayout>
 
 </RelativeLayout>
