@@ -8,4 +8,6 @@
     <color name="lineColor">#a6A6a6</color>
     <color name="lightGrayButton">#9F9F9F</color>
     <color name="white">#FFFFFF</color>
+    <color name="lightRed">#D93C3C</color>
+    <color name="lightBlue">#3389D1</color>
 </resources>

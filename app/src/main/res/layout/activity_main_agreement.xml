@@ -46,6 +46,7 @@
                 </LinearLayout>
 
                 <GridLayout
+                    android:id="@+id/dateRootGrid"
                     android:background="@drawable/round_shape_calendar"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
@@ -65,7 +66,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="1"
                             android:textAlignment="center"
-                            android:textColor="#F00"
+                            android:textColor="@color/lightRed"
                             android:textStyle="bold"
                             android:layout_height="match_parent"/>
 
@@ -111,7 +112,7 @@
 
                         <TextView
                             android:text="토"
-                            android:textColor="#00F"
+                            android:textColor="@color/lightBlue"
                             android:textStyle="bold"
                             android:layout_width="0dp"
                             android:layout_weight="1"
