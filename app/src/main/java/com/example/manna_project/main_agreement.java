@@ -17,7 +17,7 @@ public class main_agreement extends AppCompatActivity {
 
         TabHost.TabSpec tabSpec = tabHost.newTabSpec("tab01_friend");
         tabSpec.setIndicator("친구");
-        tabSpec.setContent(R.id.tab01_friend);
+        tabSpec.setContent(R.id.agreementCalendar);
         tabHost.addTab(tabSpec);
 
         tabSpec = tabHost.newTabSpec("tab02_friend");
