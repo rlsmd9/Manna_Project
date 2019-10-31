@@ -18,12 +18,34 @@
             android:background="@color/baseBackgroundColorWhite"
             android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/tab01_friend"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:orientation="vertical" android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Tab1"
-                android:gravity="center"/>
+                android:id="@+id/agreementCalendar">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/list_icon"/>
+
+                    <TextView
+                        android:id="@+id/Calendar_Date"
+                        android:text="2019년 10월"
+                        android:textSize="20dp"
+                        android:layout_marginLeft="16dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tab02_friend"
