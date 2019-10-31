@@ -33,11 +33,10 @@
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
+                        android:layout_gravity="center_vertical"
                         android:src="@drawable/list_icon"/>
 
                     <TextView
-                        android:id="@+id/Calendar_Date"
                         android:text="2019년 10월"
                         android:textSize="20dp"
                         android:layout_marginLeft="16dp"
@@ -45,6 +44,83 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"/>
                 </LinearLayout>
+
+                <GridLayout
+                    android:background="@drawable/round_shape_calendar"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:padding="10dp"
+                    android:columnCount="7">
+
+                    <LinearLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_columnSpan="7"
+                        android:layout_marginBottom="10dp">
+
+                        <TextView
+                            android:text="일"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:textColor="#F00"
+                            android:textStyle="bold"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:text="월"
+                            android:textStyle="bold"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:text="화"
+                            android:textStyle="bold"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:text="수"
+                            android:textStyle="bold"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:text="목"
+                            android:textStyle="bold"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:text="금"
+                            android:textStyle="bold"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:text="토"
+                            android:textColor="#00F"
+                            android:textStyle="bold"
+                            android:layout_width="0dp"
+                            android:layout_weight="1"
+                            android:textAlignment="center"
+                            android:layout_height="match_parent"/>
+                    </LinearLayout>
+
+
+                </GridLayout>
 
             </LinearLayout>
 
