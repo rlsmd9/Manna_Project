@@ -4,16 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
-public class main_agreement extends AppCompatActivity {
+public class MainAgreementActivity extends AppCompatActivity {
 
     GridLayout calendar_root_grid;
 
@@ -48,20 +50,24 @@ public class main_agreement extends AppCompatActivity {
         tabSpec.setIndicator("설정");
         tabSpec.setContent(R.id.tab04_friend);
         tabHost.addTab(tabSpec);
+
+        Toast.makeText(this, calendar_root_grid.getWidth()+"", Toast.LENGTH_SHORT);
     }
 
     private void makeCalendar() {
 //        calendar_root_grid.removeAllViews();
 
         // activity_main_agreement의 약속탭에 달력 만들기
-        for (int i = 1; i <= 6; i++) {
-            for (int j = 1; j <= 7; j++) {
+        for (int i = 1; i <= 7; i++) {
+            for (int j = 1; j <= 6; j++) {
                 TextView tv = new TextView(this);
                 tv.setWidth(100);
                 GridLayout.LayoutParams layoutParams = new GridLayout.LayoutParams();
-                layoutParams.width = calendar_root_grid.getMeasuredWidth()/7;
-                layoutParams.height = calendar_root_grid.getMeasuredHeight()/6;
-                layoutParams.columnSpec = GridLayout.spec(i);
+                layoutParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
+
+//                Log.d("mannad", calendar_root_grid.getWidth()/7+"");
+                layoutParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+                layoutParams.columnSpec = GridLayout.spec(i-1);
                 layoutParams.rowSpec = GridLayout.spec(j);
                 tv.setText("DW");
                 tv.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
