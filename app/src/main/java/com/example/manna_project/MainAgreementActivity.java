@@ -4,15 +4,19 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 import com.example.manna_project.MainAgreementActivity_Util.Custom_Calendar;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class MainAgreementActivity extends AppCompatActivity {
-
+    TextView currentDate;
     Custom_Calendar custom_calendar;
 
     @Override
@@ -32,8 +36,9 @@ public class MainAgreementActivity extends AppCompatActivity {
         tabSpec.setIndicator("약속");
         tabSpec.setContent(R.id.agreementCalendar);
         tabHost.addTab(tabSpec);
+        currentDate = findViewById(R.id.calendar_currentDate);
         custom_calendar = new Custom_Calendar(this, (GridLayout) findViewById(R.id.main_agreement_calendarGridLayout), Calendar.getInstance());
-        custom_calendar.makeCalendar();
+        setDate(custom_calendar.getDate());
 
         tabSpec = tabHost.newTabSpec("tab03_friend");
         tabSpec.setIndicator("일정");
@@ -46,5 +51,19 @@ public class MainAgreementActivity extends AppCompatActivity {
         tabHost.addTab(tabSpec);
     }
 
+    public void onClick_test(View v) {
+        custom_calendar.increaseMonth(1);
+        setDate(custom_calendar.getDate());
+    }
 
+    public void onClick_test_1(View v) {
+        custom_calendar.decreaseMonth(1);
+        setDate(custom_calendar.getDate());
+    }
+
+    public void setDate(Calendar date) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy년 MM월");
+        Log.d("manna_js", simpleDateFormat.format(date.getTime())+"");
+        this.currentDate.setText(simpleDateFormat.format(date.getTime()));
+    }
 }

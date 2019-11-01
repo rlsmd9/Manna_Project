@@ -10,4 +10,5 @@
     <color name="white">#FFFFFF</color>
     <color name="lightRed">#D93C3C</color>
     <color name="lightBlue">#3389D1</color>
+    <color name="textGrayColor">#707070</color>
 </resources>
