@@ -51,6 +51,8 @@ public class MainAgreementActivity extends AppCompatActivity {
         tabHost.addTab(tabSpec);
     }
 
+
+    // 월 증감 약식 이벤트
     public void onClick_test(View v) {
         custom_calendar.increaseMonth(1);
         setDate(custom_calendar.getDate());

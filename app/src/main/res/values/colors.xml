@@ -7,6 +7,7 @@
     <color name="baseBackgroundColorLightGray">#f5f5f5</color>
     <color name="lineColor">#D3D3D3</color>
     <color name="lightGrayButton">#9F9F9F</color>
+    <color name="selectedItem">#CFCFCF</color>
     <color name="white">#FFFFFF</color>
     <color name="lightRed">#D93C3C</color>
     <color name="lightBlue">#3389D1</color>

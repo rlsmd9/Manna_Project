@@ -14,7 +14,7 @@ import com.example.manna_project.R;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class Custom_Calendar {
+public class Custom_Calendar implements View.OnClickListener {
     Context context;
     LayoutInflater layout;
     Calendar date;
@@ -59,12 +59,14 @@ public class Custom_Calendar {
     // month index range is 0 to 11
     public void setDate(int year, int month) {
         this.date.set(year, month, 1);
+        setCleanBackground();
         setCalendar();
     }
 
     // month index range is 0 to 11
     public void setDate(int year, int month, int day) {
         this.date.set(year, month, day);
+        setCleanBackground();
         setCalendar();
     }
 
@@ -84,13 +86,30 @@ public class Custom_Calendar {
                 textView.setTypeface(null,Typeface.BOLD);
 
                 textView.setText("init");
-
+                ly.setOnClickListener(this);
                 ly.addView(textView,linearParams);
                 calendar_root_grid.addView(ly,param);
 
                 scheculeOfDays.add(new ScheduleOfDay(null, textView, ly, null));
             }
         }
+    }
+
+    protected void setCleanBackground() {
+        for (int i = 0; i < scheculeOfDays.size(); i++) {
+        scheculeOfDays.get(i).getDayList().setBackground(calendar_root_grid.getBackground());
+        }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        ScheduleOfDay selected_scheduleOfDay = findDateLayout(v);
+        ScheduleOfDay current_scheduleOfDay = findDateLayout(this.getDate());
+
+        current_scheduleOfDay.getDayList().setBackground(calendar_root_grid.getBackground());
+        selected_scheduleOfDay.getDayList().setBackground(context.getResources().getDrawable(R.color.selectedItem));
+        this.setDate(selected_scheduleOfDay.getDate());
     }
 
     protected void setCalendar() {
@@ -111,6 +130,7 @@ public class Custom_Calendar {
                 ScheduleOfDay scheduleOfDay = scheculeOfDays.get(index);
 
                 scheduleOfDay.getTextDay().setEnabled(true);
+                scheduleOfDay.getDayList().setClickable(true);
                 scheduleOfDay.getTextDay().setTextColor(context.getResources().getColor(R.color.textGrayColor));
                 scheduleOfDay.getTextDay().setBackground(calendar_root_grid.getBackground());
                 // j+(7*i)+1 = for문 순서 1~42
@@ -123,6 +143,7 @@ public class Custom_Calendar {
                 if (index < start-1 || index > (end+start-2)) {
 
                     scheduleOfDay.getTextDay().setEnabled(false);
+                    scheduleOfDay.getDayList().setClickable(false);
                     scheduleOfDay.getTextDay().setTextColor(context.getResources().getColor(R.color.baseBackgroundColorLightGray));
                 } else {
                     if (index % 7 == 0) {
@@ -134,9 +155,7 @@ public class Custom_Calendar {
 
                 }
 
-                if (c.get(Calendar.YEAR) == today.get(Calendar.YEAR) && c.get(Calendar.MONTH) == today.get(Calendar.MONTH)
-                        && c.get(Calendar.DATE) == today.get(Calendar.DATE)) {
-                    Log.d("manna_js", "makeCalendar: 2w");
+                if (compareDate(c, today)) {
                     scheduleOfDay.getTextDay().setBackground(context.getResources().getDrawable(R.drawable.round_today_shape));
                 }
 //                Log.d("manna_js", "makeCalendar: " + date.toString());
@@ -159,6 +178,40 @@ public class Custom_Calendar {
 
     public void decreaseMonth(int range) {
         setDate(this.date.get(Calendar.YEAR), this.date.get(Calendar.MONTH) - range);
+    }
+
+    protected ScheduleOfDay findDateLayout(Calendar date) {
+        for (int i = 0; i < scheculeOfDays.size(); i++) {
+
+
+            if (compareDate(scheculeOfDays.get(i).getDate(), date)) {
+
+                return scheculeOfDays.get(i);
+
+            }
+        }
+
+        Log.d("manna_js","null");
+        return null;
+    }
+
+    protected ScheduleOfDay findDateLayout(View view) {
+        for (int i = 0; i < scheculeOfDays.size(); i++) {
+            if (scheculeOfDays.get(i).getDayList() == view) {
+
+                return scheculeOfDays.get(i);
+            }
+        }
+
+        return null;
+    }
+
+    protected boolean compareDate(Calendar a, Calendar b) {
+        if (a.get(Calendar.YEAR) == b.get(Calendar.YEAR) && a.get(Calendar.MONTH) == b.get(Calendar.MONTH)
+                && a.get(Calendar.DATE) == b.get(Calendar.DATE)) {
+            return true;
+        }
+        return false;
     }
 }
 
