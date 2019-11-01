@@ -23,6 +23,7 @@ public class Custom_Calendar {
     // 일정 데이터 받아서 저장할 자료구조
     ArrayList<CustomSchedule> datalist;
 
+
     public Custom_Calendar(Context context, GridLayout calendar_root_grid, Calendar date) {
         this.context = context;
         this.layout = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -84,6 +85,15 @@ public class Custom_Calendar {
     }
 }
 
+
+class ScheculeOfDay {
+    LinearLayout dayList;
+    CustomSchedule customSchedule;
+
+
+}
+
 class CustomSchedule {
 
 }
+
