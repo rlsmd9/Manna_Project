@@ -26,7 +26,8 @@ public class Custom_Calendar {
         this.context = context;
         this.layout = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.calendar_root_grid = calendar_root_grid;
-        this.date = date;
+        this.date = Calendar.getInstance();
+        this.date.set(date.get(Calendar.YEAR),date.get(Calendar.MONTH),date.get(Calendar.DATE),0,0,0);
         this.scheculeOfDays = new ArrayList<>();
         makeCalendar();
         setCalendar();
@@ -34,7 +35,8 @@ public class Custom_Calendar {
 
     public Custom_Calendar(Context context, GridLayout calendar_root_grid, Calendar date, ArrayList<ScheduleOfDay> scheculeOfDays) {
         this.context = context;
-        this.date = date;
+        this.date = Calendar.getInstance();
+        this.date.set(date.get(Calendar.YEAR),date.get(Calendar.MONTH),date.get(Calendar.DATE),0,0,0);
         this.scheculeOfDays = scheculeOfDays;
         this.calendar_root_grid = calendar_root_grid;
         this.layout = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -81,10 +83,6 @@ public class Custom_Calendar {
                 textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 textView.setTypeface(null,Typeface.BOLD);
 
-                textView.setEnabled(true);
-                // j+(7*i)+1 = for문 순서 1~42
-//                Log.d("manna_js", "makeCalendar: " + ((j+(7*i)+1) % 7));
-
                 textView.setText("init");
 
                 ly.addView(textView,linearParams);
@@ -100,7 +98,9 @@ public class Custom_Calendar {
         int start, end;
         int index;
         Calendar c = Calendar.getInstance();
-        c.set(date.get(Calendar.YEAR), date.get(Calendar.MONTH), 1);
+        Calendar today = Calendar.getInstance();
+
+        c.set(date.get(Calendar.YEAR), date.get(Calendar.MONTH), 1,0,0,0);
         start = c.get(Calendar.DAY_OF_WEEK);
         c.set(date.get(Calendar.YEAR), date.get(Calendar.MONTH)+1, 0);
         end = c.get(Calendar.DAY_OF_MONTH);
@@ -112,15 +112,16 @@ public class Custom_Calendar {
 
                 scheduleOfDay.getTextDay().setEnabled(true);
                 scheduleOfDay.getTextDay().setTextColor(context.getResources().getColor(R.color.textGrayColor));
+                scheduleOfDay.getTextDay().setBackground(calendar_root_grid.getBackground());
                 // j+(7*i)+1 = for문 순서 1~42
 //                Log.d("manna_js", "makeCalendar: 1");
-
 
 
                 c.set(date.get(Calendar.YEAR), date.get(Calendar.MONTH), (cnt++)-start+1);
 
 
-                if (index+1 < date.get(Calendar.DAY_OF_WEEK) || index > (end+start-2)) {
+                if (index < start-1 || index > (end+start-2)) {
+
                     scheduleOfDay.getTextDay().setEnabled(false);
                     scheduleOfDay.getTextDay().setTextColor(context.getResources().getColor(R.color.baseBackgroundColorLightGray));
                 } else {
@@ -129,7 +130,17 @@ public class Custom_Calendar {
                     } else if (index % 7 == 6) {
                         scheduleOfDay.getTextDay().setTextColor(context.getResources().getColor(R.color.lightBlue));
                     }
+
+
                 }
+
+                if (c.get(Calendar.YEAR) == today.get(Calendar.YEAR) && c.get(Calendar.MONTH) == today.get(Calendar.MONTH)
+                        && c.get(Calendar.DATE) == today.get(Calendar.DATE)) {
+                    Log.d("manna_js", "makeCalendar: 2w");
+                    scheduleOfDay.getTextDay().setBackground(context.getResources().getDrawable(R.drawable.round_today_shape));
+                }
+//                Log.d("manna_js", "makeCalendar: " + date.toString());
+
 
 
                 scheduleOfDay.setDate((Calendar) c.clone());
