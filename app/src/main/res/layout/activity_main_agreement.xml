@@ -134,24 +134,23 @@
                             android:layout_height="match_parent"/>
                     </LinearLayout>
 
-                    <GridLayout
+                    <com.example.manna_project.MainAgreementActivity_Util.Custom_GridLayout
                         android:id="@+id/main_agreement_calendarGridLayout"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:orientation="horizontal"
                         android:columnCount="7"
                         android:layout_weight="1">
-
-
-                    </GridLayout>
+                    </com.example.manna_project.MainAgreementActivity_Util.Custom_GridLayout>
 
                 </LinearLayout>
 
 <!--               AdapterView 추가 예정 -->
                 <ListView
+                    android:id="@+id/main_agreement_listView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="0">
+                    android:layout_weight="1">
                 </ListView>
 
             </LinearLayout>

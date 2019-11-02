@@ -2,20 +2,23 @@ package com.example.manna_project;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.GridLayout;
+import android.widget.ListView;
 import android.widget.TabHost;
 import android.widget.TextView;
 
 import com.example.manna_project.MainAgreementActivity_Util.Custom_Calendar;
+import com.example.manna_project.MainAgreementActivity_Util.Custom_GridLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
-public class MainAgreementActivity extends AppCompatActivity {
+public class MainAgreementActivity extends Activity {
     TextView currentDate;
     Custom_Calendar custom_calendar;
 
@@ -37,7 +40,8 @@ public class MainAgreementActivity extends AppCompatActivity {
         tabSpec.setContent(R.id.agreementCalendar);
         tabHost.addTab(tabSpec);
         currentDate = findViewById(R.id.calendar_currentDate);
-        custom_calendar = new Custom_Calendar(this, (GridLayout) findViewById(R.id.main_agreement_calendarGridLayout), Calendar.getInstance());
+        custom_calendar = new Custom_Calendar(this, (Custom_GridLayout) findViewById(R.id.main_agreement_calendarGridLayout),
+                (ListView) findViewById(R.id.main_agreement_listView), Calendar.getInstance());
         setDate(custom_calendar.getDate());
 
         tabSpec = tabHost.newTabSpec("tab03_friend");
@@ -68,4 +72,5 @@ public class MainAgreementActivity extends AppCompatActivity {
         Log.d("manna_js", simpleDateFormat.format(date.getTime())+"");
         this.currentDate.setText(simpleDateFormat.format(date.getTime()));
     }
+
 }

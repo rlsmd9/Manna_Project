@@ -3,37 +3,57 @@ package com.example.manna_project.MainAgreementActivity_Util;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
-
 import com.example.manna_project.R;
-
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class Custom_Calendar implements View.OnClickListener {
+    final static String TAG = "manna_js";
+    enum CalendarType {
+        FULL_CALENDAR, HALF_CALENDAR, WEEK_CALENDAR;
+    }
+
+    enum TouchType {
+        DOWN, UP;
+    }
+
     Context context;
     LayoutInflater layout;
     Calendar date;
-    GridLayout calendar_root_grid;
+    Custom_GridLayout calendar_root_grid;
+    ListView listView;
     // 일정 데이터 받아서 저장할 자료구조
     ArrayList<ScheduleOfDay> scheculeOfDays;
 
-    public Custom_Calendar(Context context, GridLayout calendar_root_grid, Calendar date) {
+
+    public Custom_Calendar(Context context, Custom_GridLayout calendar_root_grid, ListView listView, Calendar date) {
         this.context = context;
         this.layout = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.listView = listView;
+        Log.d(TAG, "Custom_Calendar: w");
         this.calendar_root_grid = calendar_root_grid;
+        calendar_root_grid.setListView(this.listView);
+        Log.d(TAG, "Custom_Calendar: a");
         this.date = Calendar.getInstance();
         this.date.set(date.get(Calendar.YEAR),date.get(Calendar.MONTH),date.get(Calendar.DATE),0,0,0);
         this.scheculeOfDays = new ArrayList<>();
+
+        this.calendar_root_grid.calendarType = CalendarType.FULL_CALENDAR;
         makeCalendar();
         setCalendar();
     }
 
-    public Custom_Calendar(Context context, GridLayout calendar_root_grid, Calendar date, ArrayList<ScheduleOfDay> scheculeOfDays) {
+    public Custom_Calendar(Context context, Custom_GridLayout calendar_root_grid, Calendar date, ArrayList<ScheduleOfDay> scheculeOfDays) {
         this.context = context;
         this.date = Calendar.getInstance();
         this.date.set(date.get(Calendar.YEAR),date.get(Calendar.MONTH),date.get(Calendar.DATE),0,0,0);
@@ -41,7 +61,7 @@ public class Custom_Calendar implements View.OnClickListener {
         this.calendar_root_grid = calendar_root_grid;
         this.layout = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.scheculeOfDays = new ArrayList<>();
-
+        this.calendar_root_grid.calendarType = CalendarType.FULL_CALENDAR;
         makeCalendar();
         setCalendar();
     }
@@ -100,6 +120,7 @@ public class Custom_Calendar implements View.OnClickListener {
         scheculeOfDays.get(i).getDayList().setBackground(calendar_root_grid.getBackground());
         }
     }
+
 
 
     @Override
@@ -213,8 +234,9 @@ public class Custom_Calendar implements View.OnClickListener {
         }
         return false;
     }
-}
 
+
+}
 
 
 class ScheduleOfDay {
