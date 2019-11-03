@@ -9,7 +9,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity android:name=".MakingPromise"></activity>
         <activity android:name=".Setting" />
         <activity android:name=".EditProfile">
@@ -19,14 +18,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".main_agreement">
+        <activity android:name=".MainAgreementActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".Friend_List" />
         <activity android:name=".Login_activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,7 +33,5 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity android:name=".Friend_List" />
     </application>
 </manifest>
