@@ -2,21 +2,19 @@ package com.example.manna_project.MainAgreementActivity_Util.Calendar;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
-import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
-public class Custom_GridLayout extends GridLayout {
+public class Custom_LinearLayout extends LinearLayout {
     Custom_Calendar.CalendarType calendarType;
     ListView listView;
 
-    public Custom_GridLayout(Context context) {
+    public Custom_LinearLayout(Context context) {
         super(context);
     }
 
-    public Custom_GridLayout(Context context, AttributeSet attrs) {
+    public Custom_LinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -87,7 +85,7 @@ public class Custom_GridLayout extends GridLayout {
                 param.weight = 0f;
                 break;
             case HALF_CALENDAR:
-                param.weight = 1f;
+                param.weight = 2f;
                 break;
             case WEEK_CALENDAR:
                 // 한 주만 나타나게 레이아웃 재설정 필요

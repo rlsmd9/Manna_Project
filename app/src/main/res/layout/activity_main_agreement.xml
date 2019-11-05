@@ -70,14 +70,16 @@
                 android:layout_height="match_parent"
                 android:id="@+id/agreementCalendar">
 
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="16dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:paddingLeft="16dp"
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:id="@+id/main_agreement_changeDateBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
@@ -92,25 +94,25 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"/>
 
-                    <Button
-                        android:text="증가"
-                        android:onClick="onClick_test"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+<!--                    <Button-->
+<!--                        android:text="증가"-->
+<!--                        android:onClick="onClick_test"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"/>-->
 
-                    <Button
-                        android:text="감소"
-                        android:onClick="onClick_test_1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+<!--                    <Button-->
+<!--                        android:text="감소"-->
+<!--                        android:onClick="onClick_test_1"-->
+<!--                        android:layout_width="wrap_content"-->
+<!--                        android:layout_height="wrap_content"/>-->
                 </LinearLayout>
 
-                <LinearLayout
+                <com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout
                     android:id="@+id/calendarRoot"
                     android:background="@drawable/round_shape_calendar"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_weight="3"
                     android:orientation="vertical"
                     android:padding="10dp"
                     >
@@ -181,16 +183,16 @@
                             android:layout_height="match_parent"/>
                     </LinearLayout>
 
-                    <com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_GridLayout
+                    <GridLayout
                         android:id="@+id/main_agreement_calendarGridLayout"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:orientation="horizontal"
                         android:columnCount="7"
                         android:layout_weight="1">
-                    </com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_GridLayout>
+                    </GridLayout>
 
-                </LinearLayout>
+                </com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout>
 
                 <!--               AdapterView 추가 예정 -->
                 <ListView

@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.manna_project.R;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -26,40 +28,29 @@ public class Custom_Calendar implements View.OnClickListener {
     Context context;
     LayoutInflater layout;
     Calendar date;
-    Custom_GridLayout calendar_root_grid;
+    Custom_LinearLayout calendar_root;
+    GridLayout calendar_layout;
     ListView listView;
+    TextView viewDate;
     // 일정 데이터 받아서 저장할 자료구조
-    ArrayList<ScheduleOfDay> scheculeOfDays;
+    ArrayList<ScheduleOfDay> scheduleOfDays;
 
-
-    public Custom_Calendar(Context context, Custom_GridLayout calendar_root_grid, ListView listView, Calendar date) {
+    public Custom_Calendar(Context context, Custom_LinearLayout calendar_root, GridLayout calendar_layout, ListView listView, TextView viewDate, Calendar date) {
         this.context = context;
         this.layout = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.listView = listView;
-        Log.d(TAG, "Custom_Calendar: w");
-        this.calendar_root_grid = calendar_root_grid;
-        calendar_root_grid.setListView(this.listView);
-        Log.d(TAG, "Custom_Calendar: a");
+        this.calendar_layout = calendar_layout;
+        this.calendar_root = calendar_root;
+        calendar_root.setListView(this.listView);
         this.date = Calendar.getInstance();
         this.date.set(date.get(Calendar.YEAR),date.get(Calendar.MONTH),date.get(Calendar.DATE),0,0,0);
-        this.scheculeOfDays = new ArrayList<>();
+        this.scheduleOfDays = new ArrayList<>();
+        this.viewDate = viewDate;
 
-        this.calendar_root_grid.calendarType = CalendarType.FULL_CALENDAR;
+        this.calendar_root.calendarType = CalendarType.FULL_CALENDAR;
         makeCalendar();
         setCalendar();
-    }
-
-    public Custom_Calendar(Context context, Custom_GridLayout calendar_root_grid, Calendar date, ArrayList<ScheduleOfDay> scheculeOfDays) {
-        this.context = context;
-        this.date = Calendar.getInstance();
-        this.date.set(date.get(Calendar.YEAR),date.get(Calendar.MONTH),date.get(Calendar.DATE),0,0,0);
-        this.scheculeOfDays = scheculeOfDays;
-        this.calendar_root_grid = calendar_root_grid;
-        this.layout = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.scheculeOfDays = new ArrayList<>();
-        this.calendar_root_grid.calendarType = CalendarType.FULL_CALENDAR;
-        makeCalendar();
-        setCalendar();
+        selectDay();
     }
 
     public void setDate(Calendar date) {
@@ -69,21 +60,26 @@ public class Custom_Calendar implements View.OnClickListener {
 
     public void setDate(int day) {
         this.date.set(Calendar.DATE, day);
-
     }
 
     // month index range is 0 to 11
     public void setDate(int year, int month) {
-        this.date.set(year, month, 1);
-        setCleanBackground();
+        int day = 1;
+
+        if (month == Calendar.getInstance().get(Calendar.MONTH)) day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+
+        this.date.set(year, month, day);
+
         setCalendar();
+        selectDay();
     }
 
     // month index range is 0 to 11
     public void setDate(int year, int month, int day) {
         this.date.set(year, month, day);
-        setCleanBackground();
+
         setCalendar();
+        selectDay();
     }
 
     public void makeCalendar() {
@@ -104,16 +100,16 @@ public class Custom_Calendar implements View.OnClickListener {
                 textView.setText("init");
                 ly.setOnClickListener(this);
                 ly.addView(textView,linearParams);
-                calendar_root_grid.addView(ly,param);
+                calendar_layout.addView(ly,param);
 
-                scheculeOfDays.add(new ScheduleOfDay(null, textView, ly, null));
+                scheduleOfDays.add(new ScheduleOfDay(null, textView, ly, null));
             }
         }
     }
 
     protected void setCleanBackground() {
-        for (int i = 0; i < scheculeOfDays.size(); i++) {
-        scheculeOfDays.get(i).getDayList().setBackground(calendar_root_grid.getBackground());
+        for (int i = 0; i < scheduleOfDays.size(); i++) {
+            scheduleOfDays.get(i).getDayList().setBackground(calendar_layout.getBackground());
         }
     }
 
@@ -122,11 +118,22 @@ public class Custom_Calendar implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         ScheduleOfDay selected_scheduleOfDay = findDateLayout(v);
+        this.setDate(selected_scheduleOfDay.getDate());
+
+        selectDay();
+        Log.d("manna_js", this.getDate().get(Calendar.DAY_OF_MONTH)+"");
+    }
+
+    // 현재 저장된 Date를 선택
+    protected void selectDay() {
+        setCleanBackground();
         ScheduleOfDay current_scheduleOfDay = findDateLayout(this.getDate());
 
-        current_scheduleOfDay.getDayList().setBackground(calendar_root_grid.getBackground());
-        selected_scheduleOfDay.getDayList().setBackground(context.getResources().getDrawable(R.color.selectedItem));
-        this.setDate(selected_scheduleOfDay.getDate());
+        current_scheduleOfDay.getDayList().setBackground(context.getResources().getDrawable(R.color.selectedItem));
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy년 MM월");
+        Log.d("manna_js", simpleDateFormat.format(date.getTime())+"");
+        viewDate.setText(simpleDateFormat.format(date.getTime()));
     }
 
     protected void setCalendar() {
@@ -144,15 +151,13 @@ public class Custom_Calendar implements View.OnClickListener {
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
                 index = j+(7*i);
-                ScheduleOfDay scheduleOfDay = scheculeOfDays.get(index);
+                ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
 
                 scheduleOfDay.getTextDay().setEnabled(true);
                 scheduleOfDay.getDayList().setClickable(true);
                 scheduleOfDay.getTextDay().setTextColor(context.getResources().getColor(R.color.textGrayColor));
-                scheduleOfDay.getTextDay().setBackground(calendar_root_grid.getBackground());
+                scheduleOfDay.getTextDay().setBackground(calendar_layout.getBackground());
                 // j+(7*i)+1 = for문 순서 1~42
-//                Log.d("manna_js", "makeCalendar: 1");
-
 
                 c.set(date.get(Calendar.YEAR), date.get(Calendar.MONTH), (cnt++)-start+1);
 
@@ -190,7 +195,7 @@ public class Custom_Calendar implements View.OnClickListener {
     }
 
     public void increaseMonth(int range) {
-        setDate(this.date.get(Calendar.YEAR), this.date.get(Calendar.MONTH)+range);
+        setDate(this.date.get(Calendar.YEAR), this.date.get(Calendar.MONTH) + range);
     }
 
     public void decreaseMonth(int range) {
@@ -198,12 +203,12 @@ public class Custom_Calendar implements View.OnClickListener {
     }
 
     protected ScheduleOfDay findDateLayout(Calendar date) {
-        for (int i = 0; i < scheculeOfDays.size(); i++) {
+        for (int i = 0; i < scheduleOfDays.size(); i++) {
 
 
-            if (compareDate(scheculeOfDays.get(i).getDate(), date)) {
+            if (compareDate(scheduleOfDays.get(i).getDate(), date)) {
 
-                return scheculeOfDays.get(i);
+                return scheduleOfDays.get(i);
 
             }
         }
@@ -213,10 +218,10 @@ public class Custom_Calendar implements View.OnClickListener {
     }
 
     protected ScheduleOfDay findDateLayout(View view) {
-        for (int i = 0; i < scheculeOfDays.size(); i++) {
-            if (scheculeOfDays.get(i).getDayList() == view) {
+        for (int i = 0; i < scheduleOfDays.size(); i++) {
+            if (scheduleOfDays.get(i).getDayList() == view) {
 
-                return scheculeOfDays.get(i);
+                return scheduleOfDays.get(i);
             }
         }
 
