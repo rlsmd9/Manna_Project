@@ -34,10 +34,10 @@ public class Custom_LinearLayout extends LinearLayout {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
 //        Log.d("manna_js", "onTouch: " + event.getAction() + " : " + event.getY());
-        if (event.getAction() == MotionEvent.ACTION_UP && event.getY() - dragY >= 20.0) {
+        if (event.getAction() == MotionEvent.ACTION_UP && event.getY() - dragY >= 50.0) {
             moveCalendarType(Custom_Calendar.TouchType.DOWN);
             return true;
-        } else if (event.getAction() == MotionEvent.ACTION_UP && event.getY() - dragY <= -20.0) {
+        } else if (event.getAction() == MotionEvent.ACTION_UP && event.getY() - dragY <= -50.0) {
             moveCalendarType(Custom_Calendar.TouchType.UP);
             return true;
         }
