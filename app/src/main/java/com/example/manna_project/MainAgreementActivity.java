@@ -10,18 +10,17 @@ import android.widget.TextView;
 
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_GridLayout;
-import com.example.manna_project.MainAgreementActivity_Util.Friend.FriendListAdapter;
-import com.example.manna_project.MainAgreementActivity_Util.Friend.FriendListItem;
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
+import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class MainAgreementActivity extends Activity {
     TextView currentDate;
     Custom_Calendar custom_calendar;
     Friend_List friend_list;
+    Setting_List setting_list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +36,6 @@ public class MainAgreementActivity extends Activity {
         tabSpec.setIndicator("친구");
         tabSpec.setContent(R.id.main_friendList);
         tabHost.addTab(tabSpec);
-        Log.d("manna_js", "onCreate: a");
         friend_list = new Friend_List(this, (ListView) findViewById(R.id.main_friendList));
 
 
@@ -52,15 +50,18 @@ public class MainAgreementActivity extends Activity {
                 (ListView) findViewById(R.id.main_agreement_listView), Calendar.getInstance());
         setDate(custom_calendar.getDate());
 
+        // 일정관리
         tabSpec = tabHost.newTabSpec("tab03_friend");
         tabSpec.setIndicator("일정");
-        tabSpec.setContent(R.id.tab03_friend);
-        tabHost.addTab(tabSpec);
-
-        tabSpec = tabHost.newTabSpec("tab04_friend");
-        tabSpec.setIndicator("설정");
         tabSpec.setContent(R.id.tab04_friend);
         tabHost.addTab(tabSpec);
+
+        // 설정
+        tabSpec = tabHost.newTabSpec("tab04_friend");
+        tabSpec.setIndicator("설정");
+        tabSpec.setContent(R.id.main_settingList);
+        tabHost.addTab(tabSpec);
+        setting_list = new Setting_List(this, (ListView) findViewById(R.id.main_settingList));
     }
 
 

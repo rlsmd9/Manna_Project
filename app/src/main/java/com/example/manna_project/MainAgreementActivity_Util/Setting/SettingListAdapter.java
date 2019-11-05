@@ -1,4 +1,4 @@
-package com.example.manna_project.MainAgreementActivity_Util.Friend;
+package com.example.manna_project.MainAgreementActivity_Util.Setting;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -12,16 +12,16 @@ import com.example.manna_project.R;
 
 import java.util.ArrayList;
 
-public class FriendListAdapter extends BaseAdapter {
-    private ArrayList<FriendListItem> list;
+public class SettingListAdapter extends BaseAdapter {
+    private ArrayList<SettingListItem> list;
     private Context context;
     private LayoutInflater inflater;
     private int layout;
 
-    public FriendListAdapter(ArrayList<FriendListItem> list, Context context, int layout) {
+    public SettingListAdapter(ArrayList<SettingListItem> list, Context context, int layout) {
         this.list = list;
         this.context = context;
-        this.inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.layout = layout;
     }
 
@@ -46,13 +46,14 @@ public class FriendListAdapter extends BaseAdapter {
             convertView = inflater.inflate(layout, parent, false);
         }
 
-        FriendListItem friendListItem = list.get(position);
+        SettingListItem settingListItem = list.get(position);
 
         ImageView img = convertView.findViewById(R.id.friend_icon);
-        if (friendListItem.getImg() != 0) img.setImageResource(friendListItem.getImg());
+
+        if (settingListItem.getImg() != 0) img.setImageResource(settingListItem.getImg());
 
         TextView tx = convertView.findViewById(R.id.user_name);
-        tx.setText(friendListItem.getTxt());
+        tx.setText(settingListItem.getTxt());
 
         return convertView;
     }

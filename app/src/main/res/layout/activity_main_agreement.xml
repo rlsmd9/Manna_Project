@@ -211,12 +211,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-            <TextView
-                android:id="@+id/tab03_friend"
+            <ListView
+                android:id="@+id/main_settingList"
+                android:choiceMode="singleChoice"
+                android:divider="#CCC"
+                android:dividerHeight="1dp"
+                android:scrollbars="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Tab3"
-                android:gravity="center"/>
+                android:layout_height="match_parent"/>
 
             <TextView
                 android:id="@+id/tab04_friend"
