@@ -102,13 +102,4 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         }
     }
 
-    // 월 증감 약식 이벤트
-    public void onClick_test(View v) {
-        custom_calendar.increaseMonth(1);
-    }
-
-    public void onClick_test_1(View v) {
-        custom_calendar.decreaseMonth(1);
-    }
-
 }

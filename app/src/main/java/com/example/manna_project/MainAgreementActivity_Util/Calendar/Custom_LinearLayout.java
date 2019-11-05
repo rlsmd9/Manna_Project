@@ -125,9 +125,53 @@ public class Custom_LinearLayout extends LinearLayout {
         listView.setLayoutParams(param);
     }
 
+    private void initWeek() {
+        GridLayout.LayoutParams param;
+        LinearLayout.LayoutParams layoutParams_root = (LinearLayout.LayoutParams) calendar_root.getLayoutParams();
+
+        for (int i = 0; i < this.scheduleOfDays.size(); i++) {
+            param = (GridLayout.LayoutParams) scheduleOfDays.get(i).getDayList().getLayoutParams();
+
+            param.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            param.rowSpec = GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,1f);
+            layoutParams_root.weight = 1.5f;
+
+            scheduleOfDays.get(i).getDayList().setLayoutParams(param);
+        }
+
+        calendar_root.setLayoutParams(layoutParams_root);
+    }
+
+    public void highlight_week() {
+        GridLayout.LayoutParams param;
+        LinearLayout.LayoutParams layoutParams_root = (LinearLayout.LayoutParams) calendar_root.getLayoutParams();
+        int week = -1;
+        initWeek();
+
+        if (calendarType == Custom_Calendar.CalendarType.WEEK_CALENDAR) week = this.date.get(Calendar.WEEK_OF_MONTH);
+
+        for (int i = 0; i < this.scheduleOfDays.size(); i++) {
+            param = (GridLayout.LayoutParams) scheduleOfDays.get(i).getDayList().getLayoutParams();
+            if (week == -1) {
+                param.height = GridLayout.LayoutParams.WRAP_CONTENT;
+                param.rowSpec = GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,1f);
+                layoutParams_root.weight = 1.5f;
+            } else if (scheduleOfDays.get(i).getDate().get(Calendar.WEEK_OF_MONTH) != week || scheduleOfDays.get(i).getDate().get(Calendar.MONTH) != this.date.get(Calendar.MONTH)) {
+                layoutParams_root.weight = 0;
+                param.height = 0;
+                param.rowSpec = GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,0f);
+            }
+
+            scheduleOfDays.get(i).getDayList().setLayoutParams(param);
+        }
+
+        calendar_root.setLayoutParams(layoutParams_root);
+    }
+
     public void highlight_week(int week){
         GridLayout.LayoutParams param;
         LinearLayout.LayoutParams layoutParams_root = (LinearLayout.LayoutParams) calendar_root.getLayoutParams();
+        initWeek();
 
         for (int i = 0; i < this.scheduleOfDays.size(); i++) {
             param = (GridLayout.LayoutParams) scheduleOfDays.get(i).getDayList().getLayoutParams();

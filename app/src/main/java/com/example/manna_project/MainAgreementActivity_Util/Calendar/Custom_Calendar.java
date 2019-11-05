@@ -82,7 +82,7 @@ public class Custom_Calendar implements View.OnClickListener {
 
     // month index range is 0 to 11
     public void setDate(int year, int month, int day) {
-        this.calendar_root.date.set(year, month, day);
+        this.getDate().set(year, month, day);
 
         setCalendar();
         selectDay();
@@ -137,9 +137,10 @@ public class Custom_Calendar implements View.OnClickListener {
 
         current_scheduleOfDay.getDayList().setBackground(context.getResources().getDrawable(R.color.selectedItem));
 
+        calendar_root.highlight_week();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy년 MM월");
-        Log.d("manna_js", simpleDateFormat.format(this.calendar_root.date.getTime())+"");
-        viewDate.setText(simpleDateFormat.format(this.calendar_root.date.getTime()));
+        Log.d("manna_js", simpleDateFormat.format(this.getDate().getTime())+"");
+        viewDate.setText(simpleDateFormat.format(this.getDate().getTime()));
     }
 
     protected void setCalendar() {
@@ -149,9 +150,9 @@ public class Custom_Calendar implements View.OnClickListener {
         Calendar c = Calendar.getInstance();
         Calendar today = Calendar.getInstance();
 
-        c.set(this.calendar_root.date.get(Calendar.YEAR), this.calendar_root.date.get(Calendar.MONTH), 1,0,0,0);
+        c.set(this.getDate().get(Calendar.YEAR), this.getDate().get(Calendar.MONTH), 1,0,0,0);
         start = c.get(Calendar.DAY_OF_WEEK);
-        c.set(this.calendar_root.date.get(Calendar.YEAR), this.calendar_root.date.get(Calendar.MONTH)+1, 0);
+        c.set(this.getDate().get(Calendar.YEAR), this.getDate().get(Calendar.MONTH)+1, 0);
         end = c.get(Calendar.DAY_OF_MONTH);
 
         for (int i = 0; i < 6; i++) {
@@ -165,7 +166,7 @@ public class Custom_Calendar implements View.OnClickListener {
                 scheduleOfDay.getTextDay().setBackground(calendar_layout.getBackground());
                 // j+(7*i)+1 = for문 순서 1~42
 
-                c.set(this.calendar_root.date.get(Calendar.YEAR), this.calendar_root.date.get(Calendar.MONTH), (cnt++)-start+1);
+                c.set(this.getDate().get(Calendar.YEAR), this.getDate().get(Calendar.MONTH), (cnt++)-start+1);
 
 
                 if (index < start-1 || index > (end+start-2)) {
@@ -201,11 +202,11 @@ public class Custom_Calendar implements View.OnClickListener {
     }
 
     public void increaseMonth(int range) {
-        setDate(this.calendar_root.date.get(Calendar.YEAR), this.calendar_root.date.get(Calendar.MONTH) + range);
+        setDate(this.getDate().get(Calendar.YEAR), this.getDate().get(Calendar.MONTH) + range);
     }
 
     public void decreaseMonth(int range) {
-        setDate(this.calendar_root.date.get(Calendar.YEAR), this.calendar_root.date.get(Calendar.MONTH) - range);
+        setDate(this.getDate().get(Calendar.YEAR), this.getDate().get(Calendar.MONTH) - range);
     }
 
     protected ScheduleOfDay findDateLayout(Calendar date) {
