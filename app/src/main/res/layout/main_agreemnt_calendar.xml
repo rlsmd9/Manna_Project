@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/agreementCalendar">
 
 
     <LinearLayout
@@ -17,27 +19,42 @@
             android:src="@drawable/list_icon"/>
 
         <TextView
-            android:text="2019년 10월"
+            android:id="@+id/calendar_currentDate"
+            android:text=""
             android:textSize="20dp"
             android:layout_marginLeft="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"/>
+
+        <Button
+            android:text="증가"
+            android:onClick="onClick_test"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <Button
+            android:text="감소"
+            android:onClick="onClick_test_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <GridLayout
+    <LinearLayout
+        android:id="@+id/calendarRoot"
         android:background="@drawable/round_shape_calendar"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:padding="10dp"
-        android:columnCount="7">
+        >
 
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:layout_columnSpan="7"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
 
             <TextView
@@ -45,7 +62,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:textAlignment="center"
-                android:textColor="#F00"
+                android:textColor="@color/lightRed"
                 android:textStyle="bold"
                 android:layout_height="match_parent"/>
 
@@ -91,7 +108,7 @@
 
             <TextView
                 android:text="토"
-                android:textColor="#00F"
+                android:textColor="@color/lightBlue"
                 android:textStyle="bold"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -99,7 +116,23 @@
                 android:layout_height="match_parent"/>
         </LinearLayout>
 
+        <com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_GridLayout
+            android:id="@+id/main_agreement_calendarGridLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:columnCount="7"
+            android:layout_weight="1">
+        </com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_GridLayout>
 
-    </GridLayout>
+    </LinearLayout>
+
+    <!--               AdapterView 추가 예정 -->
+    <ListView
+        android:id="@+id/main_agreement_listView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0">
+    </ListView>
 
 </LinearLayout>

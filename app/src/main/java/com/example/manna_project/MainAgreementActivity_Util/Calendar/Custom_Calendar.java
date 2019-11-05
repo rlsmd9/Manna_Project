@@ -1,13 +1,10 @@
-package com.example.manna_project.MainAgreementActivity_Util;
+package com.example.manna_project.MainAgreementActivity_Util.Calendar;
 
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -15,7 +12,6 @@ import android.widget.TextView;
 import com.example.manna_project.R;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 public class Custom_Calendar implements View.OnClickListener {
     final static String TAG = "manna_js";

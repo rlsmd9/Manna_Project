@@ -1,4 +1,4 @@
-package com.example.manna_project.MainAgreementActivity_Util;
+package com.example.manna_project.MainAgreementActivity_Util.Calendar;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -71,7 +71,6 @@ public class Custom_GridLayout extends GridLayout {
             }
         }
 
-        Log.d("manna_js", "setCalendarType: " + calendarType.name());
         this.setCalendarType(calendarType);
     }
 
@@ -80,12 +79,9 @@ public class Custom_GridLayout extends GridLayout {
     }
 
     public void setCalendarType(Custom_Calendar.CalendarType calendarType) {
-        Log.d("manna_js", "setCalendarType: Q");
-
-        Log.d("manna_js", "setCalendarType: AW");
         LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) listView.getLayoutParams();
         param.width = 0;
-        Log.d("manna_js", "setCalendarType: A");
+
         switch (calendarType) {
             case FULL_CALENDAR:
                 param.weight = 0f;
@@ -98,9 +94,6 @@ public class Custom_GridLayout extends GridLayout {
                 break;
         }
 
-        Log.d("manna_js", "setCalendarType: B");
-
         listView.setLayoutParams(param);
-        Log.d("manna_js", "setCalendarType: C");
     }
 }
