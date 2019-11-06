@@ -1,4 +1,4 @@
-package com.example.manna_project.MainAgreementActivity_Util;
+package com.example.manna_project.MainAgreementActivity_Util.Calendar;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,8 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 
 public class Calendar_Adapter extends BaseAdapter {
