@@ -45,7 +45,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
         // 친구
         TabHost.TabSpec tabSpec = tabHost.newTabSpec("tab01_friend");
-        tabSpec.setIndicator("친구");
+        tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_friendlist));
         tabSpec.setContent(R.id.main_friendList);
         tabHost.addTab(tabSpec);
         friend_list = new Friend_List(this, (ListView) findViewById(R.id.main_friendList));
@@ -63,13 +63,13 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
         // 일정관리
         tabSpec = tabHost.newTabSpec("tab03_friend");
-        tabSpec.setIndicator("일정");
+        tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_shcedule));
         tabSpec.setContent(R.id.tab04_friend);
         tabHost.addTab(tabSpec);
 
         // 설정
         tabSpec = tabHost.newTabSpec("tab04_friend");
-        tabSpec.setIndicator("설정");
+        tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_setting));
         tabSpec.setContent(R.id.main_settingList);
         tabHost.addTab(tabSpec);
         setting_list = new Setting_List(this, (ListView) findViewById(R.id.main_settingList));

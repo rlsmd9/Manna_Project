@@ -16,8 +16,8 @@ public class Setting_List {
     public Setting_List(Context context, ListView listView) {
         this.context = context;
         this.listView = listView;
-        int img[] = {0, 0, 0, 0};
-        String settingList[] = {"개인정보 설정", "알림 설정", "일정 관리", "공지사항"};
+        int img[] = {R.drawable.setting_privacy, R.drawable.setting_alarm, R.drawable.setting_schedule, R.drawable.setting_notice, R.drawable.exit};
+        String settingList[] = {"개인정보 설정", "알림 설정", "일정 관리", "공지사항", "로그아웃"};
 
         // 친구 데이터 생성
         arrayList = new ArrayList<>();
