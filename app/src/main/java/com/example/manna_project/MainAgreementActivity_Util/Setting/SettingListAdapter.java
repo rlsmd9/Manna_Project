@@ -48,7 +48,7 @@ public class SettingListAdapter extends BaseAdapter {
 
         SettingListItem settingListItem = list.get(position);
 
-        ImageView img = convertView.findViewById(R.id.friend_icon);
+        ImageView img = convertView.findViewById(R.id.setting_icon);
 
         if (settingListItem.getImg() != 0) img.setImageResource(settingListItem.getImg());
 
