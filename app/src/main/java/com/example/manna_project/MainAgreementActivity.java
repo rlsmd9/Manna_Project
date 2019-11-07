@@ -53,8 +53,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
         // 약속
         tabSpec = tabHost.newTabSpec("tab_agreement");
-        tabSpec.setIndicator("약속");
-
+        tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_schedule));
         tabSpec.setContent(R.id.agreementCalendar);
         tabHost.addTab(tabSpec);
         currentDate = findViewById(R.id.calendar_currentDate);
@@ -63,7 +62,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
         // 일정관리
         tabSpec = tabHost.newTabSpec("tab03_friend");
-        tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_shcedule));
+        tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_agreement));
         tabSpec.setContent(R.id.tab04_friend);
         tabHost.addTab(tabSpec);
 
