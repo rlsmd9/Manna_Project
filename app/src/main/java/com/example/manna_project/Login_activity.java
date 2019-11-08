@@ -3,7 +3,9 @@ package com.example.manna_project;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -32,27 +34,28 @@ import com.google.firebase.database.ValueEventListener;
 
 public class Login_activity extends AppCompatActivity implements View.OnClickListener {
 
-    final String TAG = "MANNA";
+    final String TAG = "MANNAJS";
 
-    private static final int RC_SIGN_IN = 703;
-    private FirebaseAuth mAuth;
-
+    private static final int RC_SIGN_IN = 900;
+    private FirebaseAuth firebaseAuth;
     private GoogleSignInClient googleSignInClient;
-
-    Button googleLoginBtn;
-
-    EditText id;
+    com.google.android.gms.common.SignInButton googleLoginBtn;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_activity);
 
-        mAuth = FirebaseAuth.getInstance();
-        onStart();
+        firebaseAuth = FirebaseAuth.getInstance();
+        
+        if (firebaseAuth.getCurrentUser() != null) {
+            Intent intent = new Intent(this, MainAgreementActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
-        googleLoginBtn = findViewById(R.id.login_confirm);
-        id = findViewById(R.id.login_id);
+        googleLoginBtn = findViewById(R.id.login_activity_signin);
 
         GoogleSignInOptions googleSignInOptions = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id)).requestEmail().build();
@@ -68,12 +71,15 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
             }
         });
 
+        onStart();
     }
+
     @Override
     public void onClick(View v){
         Intent intent = new Intent(this, MainAgreementActivity.class);
         startActivity(intent);
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -83,12 +89,10 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try{
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                Log.d("manna_yc","구글 로그인 성공 " + account.getId());
                 firebaseAuthWithGoogle(account);
             }
             catch(ApiException e){
                 e.printStackTrace();
-                Log.d("manna_yc","구글 로그인 실패");
             }
         }
     }
@@ -96,14 +100,23 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
+        firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // Sign in success, update UI with the signed-in user's information
                                 Log.d(TAG, "로그인 성공");
-                                FirebaseUser user = mAuth.getCurrentUser();
+                                FirebaseUser user = firebaseAuth.getCurrentUser();
+                                Intent intent = new Intent(getApplicationContext(), MainAgreementActivity.class);
+                                sharedPreferences = getSharedPreferences("MANNA", MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                                editor.putString("accountName",user.getEmail());
+                                editor.commit();
+
+                                startActivity(intent);
+                                finish();
                                // updateUI(user);
                             } else {
                             Log.w(TAG, "로그인 실패", task.getException());
@@ -117,7 +130,7 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
     protected void onStart() {
         super.onStart();
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         updateUI(currentUser);
     }
 

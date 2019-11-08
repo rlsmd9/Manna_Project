@@ -8,13 +8,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="80dp"
         android:gravity="center">
 
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/logo_sample"
+            android:src="@drawable/manna_icon"
             android:background="#FFFFFF"/>
 
         <TextView
@@ -25,73 +25,11 @@
             android:textSize="20dp"/>
     </LinearLayout>
 
-    <LinearLayout
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/login_activity_signin"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/login_Logo"
-        android:layout_marginTop="50dp"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/login_id"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:hint="@string/login_id_label"
-            android:background="@drawable/round_edittext_shape"/>
-
-        <EditText
-            android:id="@+id/login_pw"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginTop="10dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:hint="@string/login_pw_label"
-            android:background="@drawable/round_edittext_shape"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <CheckBox
-                android:id="@+id/login_autoLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:text="@string/login_autologin_label"/>
-
-            <androidx.legacy.widget.Space
-                android:layout_width="wrap_content"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_marginRight="25dp"
-                android:layout_height="wrap_content"
-
-                android:gravity="right"
-                android:text="@string/login_findidpw_label"/>
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/login_confirm"
-            android:text="@string/login_confirm"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="@color/white"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/round_button_shape"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"/>
-    </LinearLayout>
-
+        android:layout_height="wrap_content"/>
 </RelativeLayout>

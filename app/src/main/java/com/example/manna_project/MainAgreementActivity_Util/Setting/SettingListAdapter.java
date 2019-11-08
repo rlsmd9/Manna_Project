@@ -1,6 +1,7 @@
 package com.example.manna_project.MainAgreementActivity_Util.Setting;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
