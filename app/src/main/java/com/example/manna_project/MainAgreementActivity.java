@@ -124,6 +124,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 } else if (position == 1) {
 
                 } else if (position == 2) {
+                    startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
 

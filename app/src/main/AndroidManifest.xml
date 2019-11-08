@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.manna_project">
 
-    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
 
     <application
         android:allowBackup="true"
@@ -11,21 +11,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MakingPromise"></activity>
-        <activity android:name=".Setting" />
-        <activity android:name=".EditProfile">
+        <activity android:name=".SettingPersonalRoutine"></activity>
+        <activity android:name=".MakingPromise" />
+        <activity android:name=".EditProfile"></activity>
+        <activity android:name=".MainAgreementActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".MainAgreementActivity">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
         </activity>
         <activity android:name=".Login_activity">
             <intent-filter>
@@ -35,4 +29,5 @@
             </intent-filter>
         </activity>
     </application>
+
 </manifest>

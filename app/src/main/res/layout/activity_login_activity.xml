@@ -14,8 +14,9 @@
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/manna_icon"
             android:background="#FFFFFF"/>
+        <!-- android:src="@drawable/manna_icon"-->
+
 
         <TextView
             android:layout_width="match_parent"
