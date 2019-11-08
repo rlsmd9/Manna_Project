@@ -1,9 +1,16 @@
 package com.example.manna_project.MainAgreementActivity_Util.Setting;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.example.manna_project.Login_activity;
 import com.example.manna_project.R;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -13,17 +20,18 @@ public class Setting_List {
     ArrayList<SettingListItem> arrayList;
     SettingListAdapter friendListAdapter;
 
-    public Setting_List(Context context, ListView listView) {
+    public Setting_List(final Context context, ListView listView) {
         this.context = context;
         this.listView = listView;
         int img[] = {R.drawable.setting_privacy, R.drawable.setting_alarm, R.drawable.setting_schedule, R.drawable.setting_notice, R.drawable.exit};
-        String settingList[] = {"개인정보 설정", "알림 설정", "일정 관리", "공지사항", "로그아웃"};
+        final String settingList[] = {"개인정보 설정", "알림 설정", "일정 관리", "공지사항", "로그아웃"};
 
         // 친구 데이터 생성
         arrayList = new ArrayList<>();
         for (int i = 0; i < img.length; i++) {
             arrayList.add(new SettingListItem(img[i], settingList[i]));
         }
+
         setListItem(arrayList);
 
         friendListAdapter = new SettingListAdapter(this.getArrayList(), this.context, R.layout.activity_setting_list_item);
