@@ -98,7 +98,7 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-
+        FirebaseAuth.getInstance();
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
