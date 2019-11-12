@@ -2,6 +2,7 @@ package com.example.manna_project.MainAgreementActivity_Util.Calendar;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.nfc.Tag;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,13 +11,20 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.example.manna_project.R;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.Events;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class Custom_Calendar implements View.OnClickListener {
-    final static String TAG = "manna_js";
+//    final static String TAG = "manna_js";
+    final static String TAG = "manna_JS";
+
     enum CalendarType {
         FULL_CALENDAR, HALF_CALENDAR, WEEK_CALENDAR;
     }
@@ -57,6 +65,64 @@ public class Custom_Calendar implements View.OnClickListener {
 
         setCalendar();
         selectDay();
+    }
+
+    public void showView() {
+        int index;
+
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 7; j++) {
+                index = j+(7*i);
+                ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
+                scheduleOfDay.setLayout();
+            }
+        }
+    }
+
+    public void setSchedule(Events events) {
+        int start;
+        int index;
+
+        Log.d(TAG, "setSchedule: " + events.getItems().size());
+
+        Calendar c = Calendar.getInstance();
+
+        c.set(this.getDate().get(Calendar.YEAR), this.getDate().get(Calendar.MONTH), 1,0,0,0);
+        start = c.get(Calendar.DAY_OF_WEEK);
+
+        Log.d(TAG, "setSchedule: start = " + start);
+
+        initCalendarUI();
+
+        for (Event event: events.getItems()) {
+            Log.d(TAG, "setSchedule: " + event.getSummary());
+            DateTime startEventTime = event.getStart().getDateTime();
+
+            if (startEventTime == null)
+                startEventTime = event.getStart().getDate();
+            Log.d(TAG, "setSchedule: a1");
+            Calendar eventDay = Calendar.getInstance();
+            eventDay.setTime(new Date(startEventTime.getValue()));
+            Log.d(TAG, "setSchedule: a2");
+            index = eventDay.get(Calendar.DAY_OF_MONTH) + start - 2;
+            Log.d(TAG, "setSchedule: index = "+ index);
+            ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
+            Log.d(TAG, "setSchedule: a3 = " + scheduleOfDay.getDate().toString());
+            scheduleOfDay.addEvent(event);
+            Log.d(TAG, "setSchedule: end");
+        }
+    }
+
+    protected void initCalendarUI() {
+        int index;
+
+        for (int i = 0; i < 6; i++) {
+            for (int j = 0; j < 7; j++) {
+                index = j+(7*i);
+                ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
+                scheduleOfDay.getEventsOfDay().clear();
+            }
+        }
     }
 
     public void setDate(Calendar date) {
@@ -108,7 +174,7 @@ public class Custom_Calendar implements View.OnClickListener {
                 ly.addView(textView,linearParams);
                 calendar_layout.addView(ly,param);
 
-                scheduleOfDays.add(new ScheduleOfDay(null, textView, ly, null));
+                scheduleOfDays.add(new ScheduleOfDay(context,null, textView, ly));
             }
         }
     }
@@ -127,7 +193,7 @@ public class Custom_Calendar implements View.OnClickListener {
         this.setDate(selected_scheduleOfDay.getDate());
 
         selectDay();
-        Log.d("manna_js", this.getDate().get(Calendar.DAY_OF_MONTH)+"");
+        Log.d(TAG, this.getDate().get(Calendar.DAY_OF_MONTH)+"");
     }
 
     // 현재 저장된 Date를 선택
@@ -139,7 +205,7 @@ public class Custom_Calendar implements View.OnClickListener {
 
         calendar_root.highlight_week();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy년 MM월");
-        Log.d("manna_js", simpleDateFormat.format(this.getDate().getTime())+"");
+        Log.d(TAG, simpleDateFormat.format(this.getDate().getTime())+"");
         viewDate.setText(simpleDateFormat.format(this.getDate().getTime()));
     }
 
@@ -189,8 +255,6 @@ public class Custom_Calendar implements View.OnClickListener {
                 }
 //                Log.d("manna_js", "makeCalendar: " + date.toString());
 
-
-
                 scheduleOfDay.setDate((Calendar) c.clone());
                 scheduleOfDay.getTextDay().setText(c.get(Calendar.DAY_OF_MONTH) + "");
             }
@@ -220,7 +284,7 @@ public class Custom_Calendar implements View.OnClickListener {
             }
         }
 
-        Log.d("manna_js","null");
+        Log.d(TAG,"null");
         return null;
     }
 
@@ -245,55 +309,3 @@ public class Custom_Calendar implements View.OnClickListener {
 
 
 }
-
-
-class ScheduleOfDay {
-    private Calendar date;
-    private TextView textDay;
-    private LinearLayout dayList;
-    private CustomSchedule customSchedule;
-
-    public ScheduleOfDay(Calendar date, TextView day, LinearLayout dayList, CustomSchedule customSchedule) {
-        this.date = date;
-        this.textDay = day;
-        this.dayList = dayList;
-        this.customSchedule = customSchedule;
-    }
-
-    public CustomSchedule getCustomSchedule() {
-        return customSchedule;
-    }
-
-    public void setCustomSchedule(CustomSchedule customSchedule) {
-        this.customSchedule = customSchedule;
-    }
-
-    public LinearLayout getDayList() {
-        return dayList;
-    }
-
-    public void setDayList(LinearLayout dayList) {
-        this.dayList = dayList;
-    }
-
-    public Calendar getDate() {
-        return date;
-    }
-
-    public void setDate(Calendar date) {
-        this.date = date;
-    }
-
-    public TextView getTextDay() {
-        return textDay;
-    }
-
-    public void setTextDay(TextView textDay) {
-        this.textDay = textDay;
-    }
-}
-
-class CustomSchedule {
-
-}
-
