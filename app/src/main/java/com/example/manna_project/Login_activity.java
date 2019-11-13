@@ -145,5 +145,4 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
     private void checkUpdateVersion(DBData data) {
         Log.d(TAG, data.latest_version_code + ", " + data.latest_version_name + ", " + data.minimum_version_code + ", " + data.minimum_version_name);
     }
-
 }
