@@ -148,8 +148,11 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 } else if (position == 1) {
 
                 } else if (position == 2) {
+                    startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
+                    FirebaseComunicator temp  = new FirebaseComunicator();
+                    temp.updateMannaUser();
 
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();

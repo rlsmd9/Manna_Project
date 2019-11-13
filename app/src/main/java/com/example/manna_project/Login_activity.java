@@ -98,7 +98,7 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-
+        FirebaseAuth.getInstance();
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
         firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -111,10 +111,10 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
                                 Intent intent = new Intent(getApplicationContext(), MainAgreementActivity.class);
                                 sharedPreferences = getSharedPreferences("MANNA", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-
                                 editor.putString("accountName",user.getEmail());
+                                editor.putString("Uid",user.getUid());
+                                editor.putString("name",user.getDisplayName());
                                 editor.commit();
-
                                 startActivity(intent);
                                 finish();
                                // updateUI(user);
@@ -145,5 +145,4 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
     private void checkUpdateVersion(DBData data) {
         Log.d(TAG, data.latest_version_code + ", " + data.latest_version_name + ", " + data.minimum_version_code + ", " + data.minimum_version_name);
     }
-
 }
