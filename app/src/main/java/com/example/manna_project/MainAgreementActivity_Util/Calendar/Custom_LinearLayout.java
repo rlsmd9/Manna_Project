@@ -163,6 +163,10 @@ public class Custom_LinearLayout extends LinearLayout {
                 param.rowSpec = GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,0f);
             }
 
+            if (calendarType != Custom_Calendar.CalendarType.FULL_CALENDAR) {
+                scheduleOfDays.get(i).setScheduleLining(true);
+            } else scheduleOfDays.get(i).setScheduleLining(false);
+
             scheduleOfDays.get(i).getDayList().setLayoutParams(param);
         }
 
@@ -185,6 +189,10 @@ public class Custom_LinearLayout extends LinearLayout {
                 param.height = 0;
                 param.rowSpec = GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,0f);
             }
+
+            if (calendarType != Custom_Calendar.CalendarType.FULL_CALENDAR) {
+                scheduleOfDays.get(i).setScheduleLining(true);
+            } else scheduleOfDays.get(i).setScheduleLining(false);
 
             scheduleOfDays.get(i).getDayList().setLayoutParams(param);
         }

@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -28,6 +29,7 @@ public class ScheduleOfDay {
     private LinearLayout dayList;
     private Events eventsOfDay;
     private Context context;
+    private ArrayList<TextView> textViews;
 
     final static String TAG = "MANNA_J1S";
 
@@ -37,15 +39,17 @@ public class ScheduleOfDay {
         this.textDay = day;
         this.dayList = dayList;
         this.eventsOfDay = new Events();
+        this.textViews = new ArrayList<>();
     }
 
     public void setLayout() {
         // 일정 지우기
         dayList.removeAllViews();
+        textViews.clear();
 
         LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        linearParams.setMargins(0,5,0,0);
-        dayList.addView(this.textDay, linearParams);
+        linearParams.setMargins(2,5,2,0);
+        dayList.addView(this.textDay, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
         if (eventsOfDay.getItems() == null) return;
         if (eventsOfDay.getItems().size() > 0) {
             Log.d(TAG, "setLayout: 4");
@@ -59,11 +63,14 @@ public class ScheduleOfDay {
                 String title = event.getSummary();
                 if (title == null) title = "";
 
-                textView.setText("");
+                textView.setText(title);
+                textView.setMaxWidth(0);
                 textView.setSingleLine(true);
+                textView.setEllipsize(TextUtils.TruncateAt.END);
                 textView.setTextSize(8);
                 textView.setBackgroundColor(Color.rgb(242,177, 112));
 
+                textViews.add(textView);
                 this.dayList.addView(textView, linearParams);
             }
 
@@ -114,6 +121,22 @@ public class ScheduleOfDay {
         }
 
         list.add(event);
+    }
+
+    public void setScheduleLining(boolean b) {
+        Log.d(TAG, "setScheduleLining: ");
+        if (eventsOfDay.getItems() == null) return;
+        if (eventsOfDay.getItems().size() > 0) {
+            LinearLayout.LayoutParams layoutParams;
+            for (TextView view: textViews) {
+                layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
+                view.setLayoutParams(layoutParams);
+                if (b) layoutParams.height = 5;
+                else layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            }
+
+        } else {
+        }
     }
 }
 

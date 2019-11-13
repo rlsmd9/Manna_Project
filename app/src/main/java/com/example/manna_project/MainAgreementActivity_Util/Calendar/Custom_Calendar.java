@@ -194,9 +194,8 @@ public class Custom_Calendar implements View.OnClickListener {
             for (int j = 0; j < 7; j++) {
                 LinearLayout ly = (LinearLayout) layout.inflate(R.layout.activity_main_agreement_calendar_item, null);
                 GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(
-                        GridLayout.UNDEFINED,GridLayout.FILL,1f),
-                        GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,1f));
-
+                        GridLayout.UNDEFINED,GridLayout.FILL, 1f),
+                        GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL,1f));
                 LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
                 TextView textView = new TextView(context);
@@ -204,6 +203,7 @@ public class Custom_Calendar implements View.OnClickListener {
                 textView.setTypeface(null,Typeface.BOLD);
 
                 textView.setText("init");
+
                 ly.setOnClickListener(this);
                 ly.addView(textView,linearParams);
                 calendar_layout.addView(ly,param);
