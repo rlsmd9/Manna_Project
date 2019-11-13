@@ -226,6 +226,11 @@ public class Custom_Calendar implements View.OnClickListener {
         ScheduleOfDay selected_scheduleOfDay = findDateLayout(v);
         this.setDate(selected_scheduleOfDay.getDate());
 
+        // 선택된 일의 일정을 리스트 뷰에 츄가
+        if (selected_scheduleOfDay.getEventsOfDay().size() > 0) {
+
+        }
+
         selectDay();
         Log.d(TAG, this.getDate().get(Calendar.DAY_OF_MONTH)+"");
     }
