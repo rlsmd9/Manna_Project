@@ -17,6 +17,7 @@ public class Custom_LinearLayout extends LinearLayout {
     ArrayList<ScheduleOfDay> scheduleOfDays;
     Calendar date;
     Custom_LinearLayout calendar_root;
+    final static String TAG = "MANNA_DONE";
 
     public void setCalendar_root(Custom_LinearLayout calendar_root) {
         this.calendar_root = calendar_root;
@@ -40,7 +41,7 @@ public class Custom_LinearLayout extends LinearLayout {
     private float dragY;
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        Log.d("manna_js", "onInterceptTouchEvent: " + event.getAction());
+        Log.d(TAG, "onInterceptTouchEvent: " + event.getAction());
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             dragY = event.getY();
         } else if (event.getAction() == MotionEvent.ACTION_MOVE && Math.abs(event.getY() - dragY) >= 50.0) {
@@ -51,13 +52,13 @@ public class Custom_LinearLayout extends LinearLayout {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Log.d("manna_js", "dispatchTouchEvent: " + ev.getAction());
+        Log.d(TAG, "dispatchTouchEvent: " + ev.getAction());
         return super.dispatchTouchEvent(ev);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d("manna_js", "onTouch: " + event.getAction() + " : " + event.getY());
+        Log.d(TAG, "onTouch: " + event.getAction() + " : " + event.getY());
         if (event.getAction() == MotionEvent.ACTION_UP && event.getY() - dragY >= 50.0) {
             moveCalendarType(Custom_Calendar.TouchType.DOWN);
             return true;
