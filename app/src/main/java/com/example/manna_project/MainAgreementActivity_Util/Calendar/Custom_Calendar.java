@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.manna_project.MainAgreementActivity;
+import com.example.manna_project.MainAgreementActivity_Util.Calendar.Schedule.Schedule_List;
 import com.example.manna_project.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -72,6 +73,7 @@ public class Custom_Calendar implements View.OnClickListener {
     // 일정 데이터 받아서 저장할 자료구조
     ArrayList<ScheduleOfDay> scheduleOfDays;
     Activity mainAgreementActivity;
+    Schedule_List schedule_list;
 
     public Custom_Calendar(MainAgreementActivity mainAgreementActivity, Context context, Custom_LinearLayout calendar_root, GridLayout calendar_layout, ListView listView, TextView viewDate, Calendar date) {
         this.context = context;
@@ -87,7 +89,7 @@ public class Custom_Calendar implements View.OnClickListener {
         this.viewDate = viewDate;
         this.mainAgreementActivity = mainAgreementActivity;
         this.calendar_root.calendarType = CalendarType.FULL_CALENDAR;
-
+        this.schedule_list = new Schedule_List(this.context, (ListView) mainAgreementActivity.findViewById(R.id.main_agreement_listView));
         // 일자별 Linear 레이아웃 생성
         makeCalendar();
         // 생성한 일자 자료구조 전달
@@ -225,6 +227,12 @@ public class Custom_Calendar implements View.OnClickListener {
     public void onClick(View v) {
         ScheduleOfDay selected_scheduleOfDay = findDateLayout(v);
         this.setDate(selected_scheduleOfDay.getDate());
+
+        // 선택된 일의 일정을 리스트 뷰에 츄가
+        if (selected_scheduleOfDay.getEventsOfDay().size() > 0) {
+            Log.d(TAG, "onClick: listClick");
+            this.schedule_list.setListItem(selected_scheduleOfDay.getEventsOfDay());
+        }
 
         selectDay();
         Log.d(TAG, this.getDate().get(Calendar.DAY_OF_MONTH)+"");
