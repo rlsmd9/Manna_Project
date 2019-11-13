@@ -111,10 +111,10 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
                                 Intent intent = new Intent(getApplicationContext(), MainAgreementActivity.class);
                                 sharedPreferences = getSharedPreferences("MANNA", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
-
                                 editor.putString("accountName",user.getEmail());
+                                editor.putString("Uid",user.getUid());
+                                editor.putString("name",user.getDisplayName());
                                 editor.commit();
-
                                 startActivity(intent);
                                 finish();
                                // updateUI(user);

@@ -17,6 +17,7 @@ import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.google.api.services.calendar.model.Event;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -28,7 +29,6 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
     Button backBtn, saveBtn;
     TimeTableButton timeTableBtn[][];
 
-    TextView txt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +102,6 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
         } else if (view == saveBtn) {
             //이벤트객체 만드는 함수 생성
             makeRoutineObject();
-            //파이어베이스로 넘기는 함수 생성
             Toast.makeText(this, "저장되었습니다.", Toast.LENGTH_SHORT).show();
             finish();
         } else {
@@ -139,7 +138,12 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
                 day++;
             }
         }
-        //MannUser에 넣을자리
+        sendRoutine(routineArr);
+    }
+    private void sendRoutine(ArrayList<MannaUser.Routine> routineArr) {
+        String myUid = FirebaseComunicator.getMyUid();
+        FirebaseComunicator comunicator = new FirebaseComunicator();
+        comunicator.updateRoutine(myUid,routineArr);
     }
 }
 

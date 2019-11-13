@@ -1,22 +1,28 @@
 package com.example.manna_project.MainAgreementActivity_Util;
 
-import com.google.api.services.calendar.model.Event;
+import android.content.Context;
+import android.content.SharedPreferences;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 
 public class MannaUser {
     private String name;
     private String nickName;
-    private String uId;
+    private String Uid;
+    private String eMail;
     private ArrayList<String> friendList;
     private ArrayList<Routine> routineList;
 
     public MannaUser(){
-
+        FirebaseUser mAuth = FirebaseAuth.getInstance().getCurrentUser();
+        this.Uid = mAuth.getUid();
+        this.name = mAuth.getDisplayName();
+        this.eMail = mAuth.getEmail();
     }
-    public MannaUser(String uid){
 
-    }
 
     public String getName() {
         return name;
@@ -34,16 +40,16 @@ public class MannaUser {
         this.nickName = nickName;
     }
 
-    public String getuId() {
-        return uId;
+    public String getUid() {
+        return Uid;
     }
 
-    public void setuId(String uId) {
-        this.uId = uId;
+    public void setUid(String uid) {
+        this.Uid = uid;
     }
 
     public void addFriend(MannaUser user){
-        this.friendList.add(user.getuId());
+        this.friendList.add(user.getUid());
     }
     public void addFriend(String friendUid){
         this.friendList.add(friendUid);
@@ -56,6 +62,16 @@ public class MannaUser {
     public void setRoutineList(ArrayList<Routine> routineList) {
         this.routineList = routineList;
     }
+
+    public String geteMail() {
+        return eMail;
+    }
+
+    public void seteMail(String eMail) {
+        this.eMail = eMail;
+    }
+
+
     public class Routine{
         private int startTime;
         private int endTime;
@@ -64,6 +80,30 @@ public class MannaUser {
         public Routine(int start, int end, int day){
             this.startTime = start;
             this.endTime = end;
+            this.day = day;
+        }
+
+        public int getStartTime() {
+            return startTime;
+        }
+
+        public void setStartTime(int startTime) {
+            this.startTime = startTime;
+        }
+
+        public int getEndTime() {
+            return endTime;
+        }
+
+        public void setEndTime(int endTime) {
+            this.endTime = endTime;
+        }
+
+        public int getDay() {
+            return day;
+        }
+
+        public void setDay(int day) {
             this.day = day;
         }
     }
