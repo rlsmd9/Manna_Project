@@ -29,7 +29,7 @@ public class ScheduleOfDay {
     private Events eventsOfDay;
     private Context context;
 
-    final static String TAG = "MANNA_JS";
+    final static String TAG = "MANNA_J1S";
 
     public ScheduleOfDay(Context context, Calendar date, TextView day, LinearLayout dayList) {
         this.context = context;
@@ -40,17 +40,14 @@ public class ScheduleOfDay {
     }
 
     public void setLayout() {
-        if (eventsOfDay.getItems() == null) return;
-        Log.d(TAG, "setLayout: 1");
-        if (eventsOfDay.getItems().size() > 0) {
-            Log.d(TAG, "setLayout: 2");
-            // 일정 지우기
-            dayList.removeAllViews();
+        // 일정 지우기
+        dayList.removeAllViews();
 
-            Log.d(TAG, "setLayout: 3");
-            LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            linearParams.setMargins(0,5,0,0);
-            dayList.addView(this.textDay, linearParams);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearParams.setMargins(0,5,0,0);
+        dayList.addView(this.textDay, linearParams);
+        if (eventsOfDay.getItems() == null) return;
+        if (eventsOfDay.getItems().size() > 0) {
             Log.d(TAG, "setLayout: 4");
             // 일자별 존재하는 일정에 대해서 TextView 추가
             Log.d(TAG, "setLayout: items = " + eventsOfDay.getItems().size());
@@ -62,18 +59,15 @@ public class ScheduleOfDay {
                 String title = event.getSummary();
                 if (title == null) title = "";
 
-                textView.setText(title);
+                textView.setText("");
                 textView.setSingleLine(true);
                 textView.setTextSize(8);
                 textView.setBackgroundColor(Color.rgb(242,177, 112));
-                Log.d(TAG, "setLayout: 4-1");
-                Log.d(TAG, "setLayout: 4-2");
+
                 this.dayList.addView(textView, linearParams);
             }
 
-            Log.d(TAG, "setLayout: 5");
         } else {
-//            Log.d(TAG, "setLayout: ");
         }
     }
 
@@ -112,7 +106,6 @@ public class ScheduleOfDay {
     public void addEvent(Event event) {
         List<Event> list;
 
-        Log.d(TAG, "addEvent: 0-1");
         list = eventsOfDay.getItems();
 
         if (list == null) {
@@ -120,9 +113,7 @@ public class ScheduleOfDay {
             eventsOfDay.setItems(list);
         }
 
-        Log.d(TAG, "addEvent: 0");
         list.add(event);
-        Log.d(TAG, "addEvent: end");
     }
 }
 

@@ -243,12 +243,16 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 public void onClick(DialogInterface dialog, int which) {
                     Log.d(TAG, "onClick: " + datePicker.getYear() + "-" + datePicker.getMonth() + "-" + datePicker.getDayOfMonth());
 
-                    Calendar calendar = custom_calendar.getDate();
+                    Calendar calendar = (Calendar) custom_calendar.getDate().clone();
 
+                    Log.d(TAG, "onClick: " + calendar.toString());
                     custom_calendar.setDate(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
                     if (calendar.get(Calendar.YEAR) != datePicker.getYear() || calendar.get(Calendar.MONTH) != datePicker.getMonth()) {
+                        Log.d(TAG, "onClick: @@mkmckm");
                         custom_calendar.mID = 3;
+                        custom_calendar.initCalendarUI();
                         custom_calendar.getResultsFromApi();
+                        custom_calendar.showView();
                     }
 
 
