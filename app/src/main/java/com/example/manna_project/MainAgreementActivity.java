@@ -31,7 +31,6 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
-
 import java.util.HashMap;
 import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;

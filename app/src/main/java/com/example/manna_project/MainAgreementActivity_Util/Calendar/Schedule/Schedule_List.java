@@ -26,25 +26,26 @@ public class Schedule_List {
         this.listView = listView;
         this.itemList = new ArrayList<>();
 
-        scheduleListAdapter = new ScheduleListAdapter(this.getArrayList(), this.context, R.layout.activity_main_agreement_calendar_item);
+        scheduleListAdapter = new ScheduleListAdapter(this.getArrayList(), this.context, R.layout.calendar_schedule_list_item);
 
         setList();
     }
 
     public void setItemList(ArrayList<ScheduleListItem> itemList) {
         this.itemList = itemList;
-        setList();
+        this.scheduleListAdapter.notifyDataSetChanged();
     }
 
     public void setListItem(Events events) {
-        this.events = events;
-        this.itemList = transferToArrayList(events);
-
-//        scheduleListAdapter.se
+        setItemList(transferToArrayList(events));
     }
 
     private ArrayList<ScheduleListItem> transferToArrayList(Events events) {
-        ArrayList<ScheduleListItem> arrayList = new ArrayList<>();
+        ArrayList<ScheduleListItem> arrayList = itemList;
+
+        arrayList.clear();
+
+        if (events.getItems() == null) return arrayList;
 
         for (Event event: events.getItems()) {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("kk:mm");
@@ -54,7 +55,12 @@ public class Schedule_List {
             startDate.setTime(event.getStart().getDateTime().getValue());
             endDate.setTime(event.getEnd().getDateTime().getValue());
 
-            arrayList.add(new ScheduleListItem(event.getSummary(), simpleDateFormat.format(startDate), simpleDateFormat.format(endDate),event.getLocation()));
+            arrayList.add(new ScheduleListItem(event.getSummary(), event.getLocation(), simpleDateFormat.format(startDate), simpleDateFormat.format(endDate)));
+        }
+
+        Log.d("MANNA_JS", "transferToArrayList: why!!");
+        for (int i = 0; i < arrayList.size(); i++) {
+            Log.d("MANNA_JS", "transferToArrayList: " + arrayList.get(i).getTitle());
         }
 
         return arrayList;

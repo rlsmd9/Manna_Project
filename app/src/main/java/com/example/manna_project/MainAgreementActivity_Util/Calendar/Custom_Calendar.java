@@ -89,7 +89,7 @@ public class Custom_Calendar implements View.OnClickListener {
         this.viewDate = viewDate;
         this.mainAgreementActivity = mainAgreementActivity;
         this.calendar_root.calendarType = CalendarType.FULL_CALENDAR;
-        this.schedule_list = new Schedule_List(this.context, (ListView) mainAgreementActivity.findViewById(R.id.main_agreement_listView));
+        this.schedule_list = new Schedule_List(this.context, listView);
         // 일자별 Linear 레이아웃 생성
         makeCalendar();
         // 생성한 일자 자료구조 전달
@@ -101,14 +101,24 @@ public class Custom_Calendar implements View.OnClickListener {
 
     public void showView() {
         int index;
+        ScheduleOfDay sod = null;
 
         for (int i = 0; i < 6; i++) {
             for (int j = 0; j < 7; j++) {
                 index = j+(7*i);
                 ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
+
+                if (calendar_root.calendarType == CalendarType.FULL_CALENDAR) scheduleOfDay.setScheduleLining(false);
+                else scheduleOfDay.setScheduleLining(true);
                 scheduleOfDay.setLayout();
             }
         }
+
+
+
+        sod = findDateLayout(getDate());
+        if (sod != null)
+            this.schedule_list.setListItem(sod.getEventsOfDay());
     }
 
     public void setSchedule(Events events) {
@@ -294,6 +304,7 @@ public class Custom_Calendar implements View.OnClickListener {
 
                 if (compareDate(c, today)) {
                     scheduleOfDay.getTextDay().setBackground(context.getResources().getDrawable(R.drawable.round_today_shape));
+
                 }
 //                Log.d("manna_js", "makeCalendar: " + date.toString());
 
