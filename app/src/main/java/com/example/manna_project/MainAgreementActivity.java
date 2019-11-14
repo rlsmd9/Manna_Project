@@ -76,6 +76,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         setting.put("E-mail",initial.getEmail());
         setting.put("Uid",initial.getUid());
         firebaseCommunicator.updateUserInfo(setting);
+        userName.setText(firebaseCommunicator.getUser().getDisplayName());
 
     }
 
@@ -133,7 +134,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     // 일정관리
                 } else if (position == 3) {
 
-                    userName.setText(firebaseCommunicator.getMyInfo().getName());
 
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();

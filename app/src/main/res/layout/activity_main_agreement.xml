@@ -207,37 +207,6 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:paddingStart="20dp"
-                        android:text="친구 목록"
-                        android:textSize="20sp"
-                        android:textStyle="bold"></TextView>
-
-                    <Button
-                        android:id="@+id/add_friend_btn"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="친구 추가"></Button>
-                </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/lineColor" />
 
                 <ListView
                     android:id="@+id/main_friendList"
@@ -247,7 +216,7 @@
                     android:divider="#CCC"
                     android:dividerHeight="1dp"
                     android:scrollbars="vertical" />
-            </LinearLayout>
+
 
             <ListView
                 android:id="@+id/main_settingList"
