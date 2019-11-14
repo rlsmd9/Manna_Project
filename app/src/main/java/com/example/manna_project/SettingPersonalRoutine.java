@@ -16,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
-import com.google.api.services.calendar.model.Event;
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -141,8 +139,8 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
         sendRoutine(routineArr);
     }
     private void sendRoutine(ArrayList<MannaUser.Routine> routineArr) {
-        String myUid = FirebaseComunicator.getMyUid();
-        FirebaseComunicator comunicator = new FirebaseComunicator();
+        String myUid = FirebaseCommunicator.getMyUid();
+        FirebaseCommunicator comunicator = new FirebaseCommunicator();
         comunicator.updateRoutine(myUid,routineArr);
     }
 }

@@ -3,16 +3,13 @@ package com.example.manna_project;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.ComponentName;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
 
+import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -20,17 +17,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 public class Login_activity extends AppCompatActivity implements View.OnClickListener {
 
@@ -109,6 +100,9 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
                                 Log.d(TAG, "로그인 성공");
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 Intent intent = new Intent(getApplicationContext(), MainAgreementActivity.class);
+
+                                FirebaseCommunicator initial = new FirebaseCommunicator();
+                                initial.updateMannaUser(new MannaUser(user.getDisplayName(),user.getEmail(),user.getUid()));
                                 sharedPreferences = getSharedPreferences("MANNA", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putString("accountName",user.getEmail());
