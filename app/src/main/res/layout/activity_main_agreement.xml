@@ -202,12 +202,13 @@
                 </com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout>
 
                 <!--               AdapterView 추가 예정 -->
-                <androidx.recyclerview.widget.RecyclerView
+                <ListView
                     android:id="@+id/main_agreement_listView"
                     android:layout_width="match_parent"
+                    android:background="#FF0"
                     android:layout_height="0dp"
                     android:layout_weight="0">
-                </androidx.recyclerview.widget.RecyclerView>
+                </ListView>
 
             </LinearLayout>
 

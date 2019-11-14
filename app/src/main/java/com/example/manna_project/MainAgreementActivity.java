@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout;
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
+import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -111,8 +112,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-                    FirebaseComunicator temp  = new FirebaseComunicator();
-                    temp.updateMannaUser();
+                    FirebaseCommunicator temp  = new FirebaseCommunicator();
+                    temp.updateMannaUser(new MannaUser());
 
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();

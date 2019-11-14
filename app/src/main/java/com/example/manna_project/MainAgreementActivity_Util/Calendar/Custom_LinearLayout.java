@@ -9,6 +9,8 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.manna_project.R;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -107,7 +109,7 @@ public class Custom_LinearLayout extends LinearLayout {
 
     public void setCalendarType(Custom_Calendar.CalendarType calendarType) {
         LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) listView.getLayoutParams();
-        param.width = 0;
+        param.weight = 0;
 
         switch (calendarType) {
             case FULL_CALENDAR:
@@ -194,7 +196,9 @@ public class Custom_LinearLayout extends LinearLayout {
 
             if (calendarType != Custom_Calendar.CalendarType.FULL_CALENDAR) {
                 scheduleOfDays.get(i).setScheduleLining(true);
-            } else scheduleOfDays.get(i).setScheduleLining(false);
+            } else {
+                scheduleOfDays.get(i).setScheduleLining(false);
+            }
 
             scheduleOfDays.get(i).getDayList().setLayoutParams(param);
         }

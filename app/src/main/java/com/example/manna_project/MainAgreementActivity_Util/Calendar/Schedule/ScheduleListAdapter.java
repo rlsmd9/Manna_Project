@@ -27,6 +27,18 @@ public class ScheduleListAdapter extends BaseAdapter {
     }
 
     @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+        Log.d("MANNA_JS", "notifyDataSetChanged: 1");
+    }
+
+    @Override
+    public void notifyDataSetInvalidated() {
+        super.notifyDataSetInvalidated();
+        Log.d("MANNA_JS", "notifyDataSetInvalidated: 1");
+    }
+
+    @Override
     public int getCount() {
         return list.size();
     }
@@ -61,10 +73,15 @@ public class ScheduleListAdapter extends BaseAdapter {
         TextView endDate = convertView.findViewById(R.id.calendar_schedule_endDate_item);
 //        int img[];
 
-        title.setText(scheduleListItem.getTitle());
-        place.setText(scheduleListItem.getPlace());
-        startDate.setText(scheduleListItem.getStartDate());
-        endDate.setText(scheduleListItem.getEndDate());
+//        title.setText(scheduleListItem.getTitle());
+//        place.setText(scheduleListItem.getPlace());
+//        startDate.setText(scheduleListItem.getStartDate());
+//        endDate.setText(scheduleListItem.getEndDate());
+
+        title.setText(scheduleListItem.getTitle() + "1");
+        place.setText(scheduleListItem.getPlace() + "2");
+        startDate.setText(scheduleListItem.getStartDate() + "3");
+        endDate.setText(scheduleListItem.getEndDate() + "4");
 
         return convertView;
     }
