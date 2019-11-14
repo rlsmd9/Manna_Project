@@ -3,6 +3,7 @@ package com.example.manna_project.MainAgreementActivity_Util;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -13,6 +14,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MannaUser {
+
+    static final String TAG = "MANNAYC";
+
     private String name;
     private String nickName;
     private String Uid;
@@ -25,9 +29,9 @@ public class MannaUser {
     public MannaUser(DataSnapshot dataSnapshot){        //dataSnapshot 넘겨줄때의 생성자
         routineList = new ArrayList<>();
         friendList = new ArrayList<>();
-        DataSnapshot routineSnapshot = dataSnapshot.child("Rourtines");
+        DataSnapshot routineSnapshot = dataSnapshot.child("Routines");
         for(DataSnapshot postSnapshot : routineSnapshot.getChildren()){
-            routineList.add(postSnapshot.getValue(MannaUser.Routine.class));
+            routineList.add(new Routine(postSnapshot));
         }
         DataSnapshot friendListSnapshot = dataSnapshot.child("FriendList");
         for(DataSnapshot postSnapshot : friendListSnapshot.getChildren()){
@@ -38,6 +42,7 @@ public class MannaUser {
         this.eMail =dataSnapshot.child("E-mail").getValue(String.class);
         this.nickName = dataSnapshot.child("NickName").getValue(String.class);
     }
+
     public MannaUser(String name, String eMail, String Uid){
         this.name = name;
         this.Uid = Uid;
@@ -90,6 +95,7 @@ public class MannaUser {
         this.eMail = eMail;
     }
 
+
     public Map<String,Object> toMap(){
         HashMap<String,Object> result = new HashMap<>();
         result.put("name", this.name);
@@ -110,6 +116,11 @@ public class MannaUser {
             this.startTime = start;
             this.endTime = end;
             this.day = day;
+        }
+        public Routine(DataSnapshot dataSnapshot){
+            this.startTime = dataSnapshot.child("startTime").getValue(Integer.class);
+            this.endTime = dataSnapshot.child("endTime").getValue(Integer.class);
+            this.day = dataSnapshot.child("day").getValue(Integer.class);
         }
 
         public int getStartTime() {

@@ -23,6 +23,7 @@ import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Line
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.Calendar;
 
@@ -30,6 +31,8 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
+
+import java.util.HashMap;
 import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -41,8 +44,11 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     Friend_List friend_list;
     Setting_List setting_list;
     ProgressDialog progressDialog;
+    FirebaseCommunicator firebaseCommunicator;
+    TextView userName;
 
     static final String TAG = "MANNA_JS";
+    static final String TAG2 = "MANNAYC";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,12 +56,27 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         setContentView(R.layout.activity_main_agreement);
         progressDialog = new ProgressDialog(this);
 
+        firebaseCommunicator = new FirebaseCommunicator();
+        userName = findViewById(R.id.main_agreement_titleBar_userName);
         customDatePicker = findViewById(R.id.main_agreement_changeDateBtn);
         customDatePicker.setOnClickListener(this);
 
-
         initTabHost();
         custom_calendar.initCalendar();
+
+        firebaseCommunicator.addInitializeListener();
+        firebaseInitializing();
+
+    }
+
+    private void firebaseInitializing() {
+        HashMap<String,Object> setting = new HashMap<>();
+        FirebaseUser initial = firebaseCommunicator.getUser();
+        setting.put("name", initial.getDisplayName());
+        setting.put("E-mail",initial.getEmail());
+        setting.put("Uid",initial.getUid());
+        firebaseCommunicator.updateUserInfo(setting);
+
     }
 
     protected void initTabHost() {
@@ -111,8 +132,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-                    FirebaseComunicator temp  = new FirebaseComunicator();
-                    temp.updateMannaUser();
+
+                    userName.setText(firebaseCommunicator.getMyInfo().getName());
 
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();

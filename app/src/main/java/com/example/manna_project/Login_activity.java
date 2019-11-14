@@ -23,9 +23,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import java.util.HashMap;
+
 public class Login_activity extends AppCompatActivity implements View.OnClickListener {
 
-    final String TAG = "MANNAJS";
+    final String TAG = "MANNAYC";
 
     private static final int RC_SIGN_IN = 900;
     private FirebaseAuth firebaseAuth;
@@ -39,8 +41,8 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_login_activity);
 
         firebaseAuth = FirebaseAuth.getInstance();
-        
         if (firebaseAuth.getCurrentUser() != null) {
+           // Log.d(TAG,"로그인 되있음");
             Intent intent = new Intent(this, MainAgreementActivity.class);
             startActivity(intent);
             finish();
@@ -101,14 +103,13 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 Intent intent = new Intent(getApplicationContext(), MainAgreementActivity.class);
 
-                                FirebaseCommunicator initial = new FirebaseCommunicator();
-                                initial.updateMannaUser(new MannaUser(user.getDisplayName(),user.getEmail(),user.getUid()));
                                 sharedPreferences = getSharedPreferences("MANNA", MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putString("accountName",user.getEmail());
                                 editor.putString("Uid",user.getUid());
                                 editor.putString("name",user.getDisplayName());
                                 editor.commit();
+
                                 startActivity(intent);
                                 finish();
                                // updateUI(user);

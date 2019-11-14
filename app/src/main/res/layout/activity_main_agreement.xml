@@ -11,236 +11,265 @@
 
         <LinearLayout
             android:id="@+id/main_agreement_titleBar"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
             android:paddingTop="10dp"
-            android:paddingBottom="10dp"
-            android:paddingLeft="16dp">
+            android:paddingBottom="10dp">
 
             <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="MANNA-"
                 android:textSize="23dp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/main_agreement_titleBar_tabName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="약속"
                 android:textSize="23dp"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/main_agreement_titleBar_userName"
-                android:text="홍길동"
-                android:gravity="center_vertical|right"
-                android:textStyle="bold"
-                android:textColor="@color/lightRed"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                />
+                android:gravity="center_vertical|right"
+                android:text="홍길동"
+                android:textColor="@color/lightRed"
+                android:textStyle="bold" />
 
             <TextView
-                android:text="님 환영합니다."
-                android:gravity="center_vertical|right"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:paddingRight="16dp"/>
+                android:gravity="center_vertical|right"
+                android:paddingRight="16dp"
+                android:text="님 환영합니다." />
         </LinearLayout>
 
         <TextView
-            android:background="@color/lineColor"
             android:layout_width="match_parent"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:background="@color/lineColor" />
 
         <FrameLayout
             android:id="@android:id/tabcontent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/baseBackgroundColorWhite"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@color/baseBackgroundColorWhite">
 
             <LinearLayout
-                android:orientation="vertical"
+                android:id="@+id/agreementCalendar"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/agreementCalendar">
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
+                    android:orientation="horizontal"
                     android:paddingLeft="16dp"
-                    android:orientation="horizontal">
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp">
 
                     <ImageView
                         android:id="@+id/main_agreement_changeDateBtn"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:src="@drawable/list_icon"/>
+                        android:src="@drawable/list_icon" />
 
                     <TextView
                         android:id="@+id/calendar_currentDate"
-                        android:text=""
-                        android:textSize="20dp"
-                        android:layout_marginLeft="16dp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"/>
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="16dp"
+                        android:text=""
+                        android:textSize="20dp" />
 
-<!--                    <Button-->
-<!--                        android:text="증가"-->
-<!--                        android:onClick="onClick_test"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"/>-->
+                    <!--                    <Button-->
+                    <!--                        android:text="증가"-->
+                    <!--                        android:onClick="onClick_test"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"/>-->
 
-<!--                    <Button-->
-<!--                        android:text="감소"-->
-<!--                        android:onClick="onClick_test_1"-->
-<!--                        android:layout_width="wrap_content"-->
-<!--                        android:layout_height="wrap_content"/>-->
+                    <!--                    <Button-->
+                    <!--                        android:text="감소"-->
+                    <!--                        android:onClick="onClick_test_1"-->
+                    <!--                        android:layout_width="wrap_content"-->
+                    <!--                        android:layout_height="wrap_content"/>-->
                 </LinearLayout>
 
                 <com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout
                     android:id="@+id/calendarRoot"
-                    android:background="@drawable/round_shape_calendar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
+                    android:background="@drawable/round_shape_calendar"
                     android:orientation="vertical"
-                    android:padding="10dp"
-                    >
+                    android:padding="10dp">
 
                     <LinearLayout
-                        android:layout_height="wrap_content"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_columnSpan="7"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp">
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
                             android:text="일"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
                             android:textAlignment="center"
-                            android:clickable="true"
                             android:textColor="@color/lightRed"
-                            android:textStyle="bold"
-                            android:layout_height="match_parent"/>
+                            android:textStyle="bold" />
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
                             android:text="월"
-                            android:textStyle="bold"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:clickable="true"
                             android:textAlignment="center"
-                            android:layout_height="match_parent"/>
+                            android:textStyle="bold" />
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
                             android:text="화"
-                            android:textStyle="bold"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:clickable="true"
                             android:textAlignment="center"
-                            android:layout_height="match_parent"/>
+                            android:textStyle="bold" />
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
                             android:text="수"
-                            android:textStyle="bold"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:clickable="true"
                             android:textAlignment="center"
-                            android:layout_height="match_parent"/>
+                            android:textStyle="bold" />
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
                             android:text="목"
-                            android:textStyle="bold"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:clickable="true"
                             android:textAlignment="center"
-                            android:layout_height="match_parent"/>
+                            android:textStyle="bold" />
 
                         <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
                             android:text="금"
-                            android:textStyle="bold"
-                            android:layout_width="0dp"
-                            android:layout_weight="1"
-                            android:clickable="true"
                             android:textAlignment="center"
-                            android:layout_height="match_parent"/>
+                            android:textStyle="bold" />
 
                         <TextView
-                            android:text="토"
-                            android:textColor="@color/lightBlue"
-                            android:textStyle="bold"
                             android:layout_width="0dp"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
                             android:clickable="true"
+                            android:text="토"
                             android:textAlignment="center"
-                            android:layout_height="match_parent"/>
+                            android:textColor="@color/lightBlue"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <GridLayout
                         android:id="@+id/main_agreement_calendarGridLayout"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:orientation="horizontal"
+                        android:layout_weight="1"
                         android:columnCount="7"
-                        android:layout_weight="1">
-                    </GridLayout>
+                        android:orientation="horizontal"></GridLayout>
 
                 </com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout>
 
                 <!--               AdapterView 추가 예정 -->
-                <androidx.recyclerview.widget.RecyclerView
+                <ListView
                     android:id="@+id/main_agreement_listView"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="0">
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:layout_weight="0"></ListView>
 
             </LinearLayout>
 
-            <ListView
-                android:id="@+id/main_friendList"
-                android:choiceMode="singleChoice"
-                android:divider="#CCC"
-                android:dividerHeight="1dp"
-                android:scrollbars="vertical"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:paddingStart="20dp"
+                        android:text="친구 목록"
+                        android:textSize="20sp"
+                        android:textStyle="bold"></TextView>
+
+                    <Button
+                        android:id="@+id/add_friend_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="친구 추가"></Button>
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/lineColor" />
+
+                <ListView
+                    android:id="@+id/main_friendList"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:choiceMode="singleChoice"
+                    android:divider="#CCC"
+                    android:dividerHeight="1dp"
+                    android:scrollbars="vertical" />
+            </LinearLayout>
 
             <ListView
                 android:id="@+id/main_settingList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:choiceMode="singleChoice"
                 android:divider="#CCC"
                 android:dividerHeight="1dp"
-                android:scrollbars="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:scrollbars="vertical" />
 
             <TextView
                 android:id="@+id/tab04_friend"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Tab4"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:text="Tab4" />
         </FrameLayout>
 
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/baseBackgroundColorLightGray"/>
+            android:background="@color/baseBackgroundColorLightGray" />
     </LinearLayout>
 </TabHost>

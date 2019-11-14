@@ -28,6 +28,7 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
     TimeTableButton timeTableBtn[][];
 
 
+    final static String TAG = "MANNAYC";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -126,7 +127,7 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
                     time++;
                 }
                 endTime = time;
-                Log.d("MANNAYC", startTime + "시 ~ " + endTime + "시");
+                //Log.d("MANNAYC", startTime + "시 ~ " + endTime + "시");
                 routineArr.add(factory.new Routine(startTime,endTime,day));
             } else
                 time++;
@@ -139,8 +140,8 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
         sendRoutine(routineArr);
     }
     private void sendRoutine(ArrayList<MannaUser.Routine> routineArr) {
-        String myUid = FirebaseCommunicator.getMyUid();
         FirebaseCommunicator comunicator = new FirebaseCommunicator();
+        String myUid = comunicator.getMyUid();
         comunicator.updateRoutine(myUid,routineArr);
     }
 }
