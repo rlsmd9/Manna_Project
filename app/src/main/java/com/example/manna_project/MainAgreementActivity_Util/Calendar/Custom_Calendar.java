@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.manna_project.MainAgreementActivity;
+import com.example.manna_project.MainAgreementActivity_Util.Calendar.Schedule.Schedule_List;
 import com.example.manna_project.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
@@ -54,7 +55,6 @@ import pub.devrel.easypermissions.EasyPermissions;
 public class Custom_Calendar implements View.OnClickListener {
 //    final static String TAG = "manna_js";
     final static String TAG = "manna_JS";
-    Custome_Calendar_Listener custome_calendar_listener;
 
     enum CalendarType {
         FULL_CALENDAR, HALF_CALENDAR, WEEK_CALENDAR;
@@ -63,11 +63,6 @@ public class Custom_Calendar implements View.OnClickListener {
     enum TouchType {
         DOWN, UP;
     }
-
-    public interface Custome_Calendar_Listener {
-        void onChangeMonth();
-    }
-
 
     Context context;
     LayoutInflater layout;
@@ -78,6 +73,7 @@ public class Custom_Calendar implements View.OnClickListener {
     // 일정 데이터 받아서 저장할 자료구조
     ArrayList<ScheduleOfDay> scheduleOfDays;
     Activity mainAgreementActivity;
+    Schedule_List schedule_list;
 
     public Custom_Calendar(MainAgreementActivity mainAgreementActivity, Context context, Custom_LinearLayout calendar_root, GridLayout calendar_layout, ListView listView, TextView viewDate, Calendar date) {
         this.context = context;
@@ -93,7 +89,7 @@ public class Custom_Calendar implements View.OnClickListener {
         this.viewDate = viewDate;
         this.mainAgreementActivity = mainAgreementActivity;
         this.calendar_root.calendarType = CalendarType.FULL_CALENDAR;
-
+        this.schedule_list = new Schedule_List(this.context, (ListView) mainAgreementActivity.findViewById(R.id.main_agreement_listView));
         // 일자별 Linear 레이아웃 생성
         makeCalendar();
         // 생성한 일자 자료구조 전달
@@ -101,10 +97,6 @@ public class Custom_Calendar implements View.OnClickListener {
 
         setCalendar();
         selectDay();
-    }
-
-    public void setCustome_calendar_listener(Custome_Calendar_Listener custome_calendar_listener) {
-        this.custome_calendar_listener = custome_calendar_listener;
     }
 
     public void showView() {
@@ -123,14 +115,10 @@ public class Custom_Calendar implements View.OnClickListener {
         int start;
         int index;
 
-        Log.d(TAG, "setSchedule: " + events.getItems().size());
-
         Calendar c = Calendar.getInstance();
 
         c.set(this.getDate().get(Calendar.YEAR), this.getDate().get(Calendar.MONTH), 1,0,0,0);
         start = c.get(Calendar.DAY_OF_WEEK);
-
-        Log.d(TAG, "setSchedule: start = " + start);
 
         initCalendarUI();
 
@@ -144,11 +132,10 @@ public class Custom_Calendar implements View.OnClickListener {
             index = eventDay.get(Calendar.DAY_OF_MONTH) + start - 2;
             ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
             scheduleOfDay.addEvent(event);
-            Log.d(TAG, "setSchedule: end");
         }
     }
 
-    protected void initCalendarUI() {
+    public void initCalendarUI() {
         int index;
 
         for (int i = 0; i < 6; i++) {
@@ -161,12 +148,11 @@ public class Custom_Calendar implements View.OnClickListener {
     }
 
     public void setDate(Calendar date) {
-        Log.d(TAG, "setDate: " + date.toString());
-
         if (date.get(Calendar.YEAR) != calendar_root.date.get(Calendar.YEAR) || date.get(Calendar.MONTH) != calendar_root.date.get(Calendar.MONTH)) {
             this.calendar_root.date = date;
             setCalendar();
-            if (custome_calendar_listener != null)custome_calendar_listener.onChangeMonth();
+            mID = 3;
+            getResultsFromApi();
         } else {
             this.calendar_root.date = date;
         }
@@ -185,12 +171,14 @@ public class Custom_Calendar implements View.OnClickListener {
         if (year != calendar_root.date.get(Calendar.YEAR) || month != calendar_root.date.get(Calendar.MONTH)) {
             this.calendar_root.date.set(year, month, day);
             setCalendar();
-            if (custome_calendar_listener != null)custome_calendar_listener.onChangeMonth();
+
+            mID = 3;
+            getResultsFromApi();
         } else {
             this.calendar_root.date.set(year, month, day);
             setCalendar();
+
         }
-        Log.d(TAG, "setDate: " + calendar_root.date.toString());
         selectDay();
     }
 
@@ -208,9 +196,8 @@ public class Custom_Calendar implements View.OnClickListener {
             for (int j = 0; j < 7; j++) {
                 LinearLayout ly = (LinearLayout) layout.inflate(R.layout.activity_main_agreement_calendar_item, null);
                 GridLayout.LayoutParams param = new GridLayout.LayoutParams(GridLayout.spec(
-                        GridLayout.UNDEFINED,GridLayout.FILL,1f),
-                        GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,1f));
-
+                        GridLayout.UNDEFINED,GridLayout.FILL, 1f),
+                        GridLayout.spec(GridLayout.UNDEFINED, GridLayout.FILL,1f));
                 LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 
                 TextView textView = new TextView(context);
@@ -218,6 +205,7 @@ public class Custom_Calendar implements View.OnClickListener {
                 textView.setTypeface(null,Typeface.BOLD);
 
                 textView.setText("init");
+
                 ly.setOnClickListener(this);
                 ly.addView(textView,linearParams);
                 calendar_layout.addView(ly,param);
@@ -239,6 +227,12 @@ public class Custom_Calendar implements View.OnClickListener {
     public void onClick(View v) {
         ScheduleOfDay selected_scheduleOfDay = findDateLayout(v);
         this.setDate(selected_scheduleOfDay.getDate());
+
+        // 선택된 일의 일정을 리스트 뷰에 츄가
+        if (selected_scheduleOfDay.getEventsOfDay().size() > 0) {
+            Log.d(TAG, "onClick: listClick");
+            this.schedule_list.setListItem(selected_scheduleOfDay.getEventsOfDay());
+        }
 
         selectDay();
         Log.d(TAG, this.getDate().get(Calendar.DAY_OF_MONTH)+"");
@@ -502,7 +496,6 @@ public class Custom_Calendar implements View.OnClickListener {
 //            Log.d(TAG, "getResultsFromApi: ds");
             Log.d(TAG, "getResultsFromApi: mid = " + mID);
             new MakeRequestTask(mainAgreementActivity, mCredential).execute();
-            Log.d(TAG, "getResultsFromApi: dwdwdwdwd,,x,x,x,x,x,mdmkdmkmwdlkmlawmdlkwmdlqkmdlmdlm");
             return "SUCCESS";
         }
         return null;
@@ -655,7 +648,8 @@ public class Custom_Calendar implements View.OnClickListener {
                 Log.d(TAG, "getEvent: " + String.format("%s (start time : %s), (end time : %s)", event.getSummary(), start, end));
                 eventStrings.add(String.format("%s (start time : %s), (end time : %s)", event.getSummary(), start, end));
             }
-            if (events.getItems().size() > 0) setSchedule(events);
+
+            setSchedule(events);
 
             return eventStrings.size() + "개의 데이터를 가져왔습니다.";
         }

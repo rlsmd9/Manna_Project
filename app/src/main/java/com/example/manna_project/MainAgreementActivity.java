@@ -21,7 +21,6 @@ import android.widget.Toast;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout;
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
-import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -30,11 +29,8 @@ import java.util.Calendar;
 import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import androidx.annotation.NonNull;
-
 import java.util.List;
-
 import pub.devrel.easypermissions.EasyPermissions;
 
 
@@ -47,7 +43,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     ProgressDialog progressDialog;
 
     static final String TAG = "MANNA_JS";
-    static final String TAG2 = "MANNAYC";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,8 +111,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-                    FirebaseCommunicator temp  = new FirebaseCommunicator();
-                    MannaUser me = temp.getMyInfo();
+                    FirebaseComunicator temp  = new FirebaseComunicator();
+                    temp.updateMannaUser();
 
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
@@ -211,12 +206,16 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 public void onClick(DialogInterface dialog, int which) {
                     Log.d(TAG, "onClick: " + datePicker.getYear() + "-" + datePicker.getMonth() + "-" + datePicker.getDayOfMonth());
 
-                    Calendar calendar = custom_calendar.getDate();
+                    Calendar calendar = (Calendar) custom_calendar.getDate().clone();
 
+                    Log.d(TAG, "onClick: " + calendar.toString());
                     custom_calendar.setDate(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
                     if (calendar.get(Calendar.YEAR) != datePicker.getYear() || calendar.get(Calendar.MONTH) != datePicker.getMonth()) {
+                        Log.d(TAG, "onClick: @@mkmckm");
                         custom_calendar.mID = 3;
+                        custom_calendar.initCalendarUI();
                         custom_calendar.getResultsFromApi();
+                        custom_calendar.showView();
                     }
 
 

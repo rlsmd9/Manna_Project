@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -28,8 +29,9 @@ public class ScheduleOfDay {
     private LinearLayout dayList;
     private Events eventsOfDay;
     private Context context;
+    private ArrayList<TextView> textViews;
 
-    final static String TAG = "MANNA_JS";
+    final static String TAG = "MANNA_J1S";
 
     public ScheduleOfDay(Context context, Calendar date, TextView day, LinearLayout dayList) {
         this.context = context;
@@ -37,20 +39,19 @@ public class ScheduleOfDay {
         this.textDay = day;
         this.dayList = dayList;
         this.eventsOfDay = new Events();
+        this.textViews = new ArrayList<>();
     }
 
     public void setLayout() {
-        if (eventsOfDay.getItems() == null) return;
-        Log.d(TAG, "setLayout: 1");
-        if (eventsOfDay.getItems().size() > 0) {
-            Log.d(TAG, "setLayout: 2");
-            // 일정 지우기
-            dayList.removeAllViews();
+        // 일정 지우기
+        dayList.removeAllViews();
+        textViews.clear();
 
-            Log.d(TAG, "setLayout: 3");
-            LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            linearParams.setMargins(0,5,0,0);
-            dayList.addView(this.textDay, linearParams);
+        LinearLayout.LayoutParams linearParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        linearParams.setMargins(2,5,2,0);
+        dayList.addView(this.textDay, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        if (eventsOfDay.getItems() == null) return;
+        if (eventsOfDay.getItems().size() > 0) {
             Log.d(TAG, "setLayout: 4");
             // 일자별 존재하는 일정에 대해서 TextView 추가
             Log.d(TAG, "setLayout: items = " + eventsOfDay.getItems().size());
@@ -63,17 +64,17 @@ public class ScheduleOfDay {
                 if (title == null) title = "";
 
                 textView.setText(title);
+                textView.setMaxWidth(0);
                 textView.setSingleLine(true);
+                textView.setEllipsize(TextUtils.TruncateAt.END);
                 textView.setTextSize(8);
                 textView.setBackgroundColor(Color.rgb(242,177, 112));
-                Log.d(TAG, "setLayout: 4-1");
-                Log.d(TAG, "setLayout: 4-2");
+
+                textViews.add(textView);
                 this.dayList.addView(textView, linearParams);
             }
 
-            Log.d(TAG, "setLayout: 5");
         } else {
-//            Log.d(TAG, "setLayout: ");
         }
     }
 
@@ -112,7 +113,6 @@ public class ScheduleOfDay {
     public void addEvent(Event event) {
         List<Event> list;
 
-        Log.d(TAG, "addEvent: 0-1");
         list = eventsOfDay.getItems();
 
         if (list == null) {
@@ -120,9 +120,23 @@ public class ScheduleOfDay {
             eventsOfDay.setItems(list);
         }
 
-        Log.d(TAG, "addEvent: 0");
         list.add(event);
-        Log.d(TAG, "addEvent: end");
+    }
+
+    public void setScheduleLining(boolean b) {
+        Log.d(TAG, "setScheduleLining: ");
+        if (eventsOfDay.getItems() == null) return;
+        if (eventsOfDay.getItems().size() > 0) {
+            LinearLayout.LayoutParams layoutParams;
+            for (TextView view: textViews) {
+                layoutParams = (LinearLayout.LayoutParams) view.getLayoutParams();
+                view.setLayoutParams(layoutParams);
+                if (b) layoutParams.height = 5;
+                else layoutParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            }
+
+        } else {
+        }
     }
 }
 
