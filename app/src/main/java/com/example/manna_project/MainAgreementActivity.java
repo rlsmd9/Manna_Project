@@ -18,9 +18,11 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.manna_project.MainAgreementActivity_Util.AcceptInvitation.AcceptInvitation_List;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout;
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
+import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -40,6 +42,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     Custom_Calendar custom_calendar;
     Friend_List friend_list;
     Setting_List setting_list;
+    AcceptInvitation_List acceptInvitation_list;
     ProgressDialog progressDialog;
 
     static final String TAG = "MANNA_JS";
@@ -93,6 +96,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_agreement));
         tabSpec.setContent(R.id.tab04_friend);
         tabHost.addTab(tabSpec);
+        acceptInvitation_list = new AcceptInvitation_List(this, (ListView)findViewById(R.id.main_accept_list));
 
         // 설정
         tabSpec = tabHost.newTabSpec("tab04_friend");
@@ -111,8 +115,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-                    FirebaseComunicator temp  = new FirebaseComunicator();
-                    temp.updateMannaUser();
+                    FirebaseCommunicator temp  = new FirebaseCommunicator();
+                    temp.updateMannaUser(new MannaUser());
 
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();

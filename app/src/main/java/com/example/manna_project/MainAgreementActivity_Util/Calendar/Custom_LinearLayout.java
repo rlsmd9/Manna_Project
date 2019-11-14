@@ -9,6 +9,8 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.manna_project.R;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -107,7 +109,7 @@ public class Custom_LinearLayout extends LinearLayout {
 
     public void setCalendarType(Custom_Calendar.CalendarType calendarType) {
         LinearLayout.LayoutParams param = (LinearLayout.LayoutParams) listView.getLayoutParams();
-        param.width = 0;
+        param.weight = 0;
 
         switch (calendarType) {
             case FULL_CALENDAR:
@@ -119,6 +121,7 @@ public class Custom_LinearLayout extends LinearLayout {
                 highlight_week(-1);
                 break;
             case WEEK_CALENDAR:
+                param.weight = 1f;
                 highlight_week(date.get(Calendar.WEEK_OF_MONTH));
                 break;
         }
@@ -161,10 +164,11 @@ public class Custom_LinearLayout extends LinearLayout {
                 layoutParams_root.weight = 0;
                 param.rowSpec = GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,0f);
             } else {
+                layoutParams_root.weight = 0;
                 param.height = LayoutParams.WRAP_CONTENT;
             }
 
-                if (calendarType != Custom_Calendar.CalendarType.FULL_CALENDAR) {
+            if (calendarType != Custom_Calendar.CalendarType.FULL_CALENDAR) {
                 scheduleOfDays.get(i).setScheduleLining(true);
             } else scheduleOfDays.get(i).setScheduleLining(false);
 
@@ -182,6 +186,7 @@ public class Custom_LinearLayout extends LinearLayout {
         for (int i = 0; i < this.scheduleOfDays.size(); i++) {
             param = (GridLayout.LayoutParams) scheduleOfDays.get(i).getDayList().getLayoutParams();
             param.height = 0;
+
             if (week == -1) {
                 param.rowSpec = GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,1f);
                 layoutParams_root.weight = 1.5f;
@@ -189,12 +194,15 @@ public class Custom_LinearLayout extends LinearLayout {
                 layoutParams_root.weight = 0;
                 param.rowSpec = GridLayout.spec(GridLayout.UNDEFINED,GridLayout.FILL,0f);
             } else {
+                layoutParams_root.weight = 0;
                 param.height = LayoutParams.WRAP_CONTENT;
             }
 
             if (calendarType != Custom_Calendar.CalendarType.FULL_CALENDAR) {
                 scheduleOfDays.get(i).setScheduleLining(true);
-            } else scheduleOfDays.get(i).setScheduleLining(false);
+            } else {
+                scheduleOfDays.get(i).setScheduleLining(false);
+            }
 
             scheduleOfDays.get(i).getDayList().setLayoutParams(param);
         }
