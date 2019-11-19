@@ -100,31 +100,31 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         tabSpec.setContent(R.id.main_settingList);
         tabHost.addTab(tabSpec);
         setting_list = new Setting_List(this, (ListView) findViewById(R.id.main_settingList));
-        setting_list.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-
-                } else if (position == 1) {
-
-                } else if (position == 2) {
-                    startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
-                    // 일정관리
-                } else if (position == 3) {
-                    FirebaseComunicator temp  = new FirebaseComunicator();
-                    temp.updateMannaUser();
-
-                } else if (position == 4) {
-                    Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
-                    FirebaseAuth.getInstance().signOut();
-
-                    Intent intent = new Intent(getApplicationContext(), Login_activity.class);
-
-                    startActivity(intent);
-                    finish();
-                }
-            }
-        });
+//        setting_list.getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                if (position == 0) {
+//
+//                } else if (position == 1) {
+//
+//                } else if (position == 2) {
+//                    startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
+//                    // 일정관리
+//                } else if (position == 3) {
+////                    FirebaseComunicator temp  = new FirebaseComunicator();
+////                    temp.updateMannaUser();
+//
+//                } else if (position == 4) {
+//                    Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
+//                    FirebaseAuth.getInstance().signOut();
+//
+//                    Intent intent = new Intent(getApplicationContext(), Login_activity.class);
+//
+//                    startActivity(intent);
+//                    finish();
+//                }
+//            }
+//        });
     }
 
     @Override
