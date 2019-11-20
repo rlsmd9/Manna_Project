@@ -23,6 +23,14 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
 
+        <TextView
+            android:id="@+id/activity_main_accept_closeBtn_item"
+            android:text="X"
+            android:paddingRight="5dp"
+            android:paddingLeft="5dp"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <TextView
@@ -94,9 +102,8 @@
         </LinearLayout>
 
         <Button
-            android:id="@+id/activity_main_cancel_item_btn"
-            android:text="약속취소"
-            android:textColor="@color/lightRed"
+            android:id="@+id/activity_main_accept_item_btn"
+            android:text="참여하기"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"/>

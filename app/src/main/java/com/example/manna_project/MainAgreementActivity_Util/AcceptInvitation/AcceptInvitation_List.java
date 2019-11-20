@@ -23,7 +23,7 @@ public class AcceptInvitation_List {
         arrayList = new ArrayList<>();
 
         arrayList.add(new AcceptInvitationListItem("null", "어디서 만나요?1", new MannaUser("홍길동1", "null", "null"), "숭실대학교", Calendar.getInstance()));
-        arrayList.add(new AcceptInvitationListItem("null", "어디서 만나요?2", new MannaUser("홍길동2", "null", "null"), "숭실대학교", Calendar.getInstance()));
+        arrayList.add(new AcceptInvitationListItem("null", "어디서 만나!?2", new MannaUser("홍길동2", "null", "null"), "숭실대학교", Calendar.getInstance()));
         arrayList.add(new AcceptInvitationListItem("null", "어디서 만나요?3", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
         arrayList.add(new AcceptInvitationListItem("null", "어디서 만나요?4", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
         arrayList.add(new AcceptInvitationListItem("null", "어디서 만나요?5", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));

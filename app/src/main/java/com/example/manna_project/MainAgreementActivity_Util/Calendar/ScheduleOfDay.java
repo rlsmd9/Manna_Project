@@ -68,7 +68,15 @@ public class ScheduleOfDay {
                 textView.setSingleLine(true);
                 textView.setEllipsize(TextUtils.TruncateAt.END);
                 textView.setTextSize(8);
+
+                // default
                 textView.setBackgroundColor(Color.rgb(242,177, 112));
+
+
+                // 달력 일정 색깔작업
+                if (event.getColorId() != null) {
+
+                }
 
                 textViews.add(textView);
                 this.dayList.addView(textView, linearParams);

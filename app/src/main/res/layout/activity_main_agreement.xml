@@ -244,7 +244,7 @@
                         android:text="초대된 약속"
                         android:background="@drawable/round_shape_blue_color_invited_top_group_left"
                         android:textStyle="bold"
-                        android:textColor="#F00"
+                        android:textColor="@color/lightRed"
                         android:padding="5dp"
                         android:textAlignment="center"
                         android:layout_width="wrap_content"
@@ -269,8 +269,16 @@
                 </LinearLayout>
 
                 <ListView
+                    android:id="@+id/main_invited_list"
+                    android:dividerHeight="1dp"
+                    android:divider="#ccc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <ListView
                     android:id="@+id/main_accept_list"
                     android:dividerHeight="1dp"
+                    android:visibility="gone"
                     android:divider="#ccc"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>

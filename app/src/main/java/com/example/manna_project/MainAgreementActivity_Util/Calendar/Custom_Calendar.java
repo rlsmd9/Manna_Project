@@ -472,6 +472,7 @@ public class Custom_Calendar implements View.OnClickListener {
 
     public void initCalendar() {
         mProgress = new ProgressDialog(context);
+        mProgress.setCanceledOnTouchOutside(false);
 
         mCredential = GoogleAccountCredential.usingOAuth2(
                 context,
@@ -586,6 +587,7 @@ public class Custom_Calendar implements View.OnClickListener {
             } else if(mID == 3) {
                 mProgress.setMessage("Google Calendar 일정을 읽어오는중 입니다.");
             }
+            mProgress.onStart();
             mProgress.show();
         }
 
@@ -713,7 +715,8 @@ public class Custom_Calendar implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String output) {
-            mProgress.hide();
+//            mProgress.hide();
+            mProgress.cancel();
             Log.d(TAG, "onPostExecute: " + output);
 
             if ( mID == 3 ) showView();
