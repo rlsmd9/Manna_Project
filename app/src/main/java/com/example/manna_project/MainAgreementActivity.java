@@ -77,7 +77,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         // 친구
         TabHost.TabSpec tabSpec = tabHost.newTabSpec("tab01_friend");
         tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_friendlist));
-        tabSpec.setContent(R.id.main_friendList);
+        tabSpec.setContent(R.id.main_friend_layout);
         tabHost.addTab(tabSpec);
         friend_list = new Friend_List(this, (ListView) findViewById(R.id.main_friendList));
 
