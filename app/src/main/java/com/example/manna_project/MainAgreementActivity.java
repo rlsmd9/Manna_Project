@@ -18,6 +18,7 @@ import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.manna_project.MainAgreementActivity_Util.AcceptInvitation.AcceptInvitation_List;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout;
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
@@ -43,6 +44,10 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     Custom_Calendar custom_calendar;
     Friend_List friend_list;
     Setting_List setting_list;
+    AcceptInvitation_List acceptInvitation_list;
+    Invited_List invited_list;
+    TextView invited_Btn;
+    TextView accept_Btn;
     ProgressDialog progressDialog;
     FirebaseCommunicator firebaseCommunicator;
     TextView userName;
@@ -119,6 +124,14 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_agreement));
         tabSpec.setContent(R.id.tab04_friend);
         tabHost.addTab(tabSpec);
+        acceptInvitation_list = new AcceptInvitation_List(this, (ListView)findViewById(R.id.main_accept_list));
+        invited_list = new Invited_List(this, (ListView)findViewById(R.id.main_invited_list));
+
+        invited_Btn = findViewById(R.id.main_invited_btn);
+        accept_Btn = findViewById(R.id.main_acceptInvitation_btn);
+
+        invited_Btn.setOnClickListener(this);
+        accept_Btn.setOnClickListener(this);
 
         // 설정
         tabSpec = tabHost.newTabSpec("tab04_friend");
@@ -137,7 +150,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-                    
+
+
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
                     FirebaseAuth.getInstance().signOut();
@@ -247,6 +261,16 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             });
 
             builder.create().show();
+        } else if(v == accept_Btn) {
+            acceptInvitation_list.getListView().setVisibility(View.VISIBLE);
+            accept_Btn.setTextColor(getResources().getColor(R.color.lightRed));
+            invited_Btn.setTextColor(getResources().getColor(R.color.white));
+            invited_list.getListView().setVisibility(View.GONE);
+        } else if(v == invited_Btn) {
+            acceptInvitation_list.getListView().setVisibility(View.GONE);
+            accept_Btn.setTextColor(getResources().getColor(R.color.white));
+            invited_Btn.setTextColor(getResources().getColor(R.color.lightRed));
+            invited_list.getListView().setVisibility(View.VISIBLE);
         }
     }
 

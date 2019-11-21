@@ -9,7 +9,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.manna_project.Login_activity;
+import com.example.manna_project.MainAgreementActivity;
 import com.example.manna_project.R;
+import com.example.manna_project.SettingPersonalRoutine;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -35,6 +37,32 @@ public class Setting_List {
         setListItem(arrayList);
 
         friendListAdapter = new SettingListAdapter(this.getArrayList(), this.context, R.layout.activity_setting_list_item);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+
+                } else if (position == 1) {
+
+                } else if (position == 2) {
+                    context.startActivity(new Intent(context, SettingPersonalRoutine.class));
+                    // 일정관리
+                } else if (position == 3) {
+//                    FirebaseComunicator temp  = new FirebaseComunicator();
+//                    temp.updateMannaUser();
+
+                } else if (position == 4) {
+                    Toast.makeText(context, "Sign Out", Toast.LENGTH_SHORT).show();
+                    FirebaseAuth.getInstance().signOut();
+
+                    Intent intent = new Intent(context, Login_activity.class);
+
+                    context.startActivity(intent);
+                    ((MainAgreementActivity)context).finish();
+                }
+            }
+        });
 
         setList();
     }

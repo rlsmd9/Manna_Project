@@ -78,10 +78,10 @@ public class ScheduleListAdapter extends BaseAdapter {
 //        startDate.setText(scheduleListItem.getStartDate());
 //        endDate.setText(scheduleListItem.getEndDate());
 
-        title.setText(scheduleListItem.getTitle() + "1");
-        place.setText(scheduleListItem.getPlace() + "2");
-        startDate.setText(scheduleListItem.getStartDate() + "3");
-        endDate.setText(scheduleListItem.getEndDate() + "4");
+        title.setText((scheduleListItem.getTitle() == null ? "제목 없음" : scheduleListItem.getTitle()));
+        place.setText((scheduleListItem.getPlace() == null ? "장소 미정" : scheduleListItem.getPlace()));
+        startDate.setText(scheduleListItem.getStartDate());
+        endDate.setText(scheduleListItem.getEndDate());
 
         return convertView;
     }

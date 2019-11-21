@@ -114,11 +114,15 @@ public class Custom_Calendar implements View.OnClickListener {
             }
         }
 
-
-
         sod = findDateLayout(getDate());
         if (sod != null)
             this.schedule_list.setListItem(sod.getEventsOfDay());
+
+        if (calendar_root.calendarType != CalendarType.FULL_CALENDAR) {
+            for (int i = 0; i < scheduleOfDays.size(); i++) {
+                scheduleOfDays.get(i).setScheduleLining(true);
+            }
+        }
     }
 
     public void setSchedule(Events events) {
@@ -238,11 +242,7 @@ public class Custom_Calendar implements View.OnClickListener {
         ScheduleOfDay selected_scheduleOfDay = findDateLayout(v);
         this.setDate(selected_scheduleOfDay.getDate());
 
-        // 선택된 일의 일정을 리스트 뷰에 츄가
-        if (selected_scheduleOfDay.getEventsOfDay().size() > 0) {
-            Log.d(TAG, "onClick: listClick");
-            this.schedule_list.setListItem(selected_scheduleOfDay.getEventsOfDay());
-        }
+        this.schedule_list.setListItem(selected_scheduleOfDay.getEventsOfDay());
 
         selectDay();
         Log.d(TAG, this.getDate().get(Calendar.DAY_OF_MONTH)+"");
@@ -472,6 +472,7 @@ public class Custom_Calendar implements View.OnClickListener {
 
     public void initCalendar() {
         mProgress = new ProgressDialog(context);
+        mProgress.setCanceledOnTouchOutside(false);
 
         mCredential = GoogleAccountCredential.usingOAuth2(
                 context,
@@ -586,6 +587,7 @@ public class Custom_Calendar implements View.OnClickListener {
             } else if(mID == 3) {
                 mProgress.setMessage("Google Calendar 일정을 읽어오는중 입니다.");
             }
+            mProgress.onStart();
             mProgress.show();
         }
 
@@ -713,7 +715,8 @@ public class Custom_Calendar implements View.OnClickListener {
 
         @Override
         protected void onPostExecute(String output) {
-            mProgress.hide();
+//            mProgress.hide();
+            mProgress.cancel();
             Log.d(TAG, "onPostExecute: " + output);
 
             if ( mID == 3 ) showView();

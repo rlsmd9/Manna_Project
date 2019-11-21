@@ -205,7 +205,6 @@
                 <ListView
                     android:id="@+id/main_agreement_listView"
                     android:layout_width="match_parent"
-                    android:background="#FF0"
                     android:layout_height="0dp"
                     android:layout_weight="0">
                 </ListView>
@@ -230,12 +229,60 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/tab04_friend"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:text="Tab4"
-                android:gravity="center"/>
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/main_invited_btn"
+                        android:text="초대된 약속"
+                        android:background="@drawable/round_shape_blue_color_invited_top_group_left"
+                        android:textStyle="bold"
+                        android:textColor="@color/lightRed"
+                        android:padding="5dp"
+                        android:textAlignment="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <TextView
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"/>
+
+                    <TextView
+                        android:id="@+id/main_acceptInvitation_btn"
+                        android:text="수락한 약속"
+                        android:background="@drawable/round_shape_blue_color_invited_top_group_right"
+                        android:textStyle="bold"
+                        android:textColor="#FFF"
+                        android:padding="5dp"
+                        android:textAlignment="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                </LinearLayout>
+
+                <ListView
+                    android:id="@+id/main_invited_list"
+                    android:dividerHeight="1dp"
+                    android:divider="#ccc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <ListView
+                    android:id="@+id/main_accept_list"
+                    android:dividerHeight="1dp"
+                    android:visibility="gone"
+                    android:divider="#ccc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+            </LinearLayout>
         </FrameLayout>
 
         <TabWidget
