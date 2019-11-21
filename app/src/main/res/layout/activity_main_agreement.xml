@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/host"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -201,7 +202,6 @@
 
                 </com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout>
 
-                <!--               AdapterView 추가 예정 -->
                 <ListView
                     android:id="@+id/main_agreement_listView"
                     android:layout_width="match_parent"
@@ -211,14 +211,30 @@
 
             </LinearLayout>
 
-            <ListView
-                android:id="@+id/main_friendList"
-                android:choiceMode="singleChoice"
-                android:divider="#CCC"
-                android:dividerHeight="1dp"
-                android:scrollbars="vertical"
+            <FrameLayout
+                android:id="@+id/main_friend_layout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent">
+
+                <ListView
+                    android:id="@+id/main_friendList"
+                    android:choiceMode="singleChoice"
+                    android:divider="#CCC"
+                    android:dividerHeight="1dp"
+                    android:scrollbars="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:layout_gravity="right|bottom"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/add_friend_img"
+                    app:backgroundTint="@color/lightBlue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
+
 
             <ListView
                 android:id="@+id/main_settingList"
@@ -283,6 +299,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
             </LinearLayout>
+
+
+
         </FrameLayout>
 
         <TabWidget

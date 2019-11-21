@@ -25,9 +25,10 @@
 
         <ImageView
             android:id="@+id/activity_show_detail_schedule_close_btn"
-            android:src="@drawable/closeButtonImg"
+            android:src="@drawable/closebuttonimg"
             android:paddingRight="5dp"
             android:paddingLeft="5dp"
+            android:layout_gravity="center"
             android:textSize="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -186,10 +187,19 @@
         </LinearLayout>
     </HorizontalScrollView>
 
-<!--   채팅 로그 -->
-    <androidx.recyclerview.widget.RecyclerView
+    <TextView
+        android:layout_marginTop="5dp"
+        android:background="#ccc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="1dp"/>
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/activity_show_detail_schedule_chat_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:orientation="horizontal"

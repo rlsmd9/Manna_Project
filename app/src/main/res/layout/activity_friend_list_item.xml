@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/friend_icon"
-        android:src="@drawable/logo_sample"
-        android:scaleType="fitXY"
+        android:src="@drawable/manna_icon"
+        android:scaleType="centerInside"
         android:layout_width="40dp"
         android:layout_height="40dp"/>
 
