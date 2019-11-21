@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.manna_project.R;
@@ -53,7 +54,7 @@ public class InvitedListAdapter extends BaseAdapter {
         InvitedListItem invitedListItem = list.get(position);
 
         TextView titleTextView = convertView.findViewById(R.id.activity_main_accept_title_item);
-        TextView closeBtn = convertView.findViewById(R.id.activity_main_accept_closeBtn_item);
+        ImageView closeBtn = convertView.findViewById(R.id.activity_main_accept_closeBtn_item);
         TextView leaderTextView = convertView.findViewById(R.id.activity_main_accept_learder_item);
         TextView dateTextView = convertView.findViewById(R.id.activity_main_accept_date_item);
         TextView placeTextView = convertView.findViewById(R.id.activity_main_accept_place_item);

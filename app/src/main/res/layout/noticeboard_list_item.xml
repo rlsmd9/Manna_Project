@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:padding="8dp">
 
     <RelativeLayout
@@ -12,7 +12,9 @@
         <ImageView
             android:id="@+id/noticeboard_user_icon_item"
             android:src="@drawable/manna_icon"
-            android:layout_width="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="centerInside"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"/>
 
         <TextView
@@ -31,7 +33,21 @@
     <TextView
         android:id="@+id/noticeboard_content_item"
         android:text="content"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <TextView
+        android:id="@+id/noticeboard_write_date_item"
+        android:text="8분전"
+        android:layout_marginTop="5dp"
+        android:textStyle="bold"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:background="#CCC"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
 </LinearLayout>

@@ -726,6 +726,7 @@ public class Custom_Calendar implements View.OnClickListener {
         @Override
         protected void onCancelled() {
             mProgress.hide();
+            mProgress.cancel();
             if (mLastError != null) {
                 if (mLastError instanceof GooglePlayServicesAvailabilityIOException) {
                     showGooglePlayServicesAvailabilityErrorDialog(
