@@ -22,6 +22,7 @@ import com.example.manna_project.MainAgreementActivity_Util.AcceptInvitation.Acc
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout;
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
+import com.example.manna_project.MainAgreementActivity_Util.Invited.Invited_List;
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.firebase.auth.FirebaseAuth;
