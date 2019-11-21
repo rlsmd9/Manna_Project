@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FirebaseCommunicator {
     public static final String TAG = "MANNAYC";
@@ -27,6 +28,8 @@ public class FirebaseCommunicator {
     public MannaUser myInfo;
     private FirebaseUser user;
     private String myUid;
+    private CallBackListener callBackListener;
+
 
     public FirebaseCommunicator() {
         this.user = FirebaseAuth.getInstance().getCurrentUser();
@@ -36,14 +39,13 @@ public class FirebaseCommunicator {
         this.users = root.child("users");
         this.promise = root.child("promises");
         this.myRef = users.child(myUid);
-
     }
 
     public void updateMannaUser(MannaUser myInfo) {
         users.child(myUid).setValue(myInfo);
     }
 
-    public void updateUserInfo(HashMap<String, Object> src) {
+    public void updateUserInfo(Map<String, Object> src) {
         myRef.updateChildren(src);
     }
 
@@ -52,10 +54,28 @@ public class FirebaseCommunicator {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 myInfo = new MannaUser(dataSnapshot);
-                Log.d(TAG,myInfo.getName());
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
+            }
+        });
+    }
+
+    public void getUserById(String Uid){
+        users.child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(callBackListener != null){
+                    callBackListener.afterGetData(new MannaUser(dataSnapshot));
+                }
+                else{
+                    Log.d(TAG,"콜백 리스너가 안 달렸음");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.d(TAG,"getUserById Error");
             }
         });
     }
@@ -90,5 +110,13 @@ public class FirebaseCommunicator {
 
     public void setUser(FirebaseUser user) {
         this.user = user;
+    }
+
+
+    public interface CallBackListener{
+        void afterGetData(MannaUser mannaUser);
+    }
+    public void addCallBackListener(CallBackListener callBackListener){
+        this.callBackListener = callBackListener;
     }
 }

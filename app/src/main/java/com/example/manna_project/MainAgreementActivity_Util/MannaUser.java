@@ -2,6 +2,8 @@ package com.example.manna_project.MainAgreementActivity_Util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.util.Log;
 
@@ -13,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MannaUser {
+public class MannaUser implements Parcelable {
 
     static final String TAG = "MANNAYC";
 
@@ -37,7 +39,7 @@ public class MannaUser {
         for(DataSnapshot postSnapshot : friendListSnapshot.getChildren()){
             friendList.add(postSnapshot.getValue(String.class));
         }
-        this.name = dataSnapshot.child("name").getValue(String.class);
+        this.name = dataSnapshot.child("Name").getValue(String.class);
         this.Uid = dataSnapshot.child("Uid").getValue(String.class);
         this.eMail =dataSnapshot.child("E-mail").getValue(String.class);
         this.nickName = dataSnapshot.child("NickName").getValue(String.class);
@@ -98,13 +100,23 @@ public class MannaUser {
 
     public Map<String,Object> toMap(){
         HashMap<String,Object> result = new HashMap<>();
-        result.put("name", this.name);
+        result.put("Name", this.name);
         result.put("NickName", this.nickName);
         result.put("Uid", this.Uid);
         result.put("E-ail", this.eMail);
         result.put("Routines",this.routineList);
         result.put("FriendList",this.friendList);
         return result;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
     }
 
     public class Routine{
@@ -118,9 +130,9 @@ public class MannaUser {
             this.day = day;
         }
         public Routine(DataSnapshot dataSnapshot){
-            this.startTime = dataSnapshot.child("startTime").getValue(Integer.class);
-            this.endTime = dataSnapshot.child("endTime").getValue(Integer.class);
-            this.day = dataSnapshot.child("day").getValue(Integer.class);
+            this.startTime = dataSnapshot.child("StartTime").getValue(Integer.class);
+            this.endTime = dataSnapshot.child("EndTime").getValue(Integer.class);
+            this.day = dataSnapshot.child("Day").getValue(Integer.class);
         }
 
         public int getStartTime() {

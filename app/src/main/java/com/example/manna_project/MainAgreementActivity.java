@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout;
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
+import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -45,6 +46,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     ProgressDialog progressDialog;
     FirebaseCommunicator firebaseCommunicator;
     TextView userName;
+    MannaUser myInfo;
 
     static final String TAG = "MANNA_JS";
     static final String TAG2 = "MANNAYC";
@@ -55,28 +57,31 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         setContentView(R.layout.activity_main_agreement);
         progressDialog = new ProgressDialog(this);
 
-        firebaseCommunicator = new FirebaseCommunicator();
         userName = findViewById(R.id.main_agreement_titleBar_userName);
         customDatePicker = findViewById(R.id.main_agreement_changeDateBtn);
         customDatePicker.setOnClickListener(this);
 
         initTabHost();
         custom_calendar.initCalendar();
-
-        firebaseCommunicator.addInitializeListener();
+        firebaseCommunicator = new FirebaseCommunicator();
         firebaseInitializing();
+    }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private void firebaseInitializing() {
-        HashMap<String,Object> setting = new HashMap<>();
-        FirebaseUser initial = firebaseCommunicator.getUser();
-        setting.put("name", initial.getDisplayName());
-        setting.put("E-mail",initial.getEmail());
-        setting.put("Uid",initial.getUid());
-        firebaseCommunicator.updateUserInfo(setting);
-        userName.setText(firebaseCommunicator.getUser().getDisplayName());
-
+        firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
+            @Override
+            public void afterGetData(MannaUser mannaUser) {
+                myInfo = mannaUser;
+                userName.setText(mannaUser.getName());
+                firebaseCommunicator.addCallBackListener(null);
+            }
+        });
+        firebaseCommunicator.getUserById(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
 
     protected void initTabHost() {
@@ -132,8 +137,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-
-
+                    
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
                     FirebaseAuth.getInstance().signOut();
