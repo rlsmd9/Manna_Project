@@ -28,6 +28,8 @@ import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -98,8 +100,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             }
             @Override
             public void afterGetPromise(Promise promise){
-                Log.d(TAG2,promise.getPromiseid());
-                Log.d(TAG2,promise.getTitle());
+               // Log.d(TAG2,promise.getPromiseid());
+                //Log.d(TAG2,promise.getTitle());
                 promiseArrayList.add(promise);
 
             }
@@ -185,13 +187,12 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     promise.addAttendee(myInfo);
                     firebaseCommunicator.upLoadPromise(promise);
                 } else if (position == 1) {
-                    //firebaseCommunicator.getPromiseByKey("-LuH2xe7qXlub3GlHSFo");
-
+                    startActivity(new Intent(getApplicationContext(),TestActivity.class));
                 } else if (position == 2) {
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-
+                    firebaseCommunicator.findFriendByEmail("wltmd1024@gmail.com");
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
                     FirebaseAuth.getInstance().signOut();

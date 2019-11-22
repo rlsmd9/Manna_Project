@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.manna_project">
 
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,11 +14,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ShowDetailSchedule_Activity" android:theme="@style/AppThemeDialog"></activity>
+        <activity android:name=".TestActivity"></activity>
+        <activity
+            android:name=".ShowDetailSchedule_Activity"
+            android:theme="@style/AppThemeDialog" />
         <activity android:name=".SettingPersonalRoutine" />
         <activity android:name=".MakingPromise" />
         <activity android:name=".EditProfile" />
-        <activity android:name=".MainAgreementActivity"></activity>
+        <activity android:name=".MainAgreementActivity" />
         <activity android:name=".Login_activity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,10 +30,5 @@
             </intent-filter>
         </activity>
     </application>
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-
-    <uses-permission android:name="android.permission.READ_CALENDAR" />
 
 </manifest>

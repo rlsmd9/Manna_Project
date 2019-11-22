@@ -91,7 +91,7 @@ public class MannaUser{
         result.put("Name", this.name);
         result.put("NickName", this.nickName);
         result.put("Uid", this.Uid);
-        result.put("E-ail", this.eMail);
+        result.put("E-mail", this.eMail);
         result.put("Routines",this.routineList);
         return result;
     }

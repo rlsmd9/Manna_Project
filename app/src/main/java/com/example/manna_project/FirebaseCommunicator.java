@@ -3,11 +3,13 @@ package com.example.manna_project;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -176,10 +178,38 @@ public class FirebaseCommunicator {
         });
     }
     public void addFriend(String friendUid) {
-        String myUid = getMyUid();
-        HashMap<String, Object> add = new HashMap<>();
-        add.put("true", friendUid);
-        users.child(myUid).child("FriendList").updateChildren(add);
+        friendList.child(myUid).push().setValue(friendUid);
+
+    }
+    public void findFriendByEmail(String email){
+        users.orderByChild("E-mail").equalTo(email).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String friendUid = dataSnapshot.child("Uid").getValue(String.class);
+                addFriend(friendUid);
+                Log.d(TAG, friendUid);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     //----------------------------------------getter setter-----------------------------------------
