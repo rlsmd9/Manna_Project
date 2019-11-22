@@ -22,7 +22,7 @@ public class Invited_List {
         // 친구 데이터 생성
         arrayList = new ArrayList<>();
 
-        arrayList.add(new InvitedListItem("null", "어디서 만나요?1", new MannaUser("홍길동1", "null", "null"), "숭실대학교", Calendar.getInstance()));
+               arrayList.add(new InvitedListItem("null", "어디서 만나요?1", new MannaUser("홍길동1", "null", "null"), "숭실대학교", Calendar.getInstance()));
         arrayList.add(new InvitedListItem("null", "어디서 만나요?2", new MannaUser("홍길동2", "null", "null"), "숭실대학교", Calendar.getInstance()));
         arrayList.add(new InvitedListItem("null", "어디서 만나요?3", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
         arrayList.add(new InvitedListItem("null", "어디서 만나요?4", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
@@ -39,7 +39,7 @@ public class Invited_List {
 
     public void setListItem(ArrayList<InvitedListItem> arrayList) {
         this.arrayList = arrayList;
-    }
+}
 
     public void setList() {
         listView.setAdapter(invitedListAdapter);

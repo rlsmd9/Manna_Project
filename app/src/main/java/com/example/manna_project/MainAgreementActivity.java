@@ -24,10 +24,12 @@ import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Line
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
 import com.example.manna_project.MainAgreementActivity_Util.Invited.Invited_List;
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
+import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 import android.accounts.AccountManager;
@@ -52,7 +54,13 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     ProgressDialog progressDialog;
     FirebaseCommunicator firebaseCommunicator;
     TextView userName;
+
     MannaUser myInfo;
+    ArrayList<Promise> promiseArrayList;
+    ArrayList<MannaUser> friendList;
+    ArrayList<String> friendUids;
+    ArrayList<String> promiseKeyList;
+
 
     static final String TAG = "MANNA_JS";
     static final String TAG2 = "MANNAYC";
@@ -73,22 +81,49 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         firebaseInitializing();
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
     private void firebaseInitializing() {
+        promiseArrayList = new ArrayList<>();
+        friendList = new ArrayList<>();
         firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
             @Override
-            public void afterGetData(MannaUser mannaUser) {
-                myInfo = mannaUser;
-                userName.setText(mannaUser.getName());
-                firebaseCommunicator.addCallBackListener(null);
+            public void afterGetUser(MannaUser mannaUser) {
+                if(myInfo == null) {
+                    myInfo = mannaUser;
+                    userName.setText(mannaUser.getName());
+                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+                }
+                else{
+                    friendList.add(mannaUser);
+                }
+            }
+            @Override
+            public void afterGetPromise(Promise promise){
+                Log.d(TAG2,promise.getPromiseid());
+                Log.d(TAG2,promise.getTitle());
+                promiseArrayList.add(promise);
+
+            }
+            @Override
+            public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
+                promiseKeyList = promiseKeys;
+                int size = promiseKeys.size();
+                for(int i =0; i<size;i++){
+                    String key = promiseKeys.get(i);
+                    firebaseCommunicator.getPromiseByKey(key);
+                }
+            }
+            @Override
+            public void afterGetFriendUids(ArrayList<String> friends) {
+                 friendUids = friends;
+                 int size = friendUids.size();
+                 for(int i=0;i<size ; i++) {
+                     firebaseCommunicator.getUserById(friendUids.get(i));
+                 }
             }
         });
         firebaseCommunicator.getUserById(FirebaseAuth.getInstance().getCurrentUser().getUid());
     }
+
 
     protected void initTabHost() {
         final TabHost tabHost = findViewById(R.id.host);
@@ -144,14 +179,18 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-
+                    Calendar start = Calendar.getInstance();
+                    Calendar end = Calendar.getInstance();
+                    Promise promise = new Promise("우리지금만나",myInfo.getUid(),myInfo,150.0,100.0,start,end);
+                    promise.addAttendee(myInfo);
+                    firebaseCommunicator.upLoadPromise(promise);
                 } else if (position == 1) {
+                    //firebaseCommunicator.getPromiseByKey("-LuH2xe7qXlub3GlHSFo");
 
                 } else if (position == 2) {
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-
 
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
@@ -257,7 +296,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                         custom_calendar.showView();
                     }
 
-
                 }
             });
 
@@ -274,7 +312,4 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             invited_list.getListView().setVisibility(View.VISIBLE);
         }
     }
-
-
-
 }

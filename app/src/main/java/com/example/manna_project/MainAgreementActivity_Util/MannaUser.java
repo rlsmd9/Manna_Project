@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MannaUser implements Parcelable {
+public class MannaUser{
 
     static final String TAG = "MANNAYC";
 
@@ -23,21 +23,15 @@ public class MannaUser implements Parcelable {
     private String nickName;
     private String Uid;
     private String eMail;
-    private ArrayList<String> friendList;
     private ArrayList<Routine> routineList;
 
     public MannaUser(){
     }
     public MannaUser(DataSnapshot dataSnapshot){        //dataSnapshot 넘겨줄때의 생성자
         routineList = new ArrayList<>();
-        friendList = new ArrayList<>();
         DataSnapshot routineSnapshot = dataSnapshot.child("Routines");
         for(DataSnapshot postSnapshot : routineSnapshot.getChildren()){
             routineList.add(new Routine(postSnapshot));
-        }
-        DataSnapshot friendListSnapshot = dataSnapshot.child("FriendList");
-        for(DataSnapshot postSnapshot : friendListSnapshot.getChildren()){
-            friendList.add(postSnapshot.getValue(String.class));
         }
         this.name = dataSnapshot.child("Name").getValue(String.class);
         this.Uid = dataSnapshot.child("Uid").getValue(String.class);
@@ -75,16 +69,10 @@ public class MannaUser implements Parcelable {
         this.Uid = uid;
     }
 
-    public void addFriend(MannaUser user){
-        this.friendList.add(user.getUid());
-    }
-    public void addFriend(String friendUid){
-        this.friendList.add(friendUid);
-    }
-
     public void addRoutine(Routine r){
         this.routineList.add(r);
     }
+
     public void setRoutineList(ArrayList<Routine> routineList) {
         this.routineList = routineList;
     }
@@ -105,18 +93,7 @@ public class MannaUser implements Parcelable {
         result.put("Uid", this.Uid);
         result.put("E-ail", this.eMail);
         result.put("Routines",this.routineList);
-        result.put("FriendList",this.friendList);
         return result;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-
     }
 
     public class Routine{
