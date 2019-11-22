@@ -15,6 +15,8 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 public class Promise {
 
@@ -56,7 +58,6 @@ public class Promise {
         acceptState = new HashMap<>();
         DBRef = FirebaseDatabase.getInstance().getReference();
 
-
     }
 
     public Promise(DataSnapshot dataSnapshot){
@@ -82,6 +83,7 @@ public class Promise {
             this.acceptState.put(hashSnapshot.getKey(),hashSnapshot.getValue(Integer.class));
         }
         DBRef = FirebaseDatabase.getInstance().getReference();
+        getLeaderInfo();
     }
 
     public String getPromiseid() {
@@ -168,12 +170,37 @@ public class Promise {
         this.acceptState.put(user.getUid(),INVITED);
     }
 
+    public void getLeaderInfo(){
+        DatabaseReference Ref = FirebaseDatabase.getInstance().getReference();
+        Ref = Ref.child("users").child(leaderId);
+        Ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                leader = new MannaUser(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public void setAcceptState(MannaUser user, int state){
         if(this.acceptState.containsKey(user.getUid()))
              this.acceptState.put(user.getUid(),state);
     }
     public void initialAttendees(){     //미완성
         attendees = new ArrayList<>();
+
+        ArrayList<String> attendeesUid = new ArrayList<>();
+        HashMap<String,Integer> accept = acceptState;
+        Set<String> set = accept.keySet();
+        Iterator<String> iterator = set.iterator();
+        while(iterator.hasNext()) {
+            attendeesUid.add(iterator.next());
+        }
+
         FirebaseCommunicator firebaseCommunicator = new FirebaseCommunicator();
         firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
             @Override
