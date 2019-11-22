@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -216,6 +217,7 @@ public class Custom_Calendar implements View.OnClickListener {
 
                 TextView textView = new TextView(context);
                 textView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                textView.setBackgroundColor(Color.argb(255,0,0,0));
                 textView.setTypeface(null,Typeface.BOLD);
 
                 textView.setText("init");
@@ -253,7 +255,7 @@ public class Custom_Calendar implements View.OnClickListener {
         setCleanBackground();
         ScheduleOfDay current_scheduleOfDay = findDateLayout(this.getDate());
 
-        current_scheduleOfDay.getDayList().setBackground(context.getResources().getDrawable(R.color.selectedItem));
+        current_scheduleOfDay.getDayList().setBackground(context.getResources().getDrawable(R.drawable.round_shape_calendar_item_selected));
 
         calendar_root.highlight_week();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy년 MM월");
@@ -281,7 +283,7 @@ public class Custom_Calendar implements View.OnClickListener {
                 scheduleOfDay.getTextDay().setEnabled(true);
                 scheduleOfDay.getDayList().setClickable(true);
                 scheduleOfDay.getTextDay().setTextColor(context.getResources().getColor(R.color.textGrayColor));
-                scheduleOfDay.getTextDay().setBackground(calendar_layout.getBackground());
+                scheduleOfDay.getTextDay().setBackground(context.getResources().getDrawable(R.drawable.round_shape_calendar_item));
                 // j+(7*i)+1 = for문 순서 1~42
 
                 c.set(this.getDate().get(Calendar.YEAR), this.getDate().get(Calendar.MONTH), (cnt++)-start+1);
@@ -764,6 +766,7 @@ public class Custom_Calendar implements View.OnClickListener {
             SimpleDateFormat simpledateformat;
 
             simpledateformat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREA);
+            // 추가
             String datetime = simpledateformat.format(calander.getTime());
 
             DateTime startDateTime = new DateTime(datetime);

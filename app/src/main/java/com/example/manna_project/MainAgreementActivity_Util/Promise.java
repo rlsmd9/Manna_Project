@@ -1,10 +1,16 @@
 package com.example.manna_project.MainAgreementActivity_Util;
 
 import android.util.Log;
+import android.widget.BaseAdapter;
+
+import androidx.annotation.NonNull;
 
 import com.example.manna_project.FirebaseCommunicator;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,10 +34,17 @@ public class Promise {
     private Calendar startTime;
     private Calendar endTime;
 
+    DatabaseReference DBRef;
+
     HashMap<String, Integer> acceptState;
     ArrayList<MannaUser> attendees;
 
-    public Promise(String title, String leaderId,MannaUser leader,double latitude, double longitude, Calendar startTime, Calendar endTime){
+
+    public Promise() {
+
+    }
+
+    public Promise(String title, String leaderId, MannaUser leader, double latitude, double longitude, Calendar startTime, Calendar endTime){
         this.title = title;
         this.leaderId = leaderId;
         this.leader = leader;
@@ -41,6 +54,9 @@ public class Promise {
         this.endTime = endTime;
         attendees = new ArrayList<>();
         acceptState = new HashMap<>();
+        DBRef = FirebaseDatabase.getInstance().getReference();
+
+
     }
 
     public Promise(DataSnapshot dataSnapshot){
@@ -65,6 +81,7 @@ public class Promise {
         for(DataSnapshot hashSnapshot : tmp.getChildren() ) {
             this.acceptState.put(hashSnapshot.getKey(),hashSnapshot.getValue(Integer.class));
         }
+        DBRef = FirebaseDatabase.getInstance().getReference();
     }
 
     public String getPromiseid() {
@@ -181,6 +198,22 @@ public class Promise {
         });
     }
 
+    @Override
+    public String toString() {
+        return "Promise{" +
+                "promiseid='" + promiseid + '\'' +
+                ", title='" + title + '\'' +
+                ", leaderId='" + leaderId + '\'' +
+                ", leader=" + leader +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", acceptState=" + acceptState +
+                ", attendees=" + attendees +
+                '}';
+    }
+
     public HashMap<String,Object> toMap(){      //attendees는 올리지 않음, AcceptState만 올림
         HashMap<String,Object> result = new HashMap<>();
         result.put("PromiseId",this.promiseid);
@@ -192,6 +225,28 @@ public class Promise {
         result.put("EndTime",endTime.get(Calendar.YEAR)+"/"+endTime.get(Calendar.MONTH)+"/"+endTime.get(Calendar.DATE)+"/"+endTime.get(Calendar.HOUR_OF_DAY)+"/"+endTime.get(Calendar.MINUTE));
         result.put("AcceptState",acceptState);
         return  result;
+    }
+
+    public void setUserInfoFromUID(final BaseAdapter adapter) {
+        DatabaseReference userRef = DBRef.child("users/" + getLeaderId());
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot == null || !dataSnapshot.exists()) return;
+
+                MannaUser user = new MannaUser(dataSnapshot);
+                setLeader(user);
+                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
 

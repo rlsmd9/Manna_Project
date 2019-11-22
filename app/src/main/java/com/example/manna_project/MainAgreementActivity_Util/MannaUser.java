@@ -34,7 +34,9 @@ public class MannaUser{
             routineList.add(new Routine(postSnapshot));
         }
         this.name = dataSnapshot.child("Name").getValue(String.class);
-        this.Uid = dataSnapshot.child("Uid").getValue(String.class);
+//        this.Uid = dataSnapshot.child("Uid").getValue(String.class);
+//        임시
+        this.Uid = "XJJkpZ6ojhQ0ttiF9OgfDEzC00K2";
         this.eMail =dataSnapshot.child("E-mail").getValue(String.class);
         this.nickName = dataSnapshot.child("NickName").getValue(String.class);
     }

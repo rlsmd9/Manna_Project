@@ -36,7 +36,7 @@
 
             <TextView
                 android:id="@+id/main_agreement_titleBar_userName"
-                android:text="홍길동"
+                android:text=""
                 android:gravity="center_vertical|right"
                 android:textStyle="bold"
                 android:textColor="@color/lightRed"
