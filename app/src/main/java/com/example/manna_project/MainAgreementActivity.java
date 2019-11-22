@@ -75,15 +75,19 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         customDatePicker = findViewById(R.id.main_agreement_changeDateBtn);
         customDatePicker.setOnClickListener(this);
 
+        promiseArrayList = new ArrayList<>();
+        friendList = new ArrayList<>();
+
+        firebaseCommunicator = new FirebaseCommunicator();
+
         initTabHost();
         custom_calendar.initCalendar();
-        firebaseCommunicator = new FirebaseCommunicator();
+
         firebaseInitializing();
     }
 
     private void firebaseInitializing() {
-        promiseArrayList = new ArrayList<>();
-        friendList = new ArrayList<>();
+
         firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
             @Override
             public void afterGetUser(MannaUser mannaUser) {
@@ -101,10 +105,13 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 Log.d(TAG2,promise.getPromiseid());
                 Log.d(TAG2,promise.getTitle());
                 promiseArrayList.add(promise);
-
+                Log.d(TAG, "afterGetPromise: " + promise.toString());
+                invited_list.setListItem();
+                acceptInvitation_list.setListItem();
             }
             @Override
             public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
+                Log.d(TAG, "afterGetPromiseKey: dwdw");
                 promiseKeyList = promiseKeys;
                 int size = promiseKeys.size();
                 for(int i =0; i<size;i++){
@@ -121,7 +128,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                  }
             }
         });
-        firebaseCommunicator.getUserById(FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+        // 계정 UID기준으로 데이터 로드
+        firebaseCommunicator.getUserById(firebaseCommunicator.getMyUid());
     }
 
 
@@ -135,6 +144,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 if (tabId.equals("tab_agreement")) {
                     custom_calendar.mID = 3;
                     custom_calendar.getResultsFromApi();
+                } else if(tabId.equals("tab03_friend")) {
+                    // invited and accept reset
+                    invited_list.setListItem();
                 }
             }
         });
@@ -305,11 +317,55 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             accept_Btn.setTextColor(getResources().getColor(R.color.lightRed));
             invited_Btn.setTextColor(getResources().getColor(R.color.white));
             invited_list.getListView().setVisibility(View.GONE);
+            acceptInvitation_list.setListItem();
         } else if(v == invited_Btn) {
             acceptInvitation_list.getListView().setVisibility(View.GONE);
             accept_Btn.setTextColor(getResources().getColor(R.color.white));
             invited_Btn.setTextColor(getResources().getColor(R.color.lightRed));
             invited_list.getListView().setVisibility(View.VISIBLE);
+            // 리스트 갱신
+            invited_list.setListItem();
         }
+    }
+
+
+    public Friend_List getFriend_list() {
+        return friend_list;
+    }
+
+    public void setFriend_list(Friend_List friend_list) {
+        this.friend_list = friend_list;
+    }
+
+    public Setting_List getSetting_list() {
+        return setting_list;
+    }
+
+    public void setSetting_list(Setting_List setting_list) {
+        this.setting_list = setting_list;
+    }
+
+    public Invited_List getInvited_list() {
+        return invited_list;
+    }
+
+    public void setInvited_list(Invited_List invited_list) {
+        this.invited_list = invited_list;
+    }
+
+    public ArrayList<Promise> getPromiseArrayList() {
+        return promiseArrayList;
+    }
+
+    public void setPromiseArrayList(ArrayList<Promise> promiseArrayList) {
+        this.promiseArrayList = promiseArrayList;
+    }
+
+    public FirebaseCommunicator getFirebaseCommunicator() {
+        return firebaseCommunicator;
+    }
+
+    public void setFirebaseCommunicator(FirebaseCommunicator firebaseCommunicator) {
+        this.firebaseCommunicator = firebaseCommunicator;
     }
 }

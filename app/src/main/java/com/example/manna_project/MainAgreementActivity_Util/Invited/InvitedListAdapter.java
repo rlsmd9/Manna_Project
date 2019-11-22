@@ -10,6 +10,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.R;
 import com.example.manna_project.ShowDetailSchedule_Activity;
 
@@ -18,12 +19,12 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class InvitedListAdapter extends BaseAdapter {
-    private ArrayList<InvitedListItem> list;
+    private ArrayList<Promise> list;
     private Context context;
     private LayoutInflater inflater;
     private int layout;
 
-    public InvitedListAdapter(ArrayList<InvitedListItem> list, Context context, int layout) {
+    public InvitedListAdapter(ArrayList<Promise> list, Context context, int layout) {
         this.list = list;
         this.context = context;
         this.inflater = (LayoutInflater) this.context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -51,7 +52,7 @@ public class InvitedListAdapter extends BaseAdapter {
             convertView = inflater.inflate(layout, parent, false);
         }
 
-        InvitedListItem invitedListItem = list.get(position);
+        Promise promise = list.get(position);
 
         TextView titleTextView = convertView.findViewById(R.id.activity_main_accept_title_item);
         ImageView closeBtn = convertView.findViewById(R.id.activity_main_accept_closeBtn_item);
@@ -63,18 +64,17 @@ public class InvitedListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 // X버튼 클릭시 삭제 구현
-                Log.d("JS", "onClick: Close Btn");
+
             }
         });
 
-        titleTextView.setText(invitedListItem.getTitle());
-        leaderTextView.setText(invitedListItem.getLeader().getName());
-
+        titleTextView.setText(promise.getTitle());
+        leaderTextView.setText((promise.getLeader()!=null?promise.getLeader().getName():""));
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
 
-        dateTextView.setText(simpleDateFormat.format(new Date(invitedListItem.getDate().getTimeInMillis())));
-        placeTextView.setText(invitedListItem.getPlace());
+        dateTextView.setText("시작시간 : "  + simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
+        placeTextView.setText(promise.getLongitude() + ", " + promise.getLatitude());
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

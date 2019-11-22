@@ -41,7 +41,8 @@ public class FirebaseCommunicator {
 
     public FirebaseCommunicator() {
         this.user = FirebaseAuth.getInstance().getCurrentUser();
-        this.myUid = user.getUid();
+//        this.myUid = user.getUid();
+        this.myUid = "XJJkpZ6ojhQ0ttiF9OgfDEzC00K2";
         this.database = FirebaseDatabase.getInstance();
         this.root = database.getReference();
         this.users = root.child("users");
@@ -92,6 +93,7 @@ public class FirebaseCommunicator {
     //-----------------------------------Promise에 관한 부분-----------------------------------------
 
     public void getAllPromiseKeyById(String Uid) {
+        Log.d(TAG, "getAllPromiseKeyById: " + Uid);
         invitedPromises.child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -113,13 +115,14 @@ public class FirebaseCommunicator {
     }
 
     public void getPromiseByKey(String key) {
-
         promises.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
                 if (callBackListener != null) {
                     Promise promise = new Promise(dataSnapshot);
                     callBackListener.afterGetPromise(promise);
+
                 } else {
                     Log.d(TAG, "콜백 리스너가 안 달렸음 in getPromiseByKey");
                 }
@@ -215,4 +218,6 @@ public class FirebaseCommunicator {
     public void addCallBackListener(CallBackListener callBackListener) {
         this.callBackListener = callBackListener;
     }
+
+
 }
