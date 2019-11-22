@@ -102,6 +102,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             public void afterGetPromise(Promise promise){
                // Log.d(TAG2,promise.getPromiseid());
                 //Log.d(TAG2,promise.getTitle());
+
                 promiseArrayList.add(promise);
 
             }
@@ -192,7 +193,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-                    firebaseCommunicator.findFriendByEmail("wltmd1024@gmail.com");
+
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
                     FirebaseAuth.getInstance().signOut();
