@@ -106,7 +106,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 Log.d(TAG2,promise.getTitle());
                 promiseArrayList.add(promise);
                 Log.d(TAG, "afterGetPromise: " + promise.toString());
-                invited_list.getAcceptInvitationListAdapter().notifyDataSetChanged();
+                invited_list.setListItem();
+                acceptInvitation_list.setListItem();
             }
             @Override
             public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
@@ -316,6 +317,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             accept_Btn.setTextColor(getResources().getColor(R.color.lightRed));
             invited_Btn.setTextColor(getResources().getColor(R.color.white));
             invited_list.getListView().setVisibility(View.GONE);
+            acceptInvitation_list.setListItem();
         } else if(v == invited_Btn) {
             acceptInvitation_list.getListView().setVisibility(View.GONE);
             accept_Btn.setTextColor(getResources().getColor(R.color.white));
