@@ -245,62 +245,77 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-            <LinearLayout
+            <FrameLayout
                 android:id="@+id/tab04_friend"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="match_parent">
 
                 <LinearLayout
+
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/main_invited_btn"
-                        android:text="초대된 약속"
-                        android:background="@drawable/round_shape_blue_color_invited_top_group_left"
-                        android:textStyle="bold"
-                        android:textColor="@color/lightRed"
-                        android:padding="5dp"
-                        android:textAlignment="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:layout_width="1dp"
+                        <TextView
+                            android:id="@+id/main_invited_btn"
+                            android:text="초대된 약속"
+                            android:background="@drawable/round_shape_blue_color_invited_top_group_left"
+                            android:textStyle="bold"
+                            android:textColor="@color/lightRed"
+                            android:padding="5dp"
+                            android:textAlignment="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"/>
+
+                        <TextView
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/main_acceptInvitation_btn"
+                            android:text="수락한 약속"
+                            android:background="@drawable/round_shape_blue_color_invited_top_group_right"
+                            android:textStyle="bold"
+                            android:textColor="#FFF"
+                            android:padding="5dp"
+                            android:textAlignment="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"/>
+                    </LinearLayout>
+
+                    <ListView
+                        android:id="@+id/main_invited_list"
+                        android:dividerHeight="1dp"
+                        android:divider="#ccc"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
 
-                    <TextView
-                        android:id="@+id/main_acceptInvitation_btn"
-                        android:text="수락한 약속"
-                        android:background="@drawable/round_shape_blue_color_invited_top_group_right"
-                        android:textStyle="bold"
-                        android:textColor="#FFF"
-                        android:padding="5dp"
-                        android:textAlignment="center"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"/>
+                    <ListView
+                        android:id="@+id/main_accept_list"
+                        android:dividerHeight="1dp"
+                        android:visibility="gone"
+                        android:divider="#ccc"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"/>
                 </LinearLayout>
 
-                <ListView
-                    android:id="@+id/main_invited_list"
-                    android:dividerHeight="1dp"
-                    android:divider="#ccc"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-
-                <ListView
-                    android:id="@+id/main_accept_list"
-                    android:dividerHeight="1dp"
-                    android:visibility="gone"
-                    android:divider="#ccc"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </LinearLayout>
-
-
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/main_schedule_add_floating_btn"
+                    android:layout_gravity="left|bottom"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:src="@drawable/add_img"
+                    app:backgroundTint="@color/lightBlue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </FrameLayout>
 
         </FrameLayout>
 

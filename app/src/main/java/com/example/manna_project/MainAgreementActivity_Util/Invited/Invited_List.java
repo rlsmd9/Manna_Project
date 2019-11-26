@@ -1,7 +1,10 @@
 package com.example.manna_project.MainAgreementActivity_Util.Invited;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +14,7 @@ import com.example.manna_project.MainAgreementActivity;
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.R;
+import com.example.manna_project.ShowDetailSchedule_Activity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,7 +52,16 @@ public class Invited_List {
 //        arrayList.add(new InvitedListItem("null", "어디서 만나요?6", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
 //        arrayList.add(new InvitedListItem("null", "어디서 만나요?7", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(context, ShowDetailSchedule_Activity.class);
 
+                intent.putExtra("Promise_Info", invitedListAdapter.getItem(position));
+
+                context.startActivity(intent);
+            }
+        });
 
 
         arrayList = new ArrayList<>();

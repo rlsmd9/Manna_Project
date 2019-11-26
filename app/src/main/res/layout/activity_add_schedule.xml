@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/main_agreement_titleBar"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="16dp">
+
+        <TextView
+            android:text="MANNA-"
+            android:textSize="23dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/main_agreement_titleBar_tabName"
+            android:text="스케출 추가"
+            android:textSize="23dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <TextView
+        android:background="#ccc"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_margin="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/activity_add_schedule_titleLabel"
+            android:text="제목"
+            android:textSize="15dp"
+            android:layout_gravity="center"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/activity_add_schedule_title"
+            android:padding="10dp"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/round_shape_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/activity_add_schedule_placeLabel"
+            android:text="장소"
+            android:textSize="15dp"
+
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:baselineAlignedChildIndex="0"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/activity_add_schedule_place"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:hint="장소 선택"
+                android:background="@drawable/round_shape_calendar"
+                android:layout_marginLeft="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+
+            <EditText
+                android:id="@+id/activity_add_schedule_place_detail"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:textSize="15dp"
+                android:hint="상세위치 입력"
+                android:background="@drawable/round_shape_calendar"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/activity_add_schedule_searchPlace_img"
+            android:src="@drawable/choose_place"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/activity_add_schedule_dateLabel"
+            android:text="시간"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/activity_add_schedule_dateGroup"
+            android:layout_alignBaseline="@id/activity_add_schedule_dateLabel"
+            android:baselineAlignedChildIndex="0"
+            android:layout_toRightOf="@id/activity_add_schedule_dateLabel"
+            android:layout_marginLeft="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/activity_add_schedule_date_start"
+                android:padding="10dp"
+                android:background="@drawable/round_shape_calendar"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:hint="시작시간"
+                android:textAlignment="textEnd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/activity_add_schedule_date_end"
+                android:padding="10dp"
+                android:background="@drawable/round_shape_calendar"
+                android:layout_marginTop="10dp"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:hint="종료시간"
+                android:textAlignment="textEnd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <CheckBox
+                android:id="@+id/activity_add_schedule_after_chk"
+                android:layout_gravity="right"
+                android:buttonTint="@color/lightBlue"
+                android:layout_marginRight="5dp"
+                android:text="나중에 정하기"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/activity_add_schedule_attendeesLabel"
+        android:layout_below="@id/activity_add_schedule_placeLabel"
+        android:text="참가자"
+        android:layout_marginLeft="20dp"
+        android:textSize="15dp"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <HorizontalScrollView
+        android:padding="7dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/round_edittext_shape"
+        android:layout_width="match_parent"
+        android:layout_height="70dp">
+
+        <LinearLayout
+            android:id="@+id/activity_show_add_schedule_attendees_group"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:gravity="center"
+                android:text="정지승"
+                android:background="@drawable/round_shape_blue_color"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginRight="5dp"
+                android:layout_width="60dp"
+                android:layout_height="55dp"/>
+
+            <TextView
+                android:gravity="center"
+                android:text="진예찬"
+                android:background="@drawable/round_shape_blue_color"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:layout_marginRight="5dp"
+                android:layout_width="60dp"
+                android:layout_height="55dp"/>
+        </LinearLayout>
+    </HorizontalScrollView>
+
+    <Button
+        android:id="@+id/activity_add_schedule_add_attendee_btn"
+        android:text="참가자 추가"
+        android:layout_gravity="right"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/round_edittext_shape"
+        android:backgroundTint="#ccc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:gravity="center"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/activity_add_schedule_btn"
+            android:text="추가하기"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/activity_add_schedule_back_btn"
+            android:text="뒤로가기"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>

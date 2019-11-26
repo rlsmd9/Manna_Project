@@ -102,7 +102,7 @@ public class Login_activity extends AppCompatActivity implements View.OnClickLis
                                 Log.d(TAG, "로그인 성공");
                                 FirebaseUser user = firebaseAuth.getCurrentUser();
                                 Intent intent = new Intent(getApplicationContext(), MainAgreementActivity.class);
-                                FirebaseCommunicator firebaseCommunicator = new FirebaseCommunicator();
+                                FirebaseCommunicator firebaseCommunicator = new FirebaseCommunicator(null);
                                 MannaUser mannaUser = new MannaUser(user.getDisplayName(),user.getEmail(),user.getUid());
                                 firebaseCommunicator.updateUserInfo(mannaUser.toMap());
                                 sharedPreferences = getSharedPreferences("MANNA", MODE_PRIVATE);

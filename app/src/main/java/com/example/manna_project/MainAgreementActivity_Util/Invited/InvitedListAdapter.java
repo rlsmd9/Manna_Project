@@ -37,7 +37,7 @@ public class InvitedListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Promise getItem(int position) {
         return list.get(position);
     }
 
@@ -55,34 +55,27 @@ public class InvitedListAdapter extends BaseAdapter {
         Promise promise = list.get(position);
 
         TextView titleTextView = convertView.findViewById(R.id.activity_main_accept_title_item);
-        ImageView closeBtn = convertView.findViewById(R.id.activity_main_accept_closeBtn_item);
         TextView leaderTextView = convertView.findViewById(R.id.activity_main_accept_learder_item);
         TextView dateTextView = convertView.findViewById(R.id.activity_main_accept_date_item);
         TextView placeTextView = convertView.findViewById(R.id.activity_main_accept_place_item);
 
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // X버튼 클릭시 삭제 구현
-
-            }
-        });
-
         titleTextView.setText(promise.getTitle());
         leaderTextView.setText((promise.getLeader()!=null?promise.getLeader().getName():""));
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
+        StringBuilder txt = new StringBuilder();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
-        dateTextView.setText("시작시간 : "  + simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
+        txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
+
+        txt.append(" ~ ");
+
+        simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
+
+        txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
+
+        dateTextView.setText(txt);
+
         placeTextView.setText(promise.getLongitude() + ", " + promise.getLatitude());
-
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ShowDetailSchedule_Activity.class);
-                context.startActivity(intent);
-            }
-        });
 
         return convertView;
     }

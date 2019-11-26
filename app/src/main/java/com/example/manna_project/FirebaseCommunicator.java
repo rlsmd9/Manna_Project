@@ -1,5 +1,6 @@
 package com.example.manna_project;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -25,6 +26,8 @@ import java.util.Set;
 public class FirebaseCommunicator {
     public static final String TAG = "MANNAYC";
 
+    public Context context;
+
     public FirebaseDatabase database;
     public DatabaseReference root;
     public DatabaseReference users;
@@ -39,10 +42,10 @@ public class FirebaseCommunicator {
     private CallBackListener callBackListener;
 
 
-    public FirebaseCommunicator() {
+    public FirebaseCommunicator(Context context) {
         this.user = FirebaseAuth.getInstance().getCurrentUser();
-//        this.myUid = user.getUid();
-        this.myUid = "XJJkpZ6ojhQ0ttiF9OgfDEzC00K2";
+        this.myUid = user.getUid();
+//        this.myUid = "XJJkpZ6ojhQ0ttiF9OgfDEzC00K2";
         this.database = FirebaseDatabase.getInstance();
         this.root = database.getReference();
         this.users = root.child("users");
@@ -50,6 +53,7 @@ public class FirebaseCommunicator {
         this.friendList = root.child("friendlist");
         this.invitedPromises = root.child("invited");
         this.myRef = users.child(myUid);
+        this.context = context;
     }
 
 
@@ -120,7 +124,7 @@ public class FirebaseCommunicator {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
                 if (callBackListener != null) {
-                    Promise promise = new Promise(dataSnapshot);
+                    Promise promise = new Promise(dataSnapshot, context);
                     callBackListener.afterGetPromise(promise);
 
                 } else {

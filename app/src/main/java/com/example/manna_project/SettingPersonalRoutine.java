@@ -140,7 +140,7 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
         sendRoutine(routineArr);
     }
     private void sendRoutine(ArrayList<MannaUser.Routine> routineArr) {
-        FirebaseCommunicator comunicator = new FirebaseCommunicator();
+        FirebaseCommunicator comunicator = new FirebaseCommunicator(null);
         String myUid = comunicator.getMyUid();
         comunicator.updateRoutine(myUid,routineArr);
     }

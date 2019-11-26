@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.manna_project.MainAgreementActivity_Util.Custom_user_icon_view xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/user_name_icon"
+        android:gravity="center"
+        android:text=""
+        android:background="@drawable/round_shape_blue_color"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:layout_marginRight="5dp"
+        android:layout_width="60dp"
+        android:layout_height="55dp"/>
+</com.example.manna_project.MainAgreementActivity_Util.Custom_user_icon_view>

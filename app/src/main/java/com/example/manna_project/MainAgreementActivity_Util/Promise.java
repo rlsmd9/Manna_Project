@@ -1,11 +1,15 @@
 package com.example.manna_project.MainAgreementActivity_Util;
 
+import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.BaseAdapter;
 
 import androidx.annotation.NonNull;
 
 import com.example.manna_project.FirebaseCommunicator;
+import com.example.manna_project.MainAgreementActivity;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,20 +22,20 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-public class Promise {
+public class Promise implements Parcelable {
 
     public static final String TAG = "MANNAYC";
     public static int INVITED =0;
     public static int ACCEPTED=1;
     public static int FIXED=2;
 
-    private String promiseid;
-    private String title;
-    private String leaderId;
-    private MannaUser leader;
+    private String promiseid; //
+    private String title; //
+    private String leaderId; //
+    private MannaUser leader; //
 
-    private double latitude;
-    private double longitude;
+    private double latitude; //
+    private double longitude; //
 
     private Calendar startTime;
     private Calendar endTime;
@@ -41,6 +45,33 @@ public class Promise {
     HashMap<String, Integer> acceptState;
     ArrayList<MannaUser> attendees;
 
+
+    protected Promise(Parcel in) {
+        promiseid = in.readString();
+        title = in.readString();
+        leaderId = in.readString();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
+        leader = in.readParcelable(MannaUser.class.getClassLoader());
+        startTime = (Calendar) in.readSerializable();
+        endTime = (Calendar) in.readSerializable();
+        acceptState = in.readHashMap(HashMap.class.getClassLoader());
+        attendees = (ArrayList<MannaUser>) in.readSerializable();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(promiseid);
+        dest.writeString(title);
+        dest.writeString(leaderId);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeParcelable(leader, flags);
+        dest.writeSerializable(startTime);
+        dest.writeSerializable(endTime);
+        dest.writeMap(acceptState);
+        dest.writeSerializable(attendees);
+    }
 
     public Promise() {
 
@@ -60,7 +91,7 @@ public class Promise {
 
     }
 
-    public Promise(DataSnapshot dataSnapshot){
+    public Promise(DataSnapshot dataSnapshot, Context context){
 
         this.title = dataSnapshot.child("Title").getValue(String.class);
         this.promiseid = dataSnapshot.getKey();
@@ -83,8 +114,22 @@ public class Promise {
             this.acceptState.put(hashSnapshot.getKey(),hashSnapshot.getValue(Integer.class));
         }
         DBRef = FirebaseDatabase.getInstance().getReference();
-        getLeaderInfo();
+        getLeaderInfo(context);
     }
+
+
+
+    public static final Creator<Promise> CREATOR = new Creator<Promise>() {
+        @Override
+        public Promise createFromParcel(Parcel in) {
+            return new Promise(in);
+        }
+
+        @Override
+        public Promise[] newArray(int size) {
+            return new Promise[size];
+        }
+    };
 
     public String getPromiseid() {
         return promiseid;
@@ -170,13 +215,22 @@ public class Promise {
         this.acceptState.put(user.getUid(),INVITED);
     }
 
-    public void getLeaderInfo(){
+    public void getLeaderInfo(final Context context){
         DatabaseReference Ref = FirebaseDatabase.getInstance().getReference();
         Ref = Ref.child("users").child(leaderId);
         Ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 leader = new MannaUser(dataSnapshot);
+//                Log.d(TAG, "onDataChange: " + leader.toString());
+                MainAgreementActivity mainAgreementActivity = (MainAgreementActivity)context;
+
+                if (mainAgreementActivity != null) {
+                    mainAgreementActivity.getInvited_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
+                    mainAgreementActivity.getAcceptInvitation_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
+                }
+
+
             }
 
             @Override
@@ -201,7 +255,7 @@ public class Promise {
             attendeesUid.add(iterator.next());
         }
 
-        FirebaseCommunicator firebaseCommunicator = new FirebaseCommunicator();
+        FirebaseCommunicator firebaseCommunicator = new FirebaseCommunicator(null);
         firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
             @Override
             public void afterGetUser(MannaUser mannaUser) {
@@ -275,5 +329,12 @@ public class Promise {
             }
         });
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+
 }
 

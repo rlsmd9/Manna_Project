@@ -237,8 +237,6 @@ public class Custom_Calendar implements View.OnClickListener {
         }
     }
 
-
-
     @Override
     public void onClick(View v) {
         ScheduleOfDay selected_scheduleOfDay = findDateLayout(v);

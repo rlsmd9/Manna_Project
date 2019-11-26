@@ -11,11 +11,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class MannaUser{
+public class MannaUser implements Parcelable {
 
     static final String TAG = "MANNAYC";
 
@@ -31,12 +32,14 @@ public class MannaUser{
         routineList = new ArrayList<>();
         DataSnapshot routineSnapshot = dataSnapshot.child("Routines");
         for(DataSnapshot postSnapshot : routineSnapshot.getChildren()){
-            routineList.add(new Routine(postSnapshot));
+            Routine routine = new Routine(postSnapshot);
+            if (routine != null)
+                routineList.add(routine);
         }
         this.name = dataSnapshot.child("Name").getValue(String.class);
-//        this.Uid = dataSnapshot.child("Uid").getValue(String.class);
+        this.Uid = dataSnapshot.child("Uid").getValue(String.class);
 //        임시
-        this.Uid = "XJJkpZ6ojhQ0ttiF9OgfDEzC00K2";
+//        this.Uid = "XJJkpZ6ojhQ0ttiF9OgfDEzC00K2";
         this.eMail =dataSnapshot.child("E-mail").getValue(String.class);
         this.nickName = dataSnapshot.child("NickName").getValue(String.class);
     }
@@ -46,6 +49,26 @@ public class MannaUser{
         this.Uid = Uid;
         this.eMail = eMail;
     }
+
+    protected MannaUser(Parcel in) {
+        name = in.readString();
+        nickName = in.readString();
+        Uid = in.readString();
+        eMail = in.readString();
+        routineList = (ArrayList<Routine>) in.readSerializable();
+    }
+
+    public static final Creator<MannaUser> CREATOR = new Creator<MannaUser>() {
+        @Override
+        public MannaUser createFromParcel(Parcel in) {
+            return new MannaUser(in);
+        }
+
+        @Override
+        public MannaUser[] newArray(int size) {
+            return new MannaUser[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -98,6 +121,20 @@ public class MannaUser{
         return result;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(nickName);
+        dest.writeString(Uid);
+        dest.writeString(eMail);
+        dest.writeSerializable(routineList);
+    }
+
     public class Routine{
         private int startTime;
         private int endTime;
@@ -109,9 +146,10 @@ public class MannaUser{
             this.day = day;
         }
         public Routine(DataSnapshot dataSnapshot){
-            this.startTime = dataSnapshot.child("StartTime").getValue(Integer.class);
-            this.endTime = dataSnapshot.child("EndTime").getValue(Integer.class);
-            this.day = dataSnapshot.child("Day").getValue(Integer.class);
+            Log.d(TAG, "Routine: " + dataSnapshot.toString());
+            this.startTime = dataSnapshot.child("startTime").getValue(Integer.class);
+            this.endTime = dataSnapshot.child("endTime").getValue(Integer.class);
+            this.day = dataSnapshot.child("day").getValue(Integer.class);
         }
 
         public int getStartTime() {
@@ -137,6 +175,16 @@ public class MannaUser{
         public void setDay(int day) {
             this.day = day;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "MannaUser{" +
+                "name='" + name + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", Uid='" + Uid + '\'' +
+                ", eMail='" + eMail + '\'' +
+                '}';
     }
 }
 

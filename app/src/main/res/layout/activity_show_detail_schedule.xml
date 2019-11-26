@@ -120,70 +120,33 @@
         android:layout_marginTop="5dp"
         android:background="@drawable/round_edittext_shape"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="70dp">
 
         <LinearLayout
+            android:id="@+id/activity_show_detail_schedule_attendees_group"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
 
-            <ImageView
-                android:src="@drawable/manna_icon"
+            <TextView
+                android:gravity="center"
+                android:text="정지승"
+                android:background="@drawable/round_shape_blue_color"
+                android:textColor="@color/white"
+                android:textStyle="bold"
                 android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="60dp"
+                android:layout_height="55dp"/>
 
-            <ImageView
-                android:src="@drawable/manna_icon"
+            <TextView
+                android:gravity="center"
+                android:text="진예찬"
+                android:background="@drawable/round_shape_blue_color"
+                android:textColor="@color/white"
+                android:textStyle="bold"
                 android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <ImageView
-                android:src="@drawable/manna_icon"
-                android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:src="@drawable/manna_icon"
-                android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:src="@drawable/manna_icon"
-                android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:src="@drawable/manna_icon"
-                android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:src="@drawable/manna_icon"
-                android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:src="@drawable/manna_icon"
-                android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:src="@drawable/manna_icon"
-                android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:src="@drawable/manna_icon"
-                android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-            <ImageView
-                android:src="@drawable/manna_icon"
-                android:layout_marginRight="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="60dp"
+                android:layout_height="55dp"/>
         </LinearLayout>
     </HorizontalScrollView>
 

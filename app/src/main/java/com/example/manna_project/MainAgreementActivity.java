@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.GridLayout;
 import android.widget.ImageView;
@@ -26,6 +27,7 @@ import com.example.manna_project.MainAgreementActivity_Util.Invited.Invited_List
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -55,12 +57,13 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     FirebaseCommunicator firebaseCommunicator;
     TextView userName;
 
+    FloatingActionButton main_schedule_add_floating_btn;
+
     MannaUser myInfo;
     ArrayList<Promise> promiseArrayList;
     ArrayList<MannaUser> friendList;
     ArrayList<String> friendUids;
     ArrayList<String> promiseKeyList;
-
 
     static final String TAG = "MANNA_JS";
     static final String TAG2 = "MANNAYC";
@@ -78,7 +81,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         promiseArrayList = new ArrayList<>();
         friendList = new ArrayList<>();
 
-        firebaseCommunicator = new FirebaseCommunicator();
+        firebaseCommunicator = new FirebaseCommunicator(this);
 
         initTabHost();
         custom_calendar.initCalendar();
@@ -91,24 +94,30 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
             @Override
             public void afterGetUser(MannaUser mannaUser) {
+                Log.d(TAG, "afterGetUser: " + mannaUser.toString());
                 if(myInfo == null) {
                     myInfo = mannaUser;
                     userName.setText(mannaUser.getName());
                     firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+                    firebaseCommunicator.getFriendList(myInfo.getUid());
                 }
                 else{
                     friendList.add(mannaUser);
+                    friend_list.getFriendListAdapter().notifyDataSetChanged();
                 }
             }
+
             @Override
             public void afterGetPromise(Promise promise){
                 Log.d(TAG2,promise.getPromiseid());
                 Log.d(TAG2,promise.getTitle());
                 promiseArrayList.add(promise);
                 Log.d(TAG, "afterGetPromise: " + promise.toString());
+
                 invited_list.setListItem();
                 acceptInvitation_list.setListItem();
             }
+
             @Override
             public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
                 Log.d(TAG, "afterGetPromiseKey: dwdw");
@@ -119,6 +128,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     firebaseCommunicator.getPromiseByKey(key);
                 }
             }
+
             @Override
             public void afterGetFriendUids(ArrayList<String> friends) {
                  friendUids = friends;
@@ -126,6 +136,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                  for(int i=0;i<size ; i++) {
                      firebaseCommunicator.getUserById(friendUids.get(i));
                  }
+
+
             }
         });
 
@@ -156,7 +168,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_friendlist));
         tabSpec.setContent(R.id.main_friend_layout);
         tabHost.addTab(tabSpec);
-        friend_list = new Friend_List(this, (ListView) findViewById(R.id.main_friendList));
+        friend_list = new Friend_List(this, (ListView) findViewById(R.id.main_friendList), friendList);
 
         // 약속
         tabSpec = tabHost.newTabSpec("tab_agreement");
@@ -174,6 +186,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         tabHost.addTab(tabSpec);
         acceptInvitation_list = new AcceptInvitation_List(this, (ListView)findViewById(R.id.main_accept_list));
         invited_list = new Invited_List(this, (ListView)findViewById(R.id.main_invited_list));
+
+        main_schedule_add_floating_btn = findViewById(R.id.main_schedule_add_floating_btn);
+        main_schedule_add_floating_btn.setOnClickListener(this);
 
         invited_Btn = findViewById(R.id.main_invited_btn);
         accept_Btn = findViewById(R.id.main_acceptInvitation_btn);
@@ -256,6 +271,15 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     custom_calendar.getResultsFromApi();
                 }
                 break;
+
+            case AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE:
+
+                if (resultCode == RESULT_OK) {
+                    Log.d(TAG, "onActivityResult: OK");
+                } else if(resultCode == RESULT_CANCELED) {
+                    Log.d(TAG, "onActivityResult: Cancel");
+                }
+                break;
         }
     }
 
@@ -325,6 +349,15 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             invited_list.getListView().setVisibility(View.VISIBLE);
             // 리스트 갱신
             invited_list.setListItem();
+        } else if(v == main_schedule_add_floating_btn) {
+            Intent intent = new Intent(this, AddScheduleActivity.class);
+
+            Log.d(TAG, "onClick: " + myInfo.toString());
+
+            intent.putParcelableArrayListExtra("FRIENDLIST", friendList);
+            intent.putExtra("MYINFO", myInfo);
+
+            startActivityForResult(intent, AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE);
         }
     }
 
@@ -367,5 +400,13 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     public void setFirebaseCommunicator(FirebaseCommunicator firebaseCommunicator) {
         this.firebaseCommunicator = firebaseCommunicator;
+    }
+
+    public AcceptInvitation_List getAcceptInvitation_list() {
+        return acceptInvitation_list;
+    }
+
+    public void setAcceptInvitation_list(AcceptInvitation_List acceptInvitation_list) {
+        this.acceptInvitation_list = acceptInvitation_list;
     }
 }

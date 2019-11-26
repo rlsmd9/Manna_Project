@@ -3,28 +3,20 @@ package com.example.manna_project.MainAgreementActivity_Util.Friend;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
+
 public class FriendListItem {
-    private int img;
-    private String txt;
+    MannaUser user;
 
-    public int getImg() {
-        return img;
+    public FriendListItem(MannaUser user) {
+        this.user = user;
     }
 
-    public void setImg(int img) {
-        this.img = img;
+    public MannaUser getUser() {
+        return user;
     }
 
-    public String getTxt() {
-        return txt;
-    }
-
-    public void setTxt(String txt) {
-        this.txt = txt;
-    }
-
-    public FriendListItem(int img, String txt) {
-        this.img = img;
-        this.txt = txt;
+    public void setUser(MannaUser user) {
+        this.user = user;
     }
 }

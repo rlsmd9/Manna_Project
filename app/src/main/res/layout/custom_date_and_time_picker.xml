@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+
+    <TextView
+        android:text="2019"
+        android:layout_gravity="center"
+        android:id="@+id/custom_date_and_time_datePicker_year"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="년"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <NumberPicker
+        android:id="@+id/custom_date_and_time_datePicker_month"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="월"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <NumberPicker
+        android:id="@+id/custom_date_and_time_datePicker_day"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="일"
+       android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <NumberPicker
+        android:id="@+id/custom_date_and_time_datePicker_hour"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="시"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <NumberPicker
+        android:id="@+id/custom_date_and_time_datePicker_min"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:text="분"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <NumberPicker
+        android:id="@+id/custom_date_and_time_datePicker_ampm"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"/>
+</LinearLayout>
