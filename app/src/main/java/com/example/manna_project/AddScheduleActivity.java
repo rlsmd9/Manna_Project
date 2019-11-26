@@ -41,6 +41,7 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
     CheckBox activity_add_schedule_after_chk;
 
     LinearLayout attendees_group;
+    boolean[] selectedUsers;
     Button activity_add_schedule_add_attendee_btn;
 
     Button activity_add_schedule_back_btn;
@@ -55,6 +56,7 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
     ArrayList<MannaUser> friendList;
     ArrayList<MannaUser> attendees;
     MannaUser myInfo;
+
 
     public final static int ADD_SCHEDULE_REQUEST_CODE = 9910; // 스케줄 추가 요청 코드
 
@@ -74,6 +76,8 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
         Log.d(MainAgreementActivity.TAG, "setAttendeeList: " + myInfo.toString());
         attendees = new ArrayList<>();
         attendees.add(myInfo);
+
+        selectedUsers = new boolean[friendList.size()];
 
         setReference();
         setEvent();
@@ -155,6 +159,23 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
                     latLng = data.getParcelableExtra("Location");
                 }
                 break;
+            case Friend_select_list_dialog_activity.FRIEND_SELECT_LIST_DIALOG_ACTIVITY_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    attendees.clear();
+                    attendees.add(myInfo);
+
+                    selectedUsers = data.getBooleanArrayExtra("SELECTED_USERS");
+
+                    for (int i = 0; i < selectedUsers.length; i++) {
+//                        Log.d("JS", "onActivityResult: " + user.toString());
+                        if (selectedUsers[i])
+                            attendees.add(friendList.get(i));
+                    }
+
+                    setAttendeeList();
+
+                }
+                break;
         }
 
 
@@ -205,7 +226,13 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
 
             builder.create().show();
         } else if(v == activity_add_schedule_add_attendee_btn) {
-            Log.d(MainAgreementActivity.TAG, "onClick: pushed select attendee");
+            Intent intent = new Intent(this, Friend_select_list_dialog_activity.class);
+
+            intent.putParcelableArrayListExtra("FRIENDLIST", friendList);
+            Log.d("JS", "onClick: zzz" + selectedUsers.length);
+            intent.putExtra("selectedUsers", this.selectedUsers);
+
+            startActivityForResult(intent, Friend_select_list_dialog_activity.FRIEND_SELECT_LIST_DIALOG_ACTIVITY_REQUEST_CODE);
         } else if(v == activity_add_schedule_back_btn) {
             setResult(RESULT_CANCELED);
             finish();

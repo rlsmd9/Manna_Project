@@ -20,7 +20,7 @@ public class Friend_List {
 
         setListItem(users);
 
-        friendListAdapter = new FriendListAdapter(this.getArrayList(), this.context, R.layout.activity_friend_list_item);
+        friendListAdapter = new FriendListAdapter(this.getArrayList(), this.context, R.layout.activity_friend_list_item, null);
 
         setList();
     }

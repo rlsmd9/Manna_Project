@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Friend_select_list_dialog_activity"></activity>
+        <activity android:name=".Friend_select_list_dialog_activity" android:theme="@style/AppThemeDialog"></activity>
         <activity android:name=".AddScheduleActivity" />
         <activity android:name=".SearchPlaceActivity"></activity>
         <activity

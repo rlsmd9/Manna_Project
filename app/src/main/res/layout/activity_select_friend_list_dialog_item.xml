@@ -8,49 +8,58 @@
     <ImageView
         android:id="@+id/friend_icon"
         android:src="@drawable/manna_icon"
+        android:baselineAlignBottom="true"
         android:scaleType="centerInside"
         android:layout_width="40dp"
         android:layout_height="40dp"/>
 
-    <TextView
-        android:id="@+id/user_name"
-        android:text="홍길동"
-        android:layout_toRightOf="@id/friend_icon"
-        android:textSize="20dp"
-        android:layout_marginLeft="16dp"
-        android:gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
-
-    <TextView
-        android:text="("
-        android:textSize="20dp"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/user_email"
-        android:text=""
-        android:textSize="20dp"
-        android:gravity="center_vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"/>
-
-    <TextView
-        android:text=")"
-        android:textSize="20dp"
-        android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <Space
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_gravity="center"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/user_name"
+            android:text="홍길동"
+            android:layout_toRightOf="@id/friend_icon"
+            android:textSize="16dp"
+            android:layout_marginLeft="16dp"
+            android:gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:text="("
+            android:textSize="16dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/user_email"
+            android:text=""
+            android:textSize="16dp"
+            android:gravity="center_vertical"
+            android:singleLine="true"
+            android:ellipsize="end"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            />
+
+        <TextView
+            android:text=")"
+            android:textSize="16dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
 
     <CheckBox
         android:id="@+id/user_chk"
+        android:buttonTint="@color/lightBlue"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
