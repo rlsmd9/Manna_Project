@@ -19,9 +19,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.manna_project.MainAgreementActivity_Util.Custom_user_icon_view;
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
+import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.naver.maps.geometry.LatLng;
 
 import java.text.SimpleDateFormat;
@@ -229,7 +231,6 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
             Intent intent = new Intent(this, Friend_select_list_dialog_activity.class);
 
             intent.putParcelableArrayListExtra("FRIENDLIST", friendList);
-            Log.d("JS", "onClick: zzz" + selectedUsers.length);
             intent.putExtra("selectedUsers", this.selectedUsers);
 
             startActivityForResult(intent, Friend_select_list_dialog_activity.FRIEND_SELECT_LIST_DIALOG_ACTIVITY_REQUEST_CODE);
@@ -237,7 +238,44 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
             setResult(RESULT_CANCELED);
             finish();
         } else if(v == activity_add_schedule_btn) {
-            setResult(RESULT_OK);
+            if (activity_add_schedule_title.getText().toString().isEmpty()) {
+                Toast.makeText(this, "제목을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                activity_add_schedule_title.setFocusable(true);
+                return;
+            } else if(activity_add_schedule_place.getText().toString().isEmpty()) {
+                Toast.makeText(this, "장소를 선택해 주세요.", Toast.LENGTH_SHORT).show();
+                activity_add_schedule_place.setFocusable(true);
+                return;
+            } else if(activity_add_schedule_place_detail.getText().toString().isEmpty()) {
+                Toast.makeText(this, "상세 장소를 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                activity_add_schedule_place_detail.setFocusable(true);
+                return;
+            } else if(activity_add_schedule_after_chk.isChecked() == false) {
+                if (activity_add_schedule_date_start.toString().isEmpty()) {
+                    Toast.makeText(this, "시작 시간을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                    activity_add_schedule_date_start.setFocusable(true);
+                    return;
+                } else if (activity_add_schedule_date_end.toString().isEmpty()) {
+                    Toast.makeText(this, "종료 시간을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                    activity_add_schedule_date_end.setFocusable(true);
+                    return;
+                }
+            }
+
+            String title = activity_add_schedule_title.getText().toString();
+            String loadAddress = activity_add_schedule_place.getText().toString() + ", " + activity_add_schedule_place_detail.getText().toString();
+            MannaUser leader = myInfo;
+
+            Promise promise = new Promise(title, leader.getUid(), leader, loadAddress, latLng.latitude, latLng.longitude, start, end);
+            promise.setAttendees(attendees);
+
+            Log.d("JS", "onClick: " + promise.toString());
+
+            Intent intent = getIntent();
+
+            intent.putExtra("made_promise", promise);
+
+            setResult(RESULT_OK, intent);
             finish();
         }
     }

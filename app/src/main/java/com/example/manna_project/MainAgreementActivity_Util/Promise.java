@@ -34,6 +34,7 @@ public class Promise implements Parcelable {
     private String leaderId; //
     private MannaUser leader; //
 
+    private String loadAddress;
     private double latitude; //
     private double longitude; //
 
@@ -50,13 +51,14 @@ public class Promise implements Parcelable {
         promiseid = in.readString();
         title = in.readString();
         leaderId = in.readString();
+        loadAddress = in.readString();
         latitude = in.readDouble();
         longitude = in.readDouble();
         leader = in.readParcelable(MannaUser.class.getClassLoader());
         startTime = (Calendar) in.readSerializable();
         endTime = (Calendar) in.readSerializable();
         acceptState = in.readHashMap(HashMap.class.getClassLoader());
-        attendees = (ArrayList<MannaUser>) in.readSerializable();
+        attendees = in.readArrayList(MannaUser.class.getClassLoader());
     }
 
     @Override
@@ -64,23 +66,25 @@ public class Promise implements Parcelable {
         dest.writeString(promiseid);
         dest.writeString(title);
         dest.writeString(leaderId);
+        dest.writeString(loadAddress);
         dest.writeDouble(latitude);
         dest.writeDouble(longitude);
         dest.writeParcelable(leader, flags);
         dest.writeSerializable(startTime);
         dest.writeSerializable(endTime);
         dest.writeMap(acceptState);
-        dest.writeSerializable(attendees);
+        dest.writeList(attendees);
     }
 
     public Promise() {
 
     }
 
-    public Promise(String title, String leaderId, MannaUser leader, double latitude, double longitude, Calendar startTime, Calendar endTime){
+    public Promise(String title, String leaderId, MannaUser leader, String loadAddress, double latitude, double longitude, Calendar startTime, Calendar endTime){
         this.title = title;
         this.leaderId = leaderId;
         this.leader = leader;
+        this.loadAddress = loadAddress;
         this.latitude = latitude;
         this.longitude = longitude;
         this.startTime = startTime;
@@ -88,7 +92,6 @@ public class Promise implements Parcelable {
         attendees = new ArrayList<>();
         acceptState = new HashMap<>();
         DBRef = FirebaseDatabase.getInstance().getReference();
-
     }
 
     public Promise(DataSnapshot dataSnapshot, Context context){
@@ -96,6 +99,7 @@ public class Promise implements Parcelable {
         this.title = dataSnapshot.child("Title").getValue(String.class);
         this.promiseid = dataSnapshot.getKey();
         this.leaderId = dataSnapshot.child("LeaderId").getValue(String.class);
+        this.loadAddress = dataSnapshot.child("loadAddress").getValue(String.class);
         this.latitude = dataSnapshot.child("Latitude").getValue(Double.class).doubleValue();
         this.longitude = dataSnapshot.child("Longitude").getValue(Double.class).doubleValue();
 
@@ -288,10 +292,10 @@ public class Promise implements Parcelable {
                 ", leader=" + leader +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", startTime=" + startTime +
-                ", endTime=" + endTime +
+                ", startTime=" + startTime.get(Calendar.YEAR) + "-" + startTime.get(Calendar.MONTH) + "-" + startTime.get(Calendar.DAY_OF_MONTH) +
+                ", endTime=" + endTime.get(Calendar.YEAR) + "-" + endTime.get(Calendar.MONTH) + "-" + endTime.get(Calendar.DAY_OF_MONTH) +
                 ", acceptState=" + acceptState +
-                ", attendees=" + attendees +
+                ", attendees=" + attendees.toString() +
                 '}';
     }
 
@@ -300,6 +304,7 @@ public class Promise implements Parcelable {
         result.put("PromiseId",this.promiseid);
         result.put("Title",this.title);
         result.put("LeaderId" ,this.leaderId);
+        result.put("loadAddress", this.loadAddress);
         result.put("Latitude",Double.valueOf(this.latitude));
         result.put("Longitude",Double.valueOf(this.longitude));
         result.put("StartTime",startTime.get(Calendar.YEAR)+"/"+startTime.get(Calendar.MONTH)+"/"+startTime.get(Calendar.DATE)+"/"+startTime.get(Calendar.HOUR_OF_DAY)+"/"+startTime.get(Calendar.MINUTE));

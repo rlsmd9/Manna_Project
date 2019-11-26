@@ -208,7 +208,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 if (position == 0) {
                     Calendar start = Calendar.getInstance();
                     Calendar end = Calendar.getInstance();
-                    Promise promise = new Promise("우리지금만나",myInfo.getUid(),myInfo,150.0,100.0,start,end);
+                    Promise promise = new Promise("우리지금만나",myInfo.getUid(),myInfo, "",150.0,100.0,start,end);
                     promise.addAttendee(myInfo);
                     firebaseCommunicator.upLoadPromise(promise);
                 } else if (position == 1) {
@@ -276,6 +276,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
                 if (resultCode == RESULT_OK) {
                     Log.d(TAG, "onActivityResult: OK");
+                    Promise promise = data.getParcelableExtra("made_promise");
+
+                    Log.d(TAG, "onActivityResult: " + promise.toString());
                 } else if(resultCode == RESULT_CANCELED) {
                     Log.d(TAG, "onActivityResult: Cancel");
                 }
