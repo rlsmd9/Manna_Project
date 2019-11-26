@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
+import com.example.manna_project.MainAgreementActivity_Util.Routine;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -89,7 +90,7 @@ public class FirebaseCommunicator {
         });
     }
 
-    public void updateRoutine(String myUid, ArrayList<MannaUser.Routine> Arr) {
+    public void updateRoutine(String myUid, ArrayList<Routine> Arr) {
         users.child(myUid).child("Routines").setValue(Arr);
     }
 

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
+import com.example.manna_project.MainAgreementActivity_Util.Routine;
 
 import java.util.ArrayList;
 
@@ -118,8 +119,8 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
     private void makeRoutineObject() {       //버튼이 눌려있는 시간대에 시작시간과 끝시간을 가져옴
         int time = 8, day = 0;
         //시작 종료 넣을 자료구조
-        ArrayList<MannaUser.Routine> routineArr = new ArrayList<>();
-        MannaUser factory = new MannaUser();
+        ArrayList<Routine> routineArr = new ArrayList<>();
+
         while (time < 22 && day <= 6) {
             if (timeTableBtn[time - 8][day].isClicked) {
                 int startTime = time, endTime;
@@ -128,7 +129,7 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
                 }
                 endTime = time;
                 //Log.d("MANNAYC", startTime + "시 ~ " + endTime + "시");
-                routineArr.add(factory.new Routine(startTime,endTime,day));
+                routineArr.add(new Routine(startTime,endTime,day));
             } else
                 time++;
 
@@ -139,7 +140,7 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
         }
         sendRoutine(routineArr);
     }
-    private void sendRoutine(ArrayList<MannaUser.Routine> routineArr) {
+    private void sendRoutine(ArrayList<Routine> routineArr) {
         FirebaseCommunicator comunicator = new FirebaseCommunicator(null);
         String myUid = comunicator.getMyUid();
         comunicator.updateRoutine(myUid,routineArr);

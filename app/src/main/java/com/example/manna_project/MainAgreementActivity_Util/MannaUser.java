@@ -7,6 +7,7 @@ import android.os.Parcelable;
 import android.provider.ContactsContract;
 import android.util.Log;
 
+import com.example.manna_project.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -55,7 +56,7 @@ public class MannaUser implements Parcelable {
         nickName = in.readString();
         Uid = in.readString();
         eMail = in.readString();
-        routineList = (ArrayList<Routine>) in.readSerializable();
+        routineList = in.readArrayList(Routine.class.getClassLoader());
     }
 
     public static final Creator<MannaUser> CREATOR = new Creator<MannaUser>() {
@@ -132,49 +133,7 @@ public class MannaUser implements Parcelable {
         dest.writeString(nickName);
         dest.writeString(Uid);
         dest.writeString(eMail);
-        dest.writeSerializable(routineList);
-    }
-
-    public class Routine{
-        private int startTime;
-        private int endTime;
-        private int day;
-
-        public Routine(int start, int end, int day){
-            this.startTime = start;
-            this.endTime = end;
-            this.day = day;
-        }
-        public Routine(DataSnapshot dataSnapshot){
-            Log.d(TAG, "Routine: " + dataSnapshot.toString());
-            this.startTime = dataSnapshot.child("startTime").getValue(Integer.class);
-            this.endTime = dataSnapshot.child("endTime").getValue(Integer.class);
-            this.day = dataSnapshot.child("day").getValue(Integer.class);
-        }
-
-        public int getStartTime() {
-            return startTime;
-        }
-
-        public void setStartTime(int startTime) {
-            this.startTime = startTime;
-        }
-
-        public int getEndTime() {
-            return endTime;
-        }
-
-        public void setEndTime(int endTime) {
-            this.endTime = endTime;
-        }
-
-        public int getDay() {
-            return day;
-        }
-
-        public void setDay(int day) {
-            this.day = day;
-        }
+        dest.writeList(routineList);
     }
 
     @Override
