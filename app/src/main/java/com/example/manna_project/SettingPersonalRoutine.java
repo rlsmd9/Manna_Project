@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
 
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
+import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBoard_Chat;
+import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.MainAgreementActivity_Util.Routine;
 
 import java.util.ArrayList;
@@ -27,6 +29,10 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
     TableLayout routineTableLayout;
     Button backBtn, saveBtn;
     TimeTableButton timeTableBtn[][];
+    FirebaseCommunicator firebaseCommunicator;
+    MannaUser myInfo;
+    ArrayList<Routine> routines;
+
 
 
     final static String TAG = "MANNAYC";
@@ -44,6 +50,49 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
         backBtn.setOnClickListener(this);
         saveBtn.setOnClickListener(this);
 
+        firebaseCommunicator = new FirebaseCommunicator(this);
+        firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
+            @Override
+            public void afterGetUser(MannaUser mannaUser) {
+                myInfo = mannaUser;
+                routines = myInfo.getRoutineList();
+                getUserData();
+            }
+
+            @Override
+            public void afterGetPromise(Promise promise) {
+
+            }
+
+            @Override
+            public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
+
+            }
+
+            @Override
+            public void afterGetFriendUids(ArrayList<String> friendList) {
+
+            }
+
+            @Override
+            public void afterGetChat(NoticeBoard_Chat chat) {
+
+            }
+        });
+        firebaseCommunicator.getUserById(firebaseCommunicator.getMyUid());
+    }
+    private void getUserData(){
+        for(Routine routine : routines){
+            int start = routine.getStartTime()-8;
+            int end = routine.getEndTime()-8;
+            int day = routine.getDay();
+
+            while(start<end){
+                timeTableBtn[start][day].isClicked = true;
+                timeTableBtn[start][day].setBackgroundResource(R.drawable.edge_rectangular_blue);
+                start++;
+            }
+        }
     }
 
     private void setTimetable(TableLayout table) {

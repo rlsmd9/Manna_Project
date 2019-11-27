@@ -25,6 +25,7 @@ import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Line
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
 import com.example.manna_project.MainAgreementActivity_Util.Invited.Invited_List;
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
+import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBoard_Chat;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -113,10 +114,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             }
             @Override
             public void afterGetPromise(Promise promise){
-                Log.d(TAG2,promise.getPromiseid());
-                Log.d(TAG2,promise.getTitle());
+
                 promiseArrayList.add(promise);
-//                Log.d(TAG, "afterGetPromise: " + promise.toString());
+                   Log.d(TAG, "afterGetPromise: " + promise.toString());
                 invited_list.setListItem();
                 acceptInvitation_list.setListItem();
             }
@@ -137,6 +137,14 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                  for(int i=0;i<size ; i++) {
                      firebaseCommunicator.getUserById(friendUids.get(i));
                  }
+            }
+
+            @Override
+            public void afterGetChat(NoticeBoard_Chat chat) {
+
+//                for(NoticeBoard_Chat chat : chats){
+//                    Log.d(TAG2,chat.getChatId());
+//                }
             }
         });
 
@@ -211,13 +219,13 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 //                    promise.addAttendee(myInfo);
 //                    firebaseCommunicator.upLoadPromise(promise);
                 } else if (position == 1) {
-                    //firebaseCommunicator.getPromiseByKey("-LuH2xe7qXlub3GlHSFo");
-
+                    NoticeBoard_Chat noticeBoard_chat = new NoticeBoard_Chat(myInfo,"알림설정 누르면 예제 채팅 올라감","날짜 얻기 귀찮");
+                    firebaseCommunicator.addComment("-LuHFQhCz5UXdjHYV7lT",noticeBoard_chat);
                 } else if (position == 2) {
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-
+                    firebaseCommunicator.getChatListByPromise("-LuHFQhCz5UXdjHYV7lT");
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
                     FirebaseAuth.getInstance().signOut();

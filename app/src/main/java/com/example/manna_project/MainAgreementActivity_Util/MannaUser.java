@@ -29,6 +29,9 @@ public class MannaUser implements Parcelable {
 
     public MannaUser(){
     }
+
+
+
     public MannaUser(DataSnapshot dataSnapshot){        //dataSnapshot 넘겨줄때의 생성자
         routineList = new ArrayList<>();
         DataSnapshot routineSnapshot = dataSnapshot.child("Routines");
@@ -111,6 +114,9 @@ public class MannaUser implements Parcelable {
         this.eMail = eMail;
     }
 
+    public ArrayList<Routine> getRoutineList() {
+        return routineList;
+    }
 
     public Map<String,Object> toMap(){
         HashMap<String,Object> result = new HashMap<>();

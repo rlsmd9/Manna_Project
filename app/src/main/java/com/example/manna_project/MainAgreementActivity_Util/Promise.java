@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 
 import com.example.manna_project.FirebaseCommunicator;
 import com.example.manna_project.MainAgreementActivity;
+import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBoard_Chat;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -274,6 +275,7 @@ public class Promise implements Parcelable {
             @Override
             public void afterGetUser(MannaUser mannaUser) {
                 attendees.add(mannaUser);
+                Log.d(TAG,mannaUser.toString());
             }
 
             @Override
@@ -288,6 +290,11 @@ public class Promise implements Parcelable {
 
             @Override
             public void afterGetFriendUids(ArrayList<String> friendList) {
+
+            }
+
+            @Override
+            public void afterGetChat(NoticeBoard_Chat chat) {
 
             }
         });
