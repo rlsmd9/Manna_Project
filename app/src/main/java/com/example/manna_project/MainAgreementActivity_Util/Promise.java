@@ -202,6 +202,14 @@ public class Promise implements Parcelable {
         return acceptState;
     }
 
+    public String getLoadAddress() {
+        return loadAddress;
+    }
+
+    public void setLoadAddress(String loadAddress) {
+        this.loadAddress = loadAddress;
+    }
+
     public void setAcceptState(HashMap<String, Integer> acceptState) {
         this.acceptState = acceptState;
     }
@@ -233,8 +241,6 @@ public class Promise implements Parcelable {
                     mainAgreementActivity.getInvited_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
                     mainAgreementActivity.getAcceptInvitation_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
                 }
-
-
             }
 
             @Override
@@ -295,7 +301,7 @@ public class Promise implements Parcelable {
                 ", startTime=" + startTime.get(Calendar.YEAR) + "-" + startTime.get(Calendar.MONTH) + "-" + startTime.get(Calendar.DAY_OF_MONTH) +
                 ", endTime=" + endTime.get(Calendar.YEAR) + "-" + endTime.get(Calendar.MONTH) + "-" + endTime.get(Calendar.DAY_OF_MONTH) +
                 ", acceptState=" + acceptState +
-                ", attendees=" + attendees.toString() +
+                ", attendees=" + attendees +
                 '}';
     }
 
