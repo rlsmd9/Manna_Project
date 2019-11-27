@@ -65,6 +65,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     ArrayList<String> friendUids;
     ArrayList<String> promiseKeyList;
 
+
+
     static final String TAG = "MANNA_JS";
     static final String TAG2 = "MANNAYC";
 
@@ -106,18 +108,15 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     friend_list.getFriendListAdapter().notifyDataSetChanged();
                 }
             }
-
             @Override
             public void afterGetPromise(Promise promise){
                 Log.d(TAG2,promise.getPromiseid());
                 Log.d(TAG2,promise.getTitle());
                 promiseArrayList.add(promise);
                 Log.d(TAG, "afterGetPromise: " + promise.toString());
-
                 invited_list.setListItem();
                 acceptInvitation_list.setListItem();
             }
-
             @Override
             public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
                 Log.d(TAG, "afterGetPromiseKey: dwdw");
@@ -128,7 +127,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     firebaseCommunicator.getPromiseByKey(key);
                 }
             }
-
             @Override
             public void afterGetFriendUids(ArrayList<String> friends) {
                  friendUids = friends;
@@ -136,8 +134,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                  for(int i=0;i<size ; i++) {
                      firebaseCommunicator.getUserById(friendUids.get(i));
                  }
-
-
             }
         });
 
@@ -206,11 +202,11 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    Calendar start = Calendar.getInstance();
-                    Calendar end = Calendar.getInstance();
-                    Promise promise = new Promise("우리지금만나",myInfo.getUid(),myInfo, "",150.0,100.0,start,end);
-                    promise.addAttendee(myInfo);
-                    firebaseCommunicator.upLoadPromise(promise);
+//                    Calendar start = Calendar.getInstance();
+//                    Calendar end = Calendar.getInstance();
+//                    Promise promise = new Promise("우리지금만나",myInfo.getUid(),myInfo,150.0,100.0,start,end);
+//                    promise.addAttendee(myInfo);
+//                    firebaseCommunicator.upLoadPromise(promise);
                 } else if (position == 1) {
                     //firebaseCommunicator.getPromiseByKey("-LuH2xe7qXlub3GlHSFo");
 

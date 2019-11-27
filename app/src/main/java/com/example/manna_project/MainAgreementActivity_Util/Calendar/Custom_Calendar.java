@@ -763,7 +763,7 @@ public class Custom_Calendar implements View.OnClickListener {
             calander = getDate();
             SimpleDateFormat simpledateformat;
 
-            simpledateformat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREA);
+            simpledateformat = new SimpleDateFormat( "yyyy-MM-dd'nestedclass'HH:mm:ss+09:00", Locale.KOREA);
             // 추가
             String datetime = simpledateformat.format(calander.getTime());
 
