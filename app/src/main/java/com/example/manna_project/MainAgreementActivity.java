@@ -60,6 +60,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     FloatingActionButton main_schedule_add_floating_btn;
 
     MannaUser myInfo;
+
+
+
     ArrayList<Promise> promiseArrayList;
     ArrayList<MannaUser> friendList;
     ArrayList<String> friendUids;
@@ -113,7 +116,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 Log.d(TAG2,promise.getPromiseid());
                 Log.d(TAG2,promise.getTitle());
                 promiseArrayList.add(promise);
-                Log.d(TAG, "afterGetPromise: " + promise.toString());
+//                Log.d(TAG, "afterGetPromise: " + promise.toString());
                 invited_list.setListItem();
                 acceptInvitation_list.setListItem();
             }
@@ -407,5 +410,12 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     public void setAcceptInvitation_list(AcceptInvitation_List acceptInvitation_list) {
         this.acceptInvitation_list = acceptInvitation_list;
+    }
+    public ArrayList<MannaUser> getFriendList() {
+        return friendList;
+    }
+
+    public void setFriendList(ArrayList<MannaUser> friendList) {
+        this.friendList = friendList;
     }
 }

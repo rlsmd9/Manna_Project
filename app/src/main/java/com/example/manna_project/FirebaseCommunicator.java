@@ -2,14 +2,17 @@ package com.example.manna_project;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.MainAgreementActivity_Util.Routine;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,8 +39,7 @@ public class FirebaseCommunicator {
     public DatabaseReference friendList;
     public DatabaseReference invitedPromises;
     public DatabaseReference myRef;
-    public MannaUser myInfo;
-
+    public DatabaseReference comments;
     private FirebaseUser user;
     private String myUid;
     private CallBackListener callBackListener;
@@ -53,6 +55,7 @@ public class FirebaseCommunicator {
         this.promises = root.child("promises");
         this.friendList = root.child("friendlist");
         this.invitedPromises = root.child("invited");
+        this.comments = root.child("comments");
         this.myRef = users.child(myUid);
         this.context = context;
     }
@@ -156,7 +159,7 @@ public class FirebaseCommunicator {
         }
         int size = invitedUser.size();
         for(int i=0;i<size;i++){
-            invitedPromises.child(invitedUser.get(i)).push().setValue(key);
+            invitedPromises.child(invitedUser.get(i)).child(key).setValue(key);
         }
     }
 
@@ -183,12 +186,58 @@ public class FirebaseCommunicator {
             }
         });
     }
+
     public void addFriend(String friendUid) {
-        String myUid = getMyUid();
-        HashMap<String, Object> add = new HashMap<>();
-        add.put("true", friendUid);
-        users.child(myUid).child("FriendList").updateChildren(add);
+        friendList.child(myUid).child(friendUid).setValue(friendUid);
+
     }
+    public void findFriendByEmail(String email){
+        MainAgreementActivity mainAgreementActivity = (MainAgreementActivity)context;
+        ArrayList<MannaUser> frineds = mainAgreementActivity.getFriendList();
+        for(MannaUser friend : frineds){
+            if(email.equals(friend.geteMail())){
+                Toast.makeText(context,"이미 친구인 유저입니다.",Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+        users.orderByChild("E-mail").equalTo(email).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+                String friendUid = dataSnapshot.child("Uid").getValue(String.class);
+                addFriend(friendUid);
+                getUserById(friendUid);
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    //----------------------------------------게시판에 관한 기능------------------------------------
+
+    public void addComment(String promiseId,MannaUser user, String comment){
+
+    }
+    public void deleteComment(String promiseId,MannaUser user, String comment){
+
+    }
+
 
     //----------------------------------------getter setter-----------------------------------------
 
@@ -223,6 +272,4 @@ public class FirebaseCommunicator {
     public void addCallBackListener(CallBackListener callBackListener) {
         this.callBackListener = callBackListener;
     }
-
-
 }

@@ -80,7 +80,7 @@ public class Promise implements Parcelable {
 
     }
 
-    public Promise(String title, String leaderId, MannaUser leader, String loadAddress, double latitude, double longitude, Calendar startTime, Calendar endTime){
+    public Promise(String title, String leaderId, MannaUser leader, String loadAddress, double latitude, double longitude, Calendar startTime, Calendar endTime) {
         this.title = title;
         this.leaderId = leaderId;
         this.leader = leader;
@@ -94,7 +94,7 @@ public class Promise implements Parcelable {
         DBRef = FirebaseDatabase.getInstance().getReference();
     }
 
-    public Promise(DataSnapshot dataSnapshot, Context context){
+    public Promise(DataSnapshot dataSnapshot, Context context) {
 
         this.title = dataSnapshot.child("Title").getValue(String.class);
         this.promiseid = dataSnapshot.getKey();
@@ -107,15 +107,15 @@ public class Promise implements Parcelable {
         endTime = Calendar.getInstance();
         String temp = dataSnapshot.child("StartTime").getValue(String.class);
         String split[] = temp.split("/");
-        startTime.set(Integer.parseInt(split[0]),Integer.parseInt(split[1]),Integer.parseInt(split[2]),Integer.parseInt(split[3]),Integer.parseInt(split[4]));
+        startTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
         temp = dataSnapshot.child("EndTime").getValue(String.class);
         split = temp.split("/");
-        endTime.set(Integer.parseInt(split[0]),Integer.parseInt(split[1]),Integer.parseInt(split[2]),Integer.parseInt(split[3]),Integer.parseInt(split[4]));
+        endTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
 
         this.acceptState = new HashMap<>();
         DataSnapshot tmp = dataSnapshot.child("AcceptState");
-        for(DataSnapshot hashSnapshot : tmp.getChildren() ) {
-            this.acceptState.put(hashSnapshot.getKey(),hashSnapshot.getValue(Integer.class));
+        for (DataSnapshot hashSnapshot : tmp.getChildren()) {
+            this.acceptState.put(hashSnapshot.getKey(), hashSnapshot.getValue(Integer.class));
         }
         DBRef = FirebaseDatabase.getInstance().getReference();
         getLeaderInfo(context);
@@ -222,12 +222,12 @@ public class Promise implements Parcelable {
         this.attendees = attendees;
     }
 
-    public void addAttendee(MannaUser user){
+    public void addAttendee(MannaUser user) {
         this.attendees.add(user);
-        this.acceptState.put(user.getUid(),INVITED);
+        this.acceptState.put(user.getUid(), INVITED);
     }
 
-    public void getLeaderInfo(final Context context){
+    public void getLeaderInfo(final Context context) {
         DatabaseReference Ref = FirebaseDatabase.getInstance().getReference();
         Ref = Ref.child("users").child(leaderId);
         Ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -235,12 +235,14 @@ public class Promise implements Parcelable {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 leader = new MannaUser(dataSnapshot);
 //                Log.d(TAG, "onDataChange: " + leader.toString());
-                MainAgreementActivity mainAgreementActivity = (MainAgreementActivity)context;
+                MainAgreementActivity mainAgreementActivity = (MainAgreementActivity) context;
 
                 if (mainAgreementActivity != null) {
                     mainAgreementActivity.getInvited_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
                     mainAgreementActivity.getAcceptInvitation_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
                 }
+
+
             }
 
             @Override
@@ -250,21 +252,23 @@ public class Promise implements Parcelable {
         });
     }
 
-    public void setAcceptState(MannaUser user, int state){
-        if(this.acceptState.containsKey(user.getUid()))
-             this.acceptState.put(user.getUid(),state);
+    public void setAcceptState(MannaUser user, int state) {
+        if (this.acceptState.containsKey(user.getUid()))
+            this.acceptState.put(user.getUid(), state);
+        if(promiseid!=null)
+            DBRef.child("promises").child(promiseid).child("AcceptState").child(user.getUid()).setValue(state);
     }
-    public void initialAttendees(){     //미완성
-        attendees = new ArrayList<>();
 
+    public void initialAttendees() {
+
+        attendees = new ArrayList<>();
         ArrayList<String> attendeesUid = new ArrayList<>();
-        HashMap<String,Integer> accept = acceptState;
+        HashMap<String, Integer> accept = acceptState;
         Set<String> set = accept.keySet();
         Iterator<String> iterator = set.iterator();
-        while(iterator.hasNext()) {
+        while (iterator.hasNext()) {
             attendeesUid.add(iterator.next());
         }
-
         FirebaseCommunicator firebaseCommunicator = new FirebaseCommunicator(null);
         firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
             @Override
@@ -287,6 +291,9 @@ public class Promise implements Parcelable {
 
             }
         });
+        for(String uid : attendeesUid){
+            firebaseCommunicator.getUserById(uid);
+        }
     }
 
     @Override
@@ -301,45 +308,24 @@ public class Promise implements Parcelable {
                 ", startTime=" + startTime.get(Calendar.YEAR) + "-" + startTime.get(Calendar.MONTH) + "-" + startTime.get(Calendar.DAY_OF_MONTH) +
                 ", endTime=" + endTime.get(Calendar.YEAR) + "-" + endTime.get(Calendar.MONTH) + "-" + endTime.get(Calendar.DAY_OF_MONTH) +
                 ", acceptState=" + acceptState +
-                ", attendees=" + attendees +
+                ", attendees=" + attendees.toString() +
                 '}';
     }
 
-    public HashMap<String,Object> toMap(){      //attendees는 올리지 않음, AcceptState만 올림
-        HashMap<String,Object> result = new HashMap<>();
-        result.put("PromiseId",this.promiseid);
-        result.put("Title",this.title);
-        result.put("LeaderId" ,this.leaderId);
+    public HashMap<String, Object> toMap() {      //attendees는 올리지 않음, AcceptState만 올림
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("PromiseId", this.promiseid);
+        result.put("Title", this.title);
+        result.put("LeaderId", this.leaderId);
         result.put("loadAddress", this.loadAddress);
-        result.put("Latitude",Double.valueOf(this.latitude));
-        result.put("Longitude",Double.valueOf(this.longitude));
-        result.put("StartTime",startTime.get(Calendar.YEAR)+"/"+startTime.get(Calendar.MONTH)+"/"+startTime.get(Calendar.DATE)+"/"+startTime.get(Calendar.HOUR_OF_DAY)+"/"+startTime.get(Calendar.MINUTE));
-        result.put("EndTime",endTime.get(Calendar.YEAR)+"/"+endTime.get(Calendar.MONTH)+"/"+endTime.get(Calendar.DATE)+"/"+endTime.get(Calendar.HOUR_OF_DAY)+"/"+endTime.get(Calendar.MINUTE));
-        result.put("AcceptState",acceptState);
-        return  result;
+        result.put("Latitude", Double.valueOf(this.latitude));
+        result.put("Longitude", Double.valueOf(this.longitude));
+        result.put("StartTime", startTime.get(Calendar.YEAR) + "/" + startTime.get(Calendar.MONTH) + "/" + startTime.get(Calendar.DATE) + "/" + startTime.get(Calendar.HOUR_OF_DAY) + "/" + startTime.get(Calendar.MINUTE));
+        result.put("EndTime", endTime.get(Calendar.YEAR) + "/" + endTime.get(Calendar.MONTH) + "/" + endTime.get(Calendar.DATE) + "/" + endTime.get(Calendar.HOUR_OF_DAY) + "/" + endTime.get(Calendar.MINUTE));
+        result.put("AcceptState", acceptState);
+        return result;
     }
 
-    public void setUserInfoFromUID(final BaseAdapter adapter) {
-        DatabaseReference userRef = DBRef.child("users/" + getLeaderId());
-
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (dataSnapshot == null || !dataSnapshot.exists()) return;
-
-                MannaUser user = new MannaUser(dataSnapshot);
-                setLeader(user);
-                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-
-                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
 
     @Override
     public int describeContents() {
