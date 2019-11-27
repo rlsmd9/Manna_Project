@@ -28,6 +28,7 @@
             android:src="@drawable/closebuttonimg"
             android:paddingRight="5dp"
             android:paddingLeft="5dp"
+            android:clickable="true"
             android:layout_gravity="center"
             android:textSize="20dp"
             android:layout_width="wrap_content"
@@ -109,7 +110,6 @@
                 android:text="시간"
                 android:textSize="15dp"
                 android:layout_marginBottom="5dp"
-                android:singleLine="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
@@ -163,6 +163,34 @@
         android:layout_height="wrap_content"
 
         android:layout_weight="1"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/activity_show_detail_schedule_chat_text"
+            android:background="@drawable/round_edittext_shape"
+            android:padding="10dp"
+            android:hint="게시글 입력"
+            android:textSize="14dp"
+            android:layout_width="wrap_content"
+            android:singleLine="true"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/activity_show_detail_schedule_chat_add_btn"
+            android:text="등록"
+            android:layout_marginLeft="3dp"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:textSize="14dp"
+            android:layout_gravity="center"
+            android:background="@drawable/round_button_shape"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"/>
+    </LinearLayout>
 
     <LinearLayout
         android:orientation="horizontal"
