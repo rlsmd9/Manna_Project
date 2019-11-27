@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Ref;
@@ -189,9 +190,13 @@ public class FirebaseCommunicator {
 
     public void addFriend(String friendUid) {
         friendList.child(myUid).child(friendUid).setValue(friendUid);
-
+        friendList.child(friendUid).child(myUid).setValue(myUid);
     }
-    public void findFriendByEmail(String email){
+
+    public void findFriendByEmail(String email, final SearchCallBackListener listener){
+
+        if (listener == null) return;
+
         MainAgreementActivity mainAgreementActivity = (MainAgreementActivity)context;
         ArrayList<MannaUser> frineds = mainAgreementActivity.getFriendList();
         for(MannaUser friend : frineds){
@@ -200,26 +205,17 @@ public class FirebaseCommunicator {
                 return;
             }
         }
-        users.orderByChild("E-mail").equalTo(email).addChildEventListener(new ChildEventListener() {
+
+        if (email.equals(mainAgreementActivity.myInfo.geteMail())) {
+            Toast.makeText(context,"자기 자신은 추가 할 수 없습니다.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        users.orderByChild("E-mail").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String friendUid = dataSnapshot.child("Uid").getValue(String.class);
-                addFriend(friendUid);
-                getUserById(friendUid);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: " + dataSnapshot.getChildren().iterator().next());
+                listener.afterFindUser(dataSnapshot.getValue() != null, dataSnapshot.getChildren().iterator().next());
 
             }
 
@@ -267,6 +263,10 @@ public class FirebaseCommunicator {
         void afterGetPromiseKey(ArrayList<String> promiseKeys);
 
         void afterGetFriendUids(ArrayList<String> friendList);
+    }
+
+    public interface SearchCallBackListener {
+        void afterFindUser(boolean exist, DataSnapshot userSnap);
     }
 
     public void addCallBackListener(CallBackListener callBackListener) {

@@ -91,7 +91,6 @@ public class Promise implements Parcelable {
         this.endTime = endTime;
         attendees = new ArrayList<>();
         acceptState = new HashMap<>();
-        DBRef = FirebaseDatabase.getInstance().getReference();
     }
 
     public Promise(DataSnapshot dataSnapshot, Context context) {
@@ -308,7 +307,7 @@ public class Promise implements Parcelable {
                 ", startTime=" + startTime.get(Calendar.YEAR) + "-" + startTime.get(Calendar.MONTH) + "-" + startTime.get(Calendar.DAY_OF_MONTH) +
                 ", endTime=" + endTime.get(Calendar.YEAR) + "-" + endTime.get(Calendar.MONTH) + "-" + endTime.get(Calendar.DAY_OF_MONTH) +
                 ", acceptState=" + acceptState +
-                ", attendees=" + attendees.toString() +
+                ", attendees=" + attendees +
                 '}';
     }
 

@@ -6,12 +6,14 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -29,7 +31,7 @@ import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,7 +40,7 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
-import java.util.HashMap;
+
 import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -58,6 +60,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     TextView userName;
 
     FloatingActionButton main_schedule_add_floating_btn;
+    FloatingActionButton main_add_friend_btn;
 
     MannaUser myInfo;
 
@@ -168,6 +171,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         tabSpec.setContent(R.id.main_friend_layout);
         tabHost.addTab(tabSpec);
         friend_list = new Friend_List(this, (ListView) findViewById(R.id.main_friendList), friendList);
+        main_add_friend_btn = findViewById(R.id.main_add_friend_btn);
+        main_add_friend_btn.setOnClickListener(this);
+
 
         // 약속
         tabSpec = tabHost.newTabSpec("tab_agreement");
@@ -303,6 +309,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     }
 
+    DataSnapshot foundUserInfo = null;
+
     @Override
     public void onClick(View v) {
         if (v == customDatePicker) {
@@ -360,6 +368,81 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             intent.putExtra("MYINFO", myInfo);
 
             startActivityForResult(intent, AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE);
+        } else if(v == main_add_friend_btn) {
+//            Intent intent = new Intent(this, Friend_Add_Activity.class);
+            final AlertDialog dialog;
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.friend_add_layout, null);
+
+            Button cancel = view.findViewById(R.id.add_friend_cancel_btn);
+            Button addbtn = view.findViewById(R.id.add_friend_add_btn);
+            final Button findbtn = view.findViewById(R.id.add_friend_find_email);
+            final EditText emailEdit = view.findViewById(R.id.add_friend_email_txt);
+
+            builder.setView(view);
+
+            dialog = builder.create();
+
+            addbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!emailEdit.isEnabled() && foundUserInfo != null) {
+                        Log.d(TAG, "onClick: " + foundUserInfo.toString());
+
+                        MannaUser mannaUser = new MannaUser(foundUserInfo);
+
+                        Log.d(TAG, "onClick: " + mannaUser.toString());
+
+                        String friendUid = mannaUser.getUid();
+                        firebaseCommunicator.addFriend(friendUid);
+                        firebaseCommunicator.getUserById(friendUid);
+
+                        dialog.cancel();
+                    }
+                }
+            });
+
+            findbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (findbtn.getText().equals("찾기")) {
+                        firebaseCommunicator.findFriendByEmail(emailEdit.getText().toString(), new FirebaseCommunicator.SearchCallBackListener() {
+                            @Override
+                            public void afterFindUser(boolean exist, final DataSnapshot snap) {
+                                if (exist) {
+                                    emailEdit.setEnabled(false);
+                                    findbtn.setText("X");
+                                    foundUserInfo = snap;
+                                    Toast.makeText(getApplicationContext(), "계정을 찾았습니다!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    emailEdit.setEnabled(true);
+                                    findbtn.setText("찾기");
+                                    foundUserInfo = null;
+                                    Toast.makeText(getApplicationContext(), "계정을 찾지 못했습니다!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else if(findbtn.getText().equals("X")) {
+                        emailEdit.setEnabled(true);
+                        findbtn.setText("찾기");
+                    }
+
+
+                }
+            });
+
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.cancel();
+                }
+            });
+
+            dialog.show();
+
+//            startActivityForResult(intent, Friend_Add_Activity.ADD_FRIEND_REQUEST_CODE);
         }
     }
 
