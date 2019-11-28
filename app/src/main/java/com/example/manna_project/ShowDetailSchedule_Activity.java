@@ -132,7 +132,6 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 //        NoticeBoard_RecyclerViewAdapter adapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
 //
 //        recyclerView.setAdapter(adapter);
-
     }
 
     private void setAttendeeList() {
