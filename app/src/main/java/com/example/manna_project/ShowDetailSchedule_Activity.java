@@ -39,7 +39,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     Button refuseButton;
     Button chatAddButton;
     TextView chatText;
-    //--------
+    //----------------
 
     ArrayList<MannaUser> attendees;
     NoticeBoard_RecyclerViewAdapter adapter;
@@ -192,9 +192,9 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 String comment = chatText.getText().toString();
                 chatText.setText(null);
                 Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String date = simpleDateFormat.format(new Date(calendar.getTimeInMillis()));
-                NoticeBoard_Chat noticeBoard_chat = new NoticeBoard_Chat(firebaseCommunicator.getMyUid(),comment,date);
+                NoticeBoard_Chat noticeBoard_chat = new NoticeBoard_Chat(myInfo.getUid(),comment,date);
                 firebaseCommunicator.addComment(promise.getPromiseid(),noticeBoard_chat);
             }
         } else if (mode == 2) {
