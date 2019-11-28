@@ -226,7 +226,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-
+                    startActivity(new Intent(getApplicationContext(), EditProfile.class));
                 } else if (position == 1) {
 
                 } else if (position == 2) {
@@ -318,7 +318,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     Log.d(TAG, "onActivityResult: Cancel");
                 }
                 break;
-
         }
     }
 
