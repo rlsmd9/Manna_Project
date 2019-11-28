@@ -21,6 +21,11 @@ public class NoticeBoard_Chat {
         this.content = content;
         this.date = date;
 }
+    public NoticeBoard_Chat(String userUid, String content, String date) {
+        this.UserUid = userUid;
+        this.content = content;
+        this.date = date;
+    }
     public NoticeBoard_Chat(DataSnapshot dataSnapshot){
         this.content = dataSnapshot.child("comment").getValue(String.class);
         this.date = dataSnapshot.child("date").getValue(String.class);
@@ -69,7 +74,7 @@ public class NoticeBoard_Chat {
 
     public Map<String,Object> toMap(){
         HashMap<String,Object> result = new HashMap<>();
-        result.put("UserUid",user.getUid());
+        result.put("UserUid",this.UserUid);
         result.put("comment",this.content);
         result.put("date",this.date );
         result.put("ChatId",this.chatId);
