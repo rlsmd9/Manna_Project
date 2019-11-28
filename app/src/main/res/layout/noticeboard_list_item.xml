@@ -33,7 +33,6 @@
             android:layout_alignParentRight="true"
             android:layout_alignTop="@id/noticeboard_user_name_item"
             android:text="8분전"
-            android:layout_marginTop="5dp"
             android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -42,7 +41,7 @@
             android:id="@+id/noticeboard_content_item"
             android:layout_toRightOf="@id/noticeboard_user_icon_item"
             android:layout_below="@id/noticeboard_user_name_item"
-            android:text="dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd"
+            android:text=""
             android:layout_marginLeft="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

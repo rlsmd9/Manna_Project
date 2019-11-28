@@ -9,9 +9,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Friend_select_list_dialog_activity" android:theme="@style/AppThemeDialog"></activity>
+        <activity
+            android:name=".Friend_select_list_dialog_activity"
+            android:theme="@style/AppThemeDialog" />
         <activity android:name=".AddScheduleActivity" />
-        <activity android:name=".SearchPlaceActivity"></activity>
+        <activity android:name=".SearchPlaceActivity" />
         <activity
             android:name=".ShowDetailSchedule_Activity"
             android:theme="@style/AppThemeDialog" />
@@ -31,10 +33,10 @@
             android:name="com.naver.maps.map.CLIENT_ID"
             android:value="ozkoxla3i2" />
     </application>
-    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
 
 </manifest>

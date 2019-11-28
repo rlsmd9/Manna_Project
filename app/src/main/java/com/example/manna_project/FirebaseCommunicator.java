@@ -18,12 +18,15 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 public class FirebaseCommunicator {
@@ -100,6 +103,7 @@ public class FirebaseCommunicator {
     //-----------------------------------Promise에 관한 부분-----------------------------------------
 
     public void getAllPromiseKeyById(String Uid) {
+        Log.d(TAG, "getAllPromiseKeyById: " + Uid);
         invitedPromises.child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -124,7 +128,7 @@ public class FirebaseCommunicator {
         promises.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                //Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
                 if (callBackListener != null) {
                     Promise promise = new Promise(dataSnapshot, context);
                     promise.initialAttendees();
@@ -142,7 +146,7 @@ public class FirebaseCommunicator {
         });
     }
 
-    public void upLoadPromise(Promise promise) {
+    public void upLoadPromise(Promise promise){
         DatabaseReference Ref = promises.push();
         String key = Ref.getKey();
         promise.setPromiseid(key);
@@ -150,31 +154,31 @@ public class FirebaseCommunicator {
 
         //초대된 사용자에 초대된 약속에 고유 키를 추가하는 코드
         ArrayList<String> invitedUser = new ArrayList<>();
-        HashMap<String, Integer> accept = promise.getAcceptState();
+        HashMap<String,Integer> accept = promise.getAcceptState();
         Set<String> set = accept.keySet();
         Iterator<String> iterator = set.iterator();
-        while (iterator.hasNext()) {
+        while(iterator.hasNext()) {
             invitedUser.add(iterator.next());
         }
         int size = invitedUser.size();
-        for (int i = 0; i < size; i++) {
+        for(int i=0;i<size;i++){
             invitedPromises.child(invitedUser.get(i)).child(key).setValue(key);
         }
     }
 
     //-------------------------------------------친구에 관한 부분-------------------------------------
 
-    public void getFriendList(String myUid) {
+    public void getFriendList(String myUid){
         friendList.child(myUid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                if (callBackListener != null) {
+                if(callBackListener!=null) {
                     ArrayList<String> temp = new ArrayList<>();
                     for (DataSnapshot UidSnapshot : dataSnapshot.getChildren()) {
                         temp.add(UidSnapshot.getValue(String.class));
                     }
                     callBackListener.afterGetFriendUids(temp);
-                } else {
+                }else {
                     Log.d(TAG, "콜백 리스너가 안 달렸음 in getFriendList");
                 }
             }
@@ -188,38 +192,34 @@ public class FirebaseCommunicator {
 
     public void addFriend(String friendUid) {
         friendList.child(myUid).child(friendUid).setValue(friendUid);
-
+        friendList.child(friendUid).child(myUid).setValue(myUid);
     }
+    public void findFriendByEmail(String email, final SearchCallBackListener listener){
+        if (listener == null) return;
 
-    public void findFriendByEmail(String email) {
-        MainAgreementActivity mainAgreementActivity = (MainAgreementActivity) context;
+        MainAgreementActivity mainAgreementActivity = (MainAgreementActivity)context;
         ArrayList<MannaUser> frineds = mainAgreementActivity.getFriendList();
-        for (MannaUser friend : frineds) {
-            if (email.equals(friend.geteMail())) {
-                Toast.makeText(context, "이미 친구인 유저입니다.", Toast.LENGTH_SHORT).show();
+        for(MannaUser friend : frineds){
+            if(email.equals(friend.geteMail())){
+                Toast.makeText(context,"이미 친구인 유저입니다.",Toast.LENGTH_SHORT).show();
                 return;
             }
         }
-        users.orderByChild("E-mail").equalTo(email).addChildEventListener(new ChildEventListener() {
+        if (email.equals(mainAgreementActivity.myInfo.geteMail())) {
+            Toast.makeText(context,"자기 자신은 추가 할 수 없습니다.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (email.equals(mainAgreementActivity.myInfo.geteMail())) {
+            Toast.makeText(context,"자기 자신은 추가 할 수 없습니다.",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        users.orderByChild("E-mail").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-                String friendUid = dataSnapshot.child("Uid").getValue(String.class);
-                addFriend(friendUid);
-                getUserById(friendUid);
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot dataSnapshot, @Nullable String s) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Log.d(TAG, "onDataChange: " + dataSnapshot.getChildren().iterator().next());
+                listener.afterFindUser(dataSnapshot.getValue() != null, dataSnapshot.getChildren().iterator().next());
 
             }
 
@@ -300,6 +300,10 @@ public class FirebaseCommunicator {
         void afterGetFriendUids(ArrayList<String> friendList);
 
         void afterGetChat(NoticeBoard_Chat chat);
+    }
+
+    public interface SearchCallBackListener {
+        void afterFindUser(boolean exist, DataSnapshot userSnap);
     }
 
     public void addCallBackListener(CallBackListener callBackListener) {
