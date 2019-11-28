@@ -30,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 public class AddScheduleActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -238,25 +239,34 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
             setResult(RESULT_CANCELED);
             finish();
         } else if(v == activity_add_schedule_btn) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            builder.setPositiveButton("확인", null);
+
             if (activity_add_schedule_title.getText().toString().isEmpty()) {
-                Toast.makeText(this, "제목을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                builder.setMessage("제목을 입력해 주세요.");
+                builder.create().show();
                 activity_add_schedule_title.setFocusable(true);
                 return;
             } else if(activity_add_schedule_place.getText().toString().isEmpty()) {
-                Toast.makeText(this, "장소를 선택해 주세요.", Toast.LENGTH_SHORT).show();
+                builder.setMessage("장소를 선택해 주세요.");
+                builder.create().show();
                 activity_add_schedule_place.setFocusable(true);
                 return;
             } else if(activity_add_schedule_place_detail.getText().toString().isEmpty()) {
-                Toast.makeText(this, "상세 장소를 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                builder.setMessage("상세 장소를 입력해 주세요.");
+                builder.create().show();
                 activity_add_schedule_place_detail.setFocusable(true);
                 return;
             } else if(activity_add_schedule_after_chk.isChecked() == false) {
-                if (activity_add_schedule_date_start.toString().isEmpty()) {
-                    Toast.makeText(this, "시작 시간을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                if (activity_add_schedule_date_start.getText().toString().isEmpty()) {
+                    builder.setMessage("시작 시간을 입력해 주세요.");
+                    builder.create().show();
                     activity_add_schedule_date_start.setFocusable(true);
                     return;
-                } else if (activity_add_schedule_date_end.toString().isEmpty()) {
-                    Toast.makeText(this, "종료 시간을 입력해 주세요.", Toast.LENGTH_SHORT).show();
+                } else if (activity_add_schedule_date_end.getText().toString().isEmpty()) {
+                    builder.setMessage("종료 시간을 입력해 주세요.");
+                    builder.create().show();
                     activity_add_schedule_date_end.setFocusable(true);
                     return;
                 }
@@ -265,8 +275,16 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
             String title = activity_add_schedule_title.getText().toString();
             String loadAddress = activity_add_schedule_place.getText().toString() + ", " + activity_add_schedule_place_detail.getText().toString();
             MannaUser leader = myInfo;
+            HashMap<String, Integer> acceptState = new HashMap<>();
 
-            Promise promise = new Promise(title, leader.getUid(), leader, loadAddress, latLng.latitude, latLng.longitude, start, end);
+            for (MannaUser user: attendees) {
+                if (user.getUid().equals(myInfo.getUid()))
+                    acceptState.put(user.getUid(), Promise.ACCEPTED);
+                else acceptState.put(user.getUid(), Promise.INVITED);
+            }
+
+            Promise promise = new Promise(title, leader.getUid(), leader, loadAddress, latLng.latitude, latLng.longitude, (activity_add_schedule_after_chk.isChecked()?null:start), (activity_add_schedule_after_chk.isChecked()?null:end));
+            promise.setAcceptState(acceptState);
             promise.setAttendees(attendees);
 
             Log.d("JS", "onClick: " + promise.toString());

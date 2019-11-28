@@ -33,6 +33,8 @@ public class MannaUser implements Parcelable {
 
 
     public MannaUser(DataSnapshot dataSnapshot){        //dataSnapshot 넘겨줄때의 생성자
+        Log.d(TAG, "MannaUser: " + dataSnapshot.toString());
+
         routineList = new ArrayList<>();
         DataSnapshot routineSnapshot = dataSnapshot.child("Routines");
         for(DataSnapshot postSnapshot : routineSnapshot.getChildren()){
@@ -123,7 +125,7 @@ public class MannaUser implements Parcelable {
         result.put("Name", this.name);
         result.put("NickName", this.nickName);
         result.put("Uid", this.Uid);
-        result.put("E-ail", this.eMail);
+        result.put("E-mail", this.eMail);
         result.put("Routines",this.routineList);
         return result;
     }

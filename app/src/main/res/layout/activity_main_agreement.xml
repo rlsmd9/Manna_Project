@@ -226,6 +226,7 @@
                     android:layout_height="match_parent"/>
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/main_add_friend_btn"
                     android:layout_gravity="right|bottom"
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="10dp"
@@ -293,6 +294,7 @@
                     <ListView
                         android:id="@+id/main_invited_list"
                         android:dividerHeight="1dp"
+                        android:choiceMode="singleChoice"
                         android:divider="#ccc"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"/>
@@ -300,6 +302,7 @@
                     <ListView
                         android:id="@+id/main_accept_list"
                         android:dividerHeight="1dp"
+                        android:choiceMode="singleChoice"
                         android:visibility="gone"
                         android:divider="#ccc"
                         android:layout_width="match_parent"

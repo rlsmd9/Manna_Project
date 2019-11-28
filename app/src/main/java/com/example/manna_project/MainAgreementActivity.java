@@ -5,17 +5,22 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +35,7 @@ import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -39,7 +44,9 @@ import android.accounts.AccountManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import androidx.annotation.NonNull;
-import java.util.HashMap;
+
+import org.w3c.dom.Text;
+
 import java.util.List;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -59,6 +66,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     TextView userName;
 
     FloatingActionButton main_schedule_add_floating_btn;
+    FloatingActionButton main_add_friend_btn;
 
     MannaUser myInfo;
 
@@ -114,15 +122,18 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             }
             @Override
             public void afterGetPromise(Promise promise){
-
+                Log.d(TAG2,promise.getPromiseid());
+                Log.d(TAG2,promise.getTitle());
+                promise.initialAttendees();
                 promiseArrayList.add(promise);
-                   Log.d(TAG, "afterGetPromise: " + promise.toString());
-                invited_list.setListItem();
-                acceptInvitation_list.setListItem();
+
+                getAcceptInvitation_list().setListItem();
+                getInvited_list().setListItem();
             }
             @Override
             public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
                 Log.d(TAG, "afterGetPromiseKey: dwdw");
+                promiseArrayList.clear();
                 promiseKeyList = promiseKeys;
                 int size = promiseKeys.size();
                 for(int i =0; i<size;i++){
@@ -157,6 +168,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         final TabHost tabHost = findViewById(R.id.host);
         tabHost.setup();
 
+
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
@@ -165,7 +177,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     custom_calendar.getResultsFromApi();
                 } else if(tabId.equals("tab03_friend")) {
                     // invited and accept reset
-                    invited_list.setListItem();
+                    acceptInvitation_list.getArrayList().clear();
+                    invited_list.getArrayList().clear();
+                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
                 }
             }
         });
@@ -176,6 +190,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         tabSpec.setContent(R.id.main_friend_layout);
         tabHost.addTab(tabSpec);
         friend_list = new Friend_List(this, (ListView) findViewById(R.id.main_friendList), friendList);
+        main_add_friend_btn = findViewById(R.id.main_add_friend_btn);
+        main_add_friend_btn.setOnClickListener(this);
+
 
         // 약속
         tabSpec = tabHost.newTabSpec("tab_agreement");
@@ -237,6 +254,11 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 }
             }
         });
+
+        for (int i = 0; i < tabHost.getTabWidget().getChildCount(); i++) {
+            tabHost.getTabWidget().getChildAt(i).getBackground().setColorFilter(getResources().getColor(R.color.lightBlue), PorterDuff.Mode.MULTIPLY);
+        }
+
     }
 
     @Override
@@ -284,6 +306,12 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 if (resultCode == RESULT_OK) {
                     Log.d(TAG, "onActivityResult: OK");
                     Promise promise = data.getParcelableExtra("made_promise");
+                    firebaseCommunicator.upLoadPromise(promise);
+
+                    acceptInvitation_list.getArrayList().clear();
+                    invited_list.getArrayList().clear();
+
+                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
 
                     Log.d(TAG, "onActivityResult: " + promise.toString());
                 } else if(resultCode == RESULT_CANCELED) {
@@ -310,6 +338,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     public void onPermissionsDenied(int requestCode, List<String> perms) {
 
     }
+
+    DataSnapshot foundUserInfo = null;
 
     @Override
     public void onClick(View v) {
@@ -368,6 +398,95 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             intent.putExtra("MYINFO", myInfo);
 
             startActivityForResult(intent, AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE);
+        } else if(v == main_add_friend_btn) {
+//            Intent intent = new Intent(this, Friend_Add_Activity.class);
+            final AlertDialog dialog;
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+            View view = inflater.inflate(R.layout.friend_add_layout, null);
+
+            Button cancel = view.findViewById(R.id.add_friend_cancel_btn);
+            Button addbtn = view.findViewById(R.id.add_friend_add_btn);
+            final Button findbtn = view.findViewById(R.id.add_friend_find_email);
+            final EditText emailEdit = view.findViewById(R.id.add_friend_email_txt);
+            final TextView add_friend_status_txt = view.findViewById(R.id.add_friend_status_txt);
+
+            builder.setView(view);
+
+            dialog = builder.create();
+
+            addbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!emailEdit.isEnabled() && foundUserInfo != null) {
+                        Log.d(TAG, "onClick: " + foundUserInfo.toString());
+
+                        MannaUser mannaUser = new MannaUser(foundUserInfo);
+
+                        Log.d(TAG, "onClick: " + mannaUser.toString());
+
+                        String friendUid = mannaUser.getUid();
+                        firebaseCommunicator.addFriend(friendUid);
+                        firebaseCommunicator.getUserById(friendUid);
+
+                        dialog.cancel();
+                    }
+                }
+            });
+
+            findbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (findbtn.getText().equals("찾기")) {
+                        String res;
+
+                        res = firebaseCommunicator.findFriendByEmail(emailEdit.getText().toString(), new FirebaseCommunicator.SearchCallBackListener() {
+                            @Override
+                            public void afterFindUser(boolean exist, final DataSnapshot snap) {
+                                if (exist) {
+                                    emailEdit.setEnabled(false);
+                                    findbtn.setText("X");
+                                    foundUserInfo = snap;
+                                    add_friend_status_txt.setText("계정을 찾았습니다!");
+                                    add_friend_status_txt.setTextColor(Color.BLACK);
+                                } else {
+                                    emailEdit.setEnabled(true);
+                                    findbtn.setText("찾기");
+                                    foundUserInfo = null;
+                                    add_friend_status_txt.setText("계정을 찾지 못했습니다!");
+                                    add_friend_status_txt.setTextColor(getResources().getColor(R.color.lightRed));
+                                }
+                            }
+                        });
+
+                        if (!res.equals("success")) {
+                            add_friend_status_txt.setTextColor(getResources().getColor(R.color.lightRed));
+                            add_friend_status_txt.setText(res);
+                        }
+
+
+                        add_friend_status_txt.setVisibility(View.VISIBLE);
+                    } else if(findbtn.getText().equals("X")) {
+                        emailEdit.setEnabled(true);
+                        findbtn.setText("찾기");
+                        add_friend_status_txt.setVisibility(View.GONE);
+                    }
+
+
+                }
+            });
+
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.cancel();
+                }
+            });
+
+            dialog.show();
+
+//            startActivityForResult(intent, Friend_Add_Activity.ADD_FRIEND_REQUEST_CODE);
         }
     }
 
@@ -425,5 +544,13 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     public void setFriendList(ArrayList<MannaUser> friendList) {
         this.friendList = friendList;
+    }
+
+    public MannaUser getMyInfo() {
+        return myInfo;
+    }
+
+    public void setMyInfo(MannaUser myInfo) {
+        this.myInfo = myInfo;
     }
 }

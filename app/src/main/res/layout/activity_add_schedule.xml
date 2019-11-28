@@ -22,7 +22,7 @@
 
         <TextView
             android:id="@+id/main_agreement_titleBar_tabName"
-            android:text="스케출 추가"
+            android:text="스케줄 추가"
             android:textSize="23dp"
             android:textStyle="bold"
             android:layout_width="wrap_content"

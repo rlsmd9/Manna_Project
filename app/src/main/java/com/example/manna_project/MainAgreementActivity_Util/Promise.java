@@ -92,7 +92,6 @@ public class Promise implements Parcelable {
         this.endTime = endTime;
         attendees = new ArrayList<>();
         acceptState = new HashMap<>();
-        DBRef = FirebaseDatabase.getInstance().getReference();
     }
 
     public Promise(DataSnapshot dataSnapshot, Context context) {
@@ -106,12 +105,18 @@ public class Promise implements Parcelable {
 
         startTime = Calendar.getInstance();
         endTime = Calendar.getInstance();
-        String temp = dataSnapshot.child("StartTime").getValue(String.class);
-        String split[] = temp.split("/");
-        startTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
-        temp = dataSnapshot.child("EndTime").getValue(String.class);
-        split = temp.split("/");
-        endTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
+
+        if(dataSnapshot.child("StartTime").getValue() != null) {
+            String temp = dataSnapshot.child("StartTime").getValue(String.class);
+            String split[] = temp.split("/");
+            startTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
+            temp = dataSnapshot.child("EndTime").getValue(String.class);
+            split = temp.split("/");
+            endTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
+        } else {
+            startTime = null;
+            endTime = null;
+        }
 
         this.acceptState = new HashMap<>();
         DataSnapshot tmp = dataSnapshot.child("AcceptState");
@@ -312,10 +317,11 @@ public class Promise implements Parcelable {
                 ", leader=" + leader +
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
-                ", startTime=" + startTime.get(Calendar.YEAR) + "-" + startTime.get(Calendar.MONTH) + "-" + startTime.get(Calendar.DAY_OF_MONTH) +
-                ", endTime=" + endTime.get(Calendar.YEAR) + "-" + endTime.get(Calendar.MONTH) + "-" + endTime.get(Calendar.DAY_OF_MONTH) +
+                ", loadAddress" + loadAddress +
+//                ", startTime=" + startTime.get(Calendar.YEAR) + "-" + startTime.get(Calendar.MONTH) + "-" + startTime.get(Calendar.DAY_OF_MONTH) +
+//                ", endTime=" + endTime.get(Calendar.YEAR) + "-" + endTime.get(Calendar.MONTH) + "-" + endTime.get(Calendar.DAY_OF_MONTH) +
                 ", acceptState=" + acceptState +
-                ", attendees=" + attendees.toString() +
+                ", attendees=" + attendees +
                 '}';
     }
 
@@ -327,8 +333,10 @@ public class Promise implements Parcelable {
         result.put("loadAddress", this.loadAddress);
         result.put("Latitude", Double.valueOf(this.latitude));
         result.put("Longitude", Double.valueOf(this.longitude));
-        result.put("StartTime", startTime.get(Calendar.YEAR) + "/" + startTime.get(Calendar.MONTH) + "/" + startTime.get(Calendar.DATE) + "/" + startTime.get(Calendar.HOUR_OF_DAY) + "/" + startTime.get(Calendar.MINUTE));
-        result.put("EndTime", endTime.get(Calendar.YEAR) + "/" + endTime.get(Calendar.MONTH) + "/" + endTime.get(Calendar.DATE) + "/" + endTime.get(Calendar.HOUR_OF_DAY) + "/" + endTime.get(Calendar.MINUTE));
+        if (startTime != null)
+            result.put("StartTime", startTime.get(Calendar.YEAR) + "/" + startTime.get(Calendar.MONTH) + "/" + startTime.get(Calendar.DATE) + "/" + startTime.get(Calendar.HOUR_OF_DAY) + "/" + startTime.get(Calendar.MINUTE));
+        if (endTime != null)
+            result.put("EndTime", endTime.get(Calendar.YEAR) + "/" + endTime.get(Calendar.MONTH) + "/" + endTime.get(Calendar.DATE) + "/" + endTime.get(Calendar.HOUR_OF_DAY) + "/" + endTime.get(Calendar.MINUTE));
         result.put("AcceptState", acceptState);
         return result;
     }

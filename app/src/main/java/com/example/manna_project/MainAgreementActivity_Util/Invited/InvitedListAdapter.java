@@ -62,21 +62,27 @@ public class InvitedListAdapter extends BaseAdapter {
         titleTextView.setText(promise.getTitle());
         leaderTextView.setText((promise.getLeader()!=null?promise.getLeader().getName():""));
 
-        StringBuilder txt = new StringBuilder();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        if (promise.getStartTime() == null) {
+            dateTextView.setText("시간 미정");
+        } else {
+            StringBuilder txt = new StringBuilder();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
-        txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
+            txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
 
-        txt.append(" ~ ");
+            txt.append(" ~ ");
 
-        simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
+            simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
 
-        txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
+            txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
 
-        dateTextView.setText(txt);
+            dateTextView.setText(txt);
+        }
 
-        placeTextView.setText(promise.getLongitude() + ", " + promise.getLatitude());
+        placeTextView.setText(promise.getLoadAddress());
 
         return convertView;
     }
+
+
 }

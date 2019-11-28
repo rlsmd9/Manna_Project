@@ -36,7 +36,7 @@ public class AcceptInvitationListAdapter extends BaseAdapter {
     }
 
     @Override
-    public Object getItem(int position) {
+    public Promise getItem(int position) {
         return list.get(position);
     }
 
@@ -61,18 +61,25 @@ public class AcceptInvitationListAdapter extends BaseAdapter {
         titleTextView.setText(promise.getTitle());
         leaderTextView.setText((promise.getLeader()!=null?promise.getLeader().getName():""));
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.S");
+        placeTextView.setText(promise.getLoadAddress());
 
-        dateTextView.setText("시작시간 : "  + simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
-        placeTextView.setText(promise.getLongitude() + ", " + promise.getLatitude());
+        if (promise.getStartTime() == null) {
+            dateTextView.setText("시간 미정");
+        } else {
+            StringBuilder txt = new StringBuilder();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, ShowDetailSchedule_Activity.class);
-                context.startActivity(intent);
-            }
-        });
+            txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
+
+            txt.append(" ~ ");
+
+            simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
+
+            txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
+
+            dateTextView.setText(txt);
+        }
+
 
         return convertView;
     }

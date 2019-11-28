@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="7dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/add_friend_email_txt"
+            android:layout_marginTop="5dp"
+            android:padding="10dp"
+            android:hint="이메일 입력"
+            android:selectAllOnFocus="true"
+            android:background="@drawable/round_edittext_shape"
+            android:layout_width="wrap_content"
+            android:drawableTint="@color/lightBlue"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/add_friend_find_email"
+            android:layout_marginLeft="5dp"
+            android:text="찾기"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:background="@drawable/round_button_shape"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/add_friend_status_txt"
+        android:visibility="gone"
+        android:layout_marginLeft="5dp"
+        android:textColor="@color/lightRed"
+        android:layout_marginTop="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/add_friend_add_btn"
+            android:text="친구추가"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/add_friend_cancel_btn"
+            android:text="취소"
+            android:textStyle="bold"
+            android:textColor="@color/lightRed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+    </LinearLayout>
+</LinearLayout>

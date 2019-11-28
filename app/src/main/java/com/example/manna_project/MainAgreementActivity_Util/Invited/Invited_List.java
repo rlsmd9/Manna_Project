@@ -42,21 +42,12 @@ public class Invited_List {
         mainAgreementActivity = ((MainAgreementActivity)context);
         DBRef = FirebaseDatabase.getInstance().getReference();
 
-        // 친구 데이터 생성
-//        arrayList = new ArrayList<>();
-//        arrayList.add(new InvitedListItem("null", "어디서 만나요?1", new MannaUser("홍길동1", "null", "null"), "숭실대학교", Calendar.getInstance()));
-//        arrayList.add(new InvitedListItem("null", "어디서 만나요?2", new MannaUser("홍길동2", "null", "null"), "숭실대학교", Calendar.getInstance()));
-//        arrayList.add(new InvitedListItem("null", "어디서 만나요?3", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
-//        arrayList.add(new InvitedListItem("null", "어디서 만나요?4", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
-//        arrayList.add(new InvitedListItem("null", "어디서 만나요?5", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
-//        arrayList.add(new InvitedListItem("null", "어디서 만나요?6", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
-//        arrayList.add(new InvitedListItem("null", "어디서 만나요?7", new MannaUser("홍길동3", "null", "null"), "숭실대학교", Calendar.getInstance()));
-
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(context, ShowDetailSchedule_Activity.class);
 
+                intent.putExtra("Mode", 1);
                 intent.putExtra("Promise_Info", invitedListAdapter.getItem(position));
 
                 context.startActivity(intent);
@@ -92,51 +83,6 @@ public class Invited_List {
 
         getAcceptInvitationListAdapter().notifyDataSetChanged();
     }
-
-//    private void loadDataFromFirebase() {
-//        getArrayList().clear();
-//
-//        final String uid = "XJJkpZ6ojhQ0ttiF9OgfDEzC00K2";
-//
-//        DatabaseReference promiseRef = DBRef.child("invited/" + uid);
-//
-//        promiseRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                if (dataSnapshot == null || !dataSnapshot.exists()) return;
-//
-//                for (DataSnapshot invitedSnap: dataSnapshot.getChildren()) {
-//                    DBRef.child("promises/" + invitedSnap.getValue(String.class)).addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                            if (dataSnapshot == null || !dataSnapshot.exists()) return;
-//
-//                            Promise promise = new Promise(dataSnapshot);
-//
-////                            promise.getAcceptState().get(promise.g)
-//
-//                            promise.setUserInfoFromUID(invitedListAdapter);
-//
-//                            getArrayList().add(promise);
-//                            Log.d(TAG, "onDataChange: " + promise.toString());
-//
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//                        }
-//                    });
-//                    Log.d(TAG, "onDataChange: " + invitedSnap.toString());
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError databaseError) {
-//
-//            }
-//        });
-//    }
 
     public void setList(ArrayList<Promise> arrayList) {
         this.arrayList = arrayList;

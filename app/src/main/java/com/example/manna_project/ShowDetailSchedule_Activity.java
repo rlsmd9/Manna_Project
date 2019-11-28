@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -34,6 +35,10 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     TextView place;
     TextView date;
     ImageView closeButton;
+    Button acceptButton;
+    Button refuseButton;
+    Button chatAddButton;
+    TextView chatText;
     //--------
 
     ArrayList<MannaUser> attendees;
@@ -42,6 +47,8 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     LinearLayout attendees_group;
     ArrayList<NoticeBoard_Chat> chat_list;
     Promise promise;
+    MannaUser myInfo;
+    int mode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +57,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
+        mode = getIntent().getIntExtra("Mode", 1);
         promise = getIntent().getParcelableExtra("Promise_Info");
 
         if (promise == null) {
@@ -65,8 +73,27 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         date = findViewById(R.id.activity_show_detail_schedule_date);
         attendees_group = findViewById(R.id.activity_show_detail_schedule_attendees_group);
         closeButton = findViewById(R.id.activity_show_detail_schedule_close_btn);
+        acceptButton = findViewById(R.id.activity_show_detail_schedule_accept_btn);
+        refuseButton = findViewById(R.id.activity_show_detail_schedule_cancel_btn);
+        chatAddButton = findViewById(R.id.activity_show_detail_schedule_chat_add_btn);
+        chatText = findViewById(R.id.activity_show_detail_schedule_chat_text);
 
+        chatAddButton.setOnClickListener(this);
+        acceptButton.setOnClickListener(this);
         closeButton.setOnClickListener(this);
+        refuseButton.setOnClickListener(this);
+
+        if (mode == 2) {
+            myInfo = getIntent().getParcelableExtra("MyInfo");
+            if (promise.getLeaderId().equals(myInfo.getUid())) {
+                acceptButton.setVisibility(View.VISIBLE);
+                acceptButton.setText("약속 확정");
+                refuseButton.setText("약속 삭제");
+            } else {
+                acceptButton.setVisibility(View.GONE);
+                refuseButton.setText("약속 취소");
+            }
+        }
 
         attendees = promise.getAttendees();
         setAttendeeList();
@@ -75,32 +102,36 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         leader.setText(promise.getLeader().getName());
         place.setText(promise.getLoadAddress());
 
-        StringBuilder txt = new StringBuilder();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        if (promise.getStartTime() == null) {
+            date.setText("시간 미정");
+        } else {
+            StringBuilder txt = new StringBuilder();
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
 
-        txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
+            txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
 
-        txt.append(" ~ ");
+            txt.append(" ~ ");
 
-        if (promise.getEndTime().get(Calendar.YEAR) != promise.getStartTime().get(Calendar.YEAR)) simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        else simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
+            if (promise.getEndTime().get(Calendar.YEAR) != promise.getStartTime().get(Calendar.YEAR)) simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+            else simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
 
-        txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
+            txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
 
-        date.setText(txt);
+            date.setText(txt);
+        }
 
         recyclerView = findViewById(R.id.activity_show_detail_schedule_chat_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        chat_list = new ArrayList<>();
-
-        NoticeBoard_Chat chat = new NoticeBoard_Chat(promise.getLeader(), "테스트", "2019-10-12 12:33");
-
-        chat_list.add(chat);
-
-        NoticeBoard_RecyclerViewAdapter adapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
-
-        recyclerView.setAdapter(adapter);
+//        chat_list = new ArrayList<>();
+//
+//        NoticeBoard_Chat chat = new NoticeBoard_Chat(promise.getLeader(), "테스트", "2019-10-12 12:33");
+//
+//        chat_list.add(chat);
+//
+//        NoticeBoard_RecyclerViewAdapter adapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
+//
+//        recyclerView.setAdapter(adapter);
 
     }
 
@@ -127,6 +158,34 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     public void onClick(View v) {
         if (v == closeButton) {
             finish();
+        } else if(v == chatAddButton) {
+            if (!chatText.getText().toString().isEmpty()) {
+
+            }
+        } else if (mode == 2) {
+
+            // 수락된 약속 이고 방장일때
+            if (promise.getLeaderId().equals(myInfo.getUid())) {
+                if (v == acceptButton) {
+
+                } else if(v == refuseButton) {
+
+                }
+            } else {
+                // 방장 아닐때
+                if (v == refuseButton) {
+
+                }
+            }
+
+        } else {
+            // 초대된 약속
+            if (v == acceptButton) {
+
+            } else if(v == refuseButton) {
+
+            }
+
         }
     }
 }
