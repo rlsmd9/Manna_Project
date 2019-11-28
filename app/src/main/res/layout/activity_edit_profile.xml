@@ -4,29 +4,46 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:background="@color/baseBackgroundColorWhite">
-    <TextView
+
+    <LinearLayout
+        android:id="@+id/main_agreement_titleBar"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:background="#FFA07F"
-        android:text="내 프로필"/>
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="16dp">
+
+        <TextView
+            android:text="MANNA-"
+            android:textSize="23dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/main_agreement_titleBar_tabName"
+            android:text="개인정보 설정"
+            android:textSize="23dp"
+            android:textStyle="bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <TextView
+        android:background="#ccc"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+
     <ImageView
-        android:id="@+id/ivuser"
+        android:id="@+id/activity_edit_profile_img"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:scaleType="centerInside"
         android:layout_marginTop="50dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/user_icon"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="이미지 변경"
-        android:textSize="18dp"
-        android:id="@+id/profile_button"
-        android:layout_gravity="center_horizontal"/>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -93,6 +110,7 @@
             android:textSize="15sp" />
     </RelativeLayout>
     <Button
+        android:id="@+id/activity_edit_profile_save_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"

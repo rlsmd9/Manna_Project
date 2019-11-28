@@ -1,57 +1,161 @@
 package com.example.manna_project;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.channels.FileChannel;
 
-public class EditProfile extends AppCompatActivity {
+public class EditProfile extends Activity implements View.OnClickListener {
 
-    ImageView imageView;
-    Button button;
+    ImageView activity_edit_profile_img;
+    Button activity_edit_profile_save_btn;
+    private File userProfilleImage;
+    private File tempFile;
+    private File targetDir;
+    boolean fileReadPermission;
+    boolean fileWritePermission;
+
+    public final static int SELECT_IMAGE_REQUEST_CODE = 1123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        imageView = (ImageView)findViewById(R.id.ivuser);
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            fileReadPermission = true;
+        }
+        if (ContextCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+            fileReadPermission = true;
+        }
 
-        button = (Button)findViewById(R.id.profile_button);
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(intent,1);
-            }
-        });
+        if (!fileReadPermission || !fileWritePermission) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 112);
+        }
+
+        setReferences();
+        setEvents();
+
+        targetDir = new File(getApplicationContext().getFilesDir()+File.separator+"MannaProject"+File.separator+"userIcon");
+        userProfilleImage = new File(targetDir, "UserProfileImage.jpg");
+
+        if (userProfilleImage.exists()) {
+            Bitmap bitmap = BitmapFactory.decodeFile(userProfilleImage.getAbsolutePath());
+
+            activity_edit_profile_img.setImageBitmap(bitmap);
+        }
+    }
+
+    private void setReferences() {
+        activity_edit_profile_img = findViewById(R.id.activity_edit_profile_img);
+        activity_edit_profile_save_btn = findViewById(R.id.activity_edit_profile_save_btn);
+    }
+
+    private void setEvents() {
+        activity_edit_profile_img.setOnClickListener(this);
+        activity_edit_profile_save_btn.setOnClickListener(this);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                try {
-                    InputStream in = getContentResolver().openInputStream(data.getData());
-                    Bitmap img = BitmapFactory.decodeStream(in);
-                    in.close();
-                    imageView.setImageBitmap(img);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
 
-            }
+        switch (requestCode) {
+            case SELECT_IMAGE_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+
+                    if (!targetDir.exists())
+                        targetDir.mkdirs(); //create the folder if they don't exist
+
+                    Uri photoUri = data.getData();
+
+                    Cursor cursor = null;
+
+                    try {
+                        String[] proj = { MediaStore.Images.Media.DATA };
+
+                        cursor = getContentResolver().query(photoUri, proj, null, null, null);
+
+                        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+
+                        cursor.moveToFirst();
+
+                        tempFile = new File(cursor.getString(column_index));
+
+                        Log.d("JS", "onActivityResult: " + tempFile.getAbsolutePath());
+                        Glide.with(this).load(data.getData()).into(activity_edit_profile_img);
+                    } catch (Exception e) {}
+                    finally {
+                        if (cursor != null) {
+                            cursor.close();
+                        }
+                    }
+                }
+                break;
         }
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        if (v == activity_edit_profile_img) {
+
+
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType(MediaStore.Images.Media.CONTENT_TYPE);
+            startActivityForResult(intent, SELECT_IMAGE_REQUEST_CODE);
+        } else if(v == activity_edit_profile_save_btn) {
+            try {
+                copy(tempFile, userProfilleImage);
+                finish();
+            } catch (Exception e){}
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 112 && grantResults.length > 0) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+                fileReadPermission = true;
+            if (grantResults[1] == PackageManager.PERMISSION_GRANTED)
+                fileWritePermission = true;
+        }
+    }
+
+    public void copy(File src, File dst) throws IOException {
+        FileInputStream inStream = new FileInputStream(src);
+        FileOutputStream outStream = new FileOutputStream(dst);
+        FileChannel inChannel = inStream.getChannel();
+        FileChannel outChannel = outStream.getChannel();
+        inChannel.transferTo(0, inChannel.size(), outChannel);
+        inStream.close();
+        outStream.close();
     }
 }
