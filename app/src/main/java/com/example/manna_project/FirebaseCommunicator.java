@@ -107,6 +107,8 @@ public class FirebaseCommunicator {
         invitedPromises.child(Uid).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+
                 if (callBackListener != null) {
                     ArrayList<String> promises = new ArrayList<>();
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
@@ -128,7 +130,7 @@ public class FirebaseCommunicator {
         promises.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+             //   Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
                 if (callBackListener != null) {
                     Promise promise = new Promise(dataSnapshot, context);
                     callBackListener.afterGetPromise(promise);
@@ -163,6 +165,28 @@ public class FirebaseCommunicator {
         for(int i=0;i<size;i++){
             invitedPromises.child(invitedUser.get(i)).child(key).setValue(key);
         }
+    }
+
+    public void cancelPromise(Promise promise, String uid){
+        promises.child(promise.getPromiseid()).child("AcceptState").child(uid).setValue(Promise.CANCELED);
+        invitedPromises.child(uid).child(promise.getPromiseid()).removeValue();
+    }
+    public void deletePromise(Promise promise){
+        String promiseId = promise.getPromiseid();
+        promises.child(promiseId).removeValue();
+        comments.child(promiseId).removeValue();
+        ArrayList<MannaUser> attendees = promise.getAttendees();
+        HashMap<String, Integer> acceptState = promise.getAcceptState();
+        for(MannaUser mannaUser : attendees){
+            String uid = mannaUser.getUid();
+            int state = acceptState.get(uid);
+            if(state != Promise.CANCELED) {
+                invitedPromises.child(uid).child(promiseId).removeValue();
+            }
+        }
+    }
+    public void acceptPromise(Promise promise, String uid){
+        promises.child(promise.getPromiseid()).child("AcceptState").child(uid).setValue(Promise.ACCEPTED);
     }
 
     //-------------------------------------------친구에 관한 부분-------------------------------------

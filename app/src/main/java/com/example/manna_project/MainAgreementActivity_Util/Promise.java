@@ -29,6 +29,7 @@ public class Promise implements Parcelable {
     public static int INVITED =0;
     public static int ACCEPTED=1;
     public static int FIXED=2;
+    public static int CANCELED=3;
 
     private String promiseid; //
     private String title; //

@@ -29,6 +29,8 @@ import java.util.Date;
 
 public class ShowDetailSchedule_Activity extends AppCompatActivity implements View.OnClickListener {
 
+    public static final int SHOW_DETAIL_CHEDULE_CODE=19970703;
+    public static String TAG = "MANNAYC";
     // Activity Object
     TextView title;
     TextView leader;
@@ -172,6 +174,10 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         if (attendees == null) return;
 
         for (MannaUser user: attendees) {
+            String uid = user.getUid();
+            int state = promise.getAcceptState().get(uid);
+            if(state == Promise.CANCELED)
+                continue;
             Custom_user_icon_view view = (Custom_user_icon_view) inflater.inflate(R.layout.user_name_icon_layout, null);
 
             view.setTextView((TextView) view.findViewById(R.id.user_name_icon));
@@ -204,23 +210,31 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 if (v == acceptButton) {
 
                 } else if(v == refuseButton) {
-
+                    firebaseCommunicator.deletePromise(promise);
+                    setResult(RESULT_OK);
+                    finish();
                 }
             } else {
                 // 방장 아닐때
                 if (v == refuseButton) {
-
+                    firebaseCommunicator.cancelPromise(promise,myInfo.getUid());
+                    Log.d(TAG,"버튼이 눌렸는데?");
+                    setResult(RESULT_OK);
+                    finish();
                 }
             }
 
         } else {
             // 초대된 약속
             if (v == acceptButton) {
-
+                firebaseCommunicator.acceptPromise(promise,firebaseCommunicator.getMyUid());
+                setResult(RESULT_OK);
+                finish();
             } else if(v == refuseButton) {
-
+                firebaseCommunicator.cancelPromise(promise,firebaseCommunicator.getMyUid());
+                setResult(RESULT_OK);
+                finish();
             }
-
         }
     }
 }

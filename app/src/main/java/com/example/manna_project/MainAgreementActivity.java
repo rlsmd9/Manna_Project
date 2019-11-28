@@ -122,8 +122,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             }
             @Override
             public void afterGetPromise(Promise promise){
-                Log.d(TAG2,promise.getPromiseid());
-                Log.d(TAG2,promise.getTitle());
                 promise.initialAttendees();
                 promiseArrayList.add(promise);
 
@@ -132,9 +130,10 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             }
             @Override
             public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
-                Log.d(TAG, "afterGetPromiseKey: dwdw");
-                promiseArrayList.clear();
                 promiseKeyList = promiseKeys;
+                promiseArrayList.clear();
+                getAcceptInvitation_list().setListItem();
+                getInvited_list().setListItem();
                 int size = promiseKeys.size();
                 for(int i =0; i<size;i++){
                     String key = promiseKeys.get(i);
@@ -153,9 +152,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             @Override
             public void afterGetChat(NoticeBoard_Chat chat) {
 
-//                for(NoticeBoard_Chat chat : chats){
-//                    Log.d(TAG2,chat.getChatId());
-//                }
             }
         });
 
@@ -230,19 +226,14 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-//                    Calendar start = Calendar.getInstance();
-//                    Calendar end = Calendar.getInstance();
-//                    Promise promise = new Promise("우리지금만나",myInfo.getUid(),myInfo,150.0,100.0,start,end);
-//                    promise.addAttendee(myInfo);
-//                    firebaseCommunicator.upLoadPromise(promise);
+
                 } else if (position == 1) {
-                    NoticeBoard_Chat noticeBoard_chat = new NoticeBoard_Chat(myInfo,"알림설정 누르면 예제 채팅 올라감","날짜 얻기 귀찮");
-                    firebaseCommunicator.addComment("-LuHFQhCz5UXdjHYV7lT",noticeBoard_chat);
+
                 } else if (position == 2) {
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-                    firebaseCommunicator.getChatListByPromise("-LuHFQhCz5UXdjHYV7lT");
+
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
                     FirebaseAuth.getInstance().signOut();
@@ -301,6 +292,15 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 }
                 break;
 
+            case ShowDetailSchedule_Activity.SHOW_DETAIL_CHEDULE_CODE:
+                Log.d(TAG2,resultCode+"");
+                if(resultCode == RESULT_OK){
+                    acceptInvitation_list.getArrayList().clear();
+                    invited_list.getArrayList().clear();
+                    Log.d(TAG2,"리절트 들어옴 showdetail");
+                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+                }
+                break;
             case AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE:
 
                 if (resultCode == RESULT_OK) {
@@ -318,6 +318,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     Log.d(TAG, "onActivityResult: Cancel");
                 }
                 break;
+
         }
     }
 

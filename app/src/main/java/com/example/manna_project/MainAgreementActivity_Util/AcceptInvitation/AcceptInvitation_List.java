@@ -42,7 +42,7 @@ public class AcceptInvitation_List {
                 intent.putExtra("Mode", 2);
                 intent.putExtra("Promise_Info", acceptInvitationListAdapter.getItem(position));
                 intent.putExtra("MyInfo", mainAgreementActivity.getMyInfo());
-                context.startActivity(intent);
+                ((MainAgreementActivity) context).startActivityForResult(intent,ShowDetailSchedule_Activity.SHOW_DETAIL_CHEDULE_CODE);
             }
         });
 
