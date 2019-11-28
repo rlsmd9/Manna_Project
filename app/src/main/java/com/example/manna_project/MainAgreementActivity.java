@@ -230,11 +230,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-//                    Calendar start = Calendar.getInstance();
-//                    Calendar end = Calendar.getInstance();
-//                    Promise promise = new Promise("우리지금만나",myInfo.getUid(),myInfo,150.0,100.0,start,end);
-//                    promise.addAttendee(myInfo);
-//                    firebaseCommunicator.upLoadPromise(promise);
+                    startActivity(new Intent(getApplicationContext(), EditProfile.class));
                 } else if (position == 1) {
                     NoticeBoard_Chat noticeBoard_chat = new NoticeBoard_Chat(myInfo,"알림설정 누르면 예제 채팅 올라감","날짜 얻기 귀찮");
                     firebaseCommunicator.addComment("-LuHFQhCz5UXdjHYV7lT",noticeBoard_chat);
