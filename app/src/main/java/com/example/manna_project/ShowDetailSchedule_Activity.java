@@ -42,7 +42,8 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     //--------
 
     ArrayList<MannaUser> attendees;
-
+    NoticeBoard_RecyclerViewAdapter adapter;
+    FirebaseCommunicator firebaseCommunicator;
     RecyclerView recyclerView;
     LinearLayout attendees_group;
     ArrayList<NoticeBoard_Chat> chat_list;
@@ -56,6 +57,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         setContentView(R.layout.activity_show_detail_schedule);
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        firebaseCommunicator = new FirebaseCommunicator(this);
 
         mode = getIntent().getIntExtra("Mode", 1);
         promise = getIntent().getParcelableExtra("Promise_Info");
@@ -123,15 +125,43 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         recyclerView = findViewById(R.id.activity_show_detail_schedule_chat_list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-//        chat_list = new ArrayList<>();
-//
-//        NoticeBoard_Chat chat = new NoticeBoard_Chat(promise.getLeader(), "테스트", "2019-10-12 12:33");
-//
-//        chat_list.add(chat);
-//
-//        NoticeBoard_RecyclerViewAdapter adapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
-//
-//        recyclerView.setAdapter(adapter);
+        chat_list = new ArrayList<>();
+
+        firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
+            @Override
+            public void afterGetUser(MannaUser mannaUser) {
+
+            }
+
+            @Override
+            public void afterGetPromise(Promise promise) {
+
+            }
+
+            @Override
+            public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
+
+            }
+
+            @Override
+            public void afterGetFriendUids(ArrayList<String> friendList) {
+
+            }
+
+            @Override
+            public void afterGetChat(NoticeBoard_Chat chat) {
+                for(MannaUser mannaUser : attendees){
+                    if(mannaUser.getUid().equals(chat.getUserUid()))
+                        chat.setUser(mannaUser);
+                }
+                chat_list.add(chat);
+                adapter.notifyDataSetChanged();
+            }
+        });
+        firebaseCommunicator.getChatListByPromise(promise.getPromiseid());
+         adapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
+        recyclerView.setAdapter(adapter);
+
     }
 
     private void setAttendeeList() {
@@ -159,7 +189,13 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
             finish();
         } else if(v == chatAddButton) {
             if (!chatText.getText().toString().isEmpty()) {
-
+                String comment = chatText.getText().toString();
+                chatText.setText(null);
+                Calendar calendar = Calendar.getInstance();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
+                String date = simpleDateFormat.format(new Date(calendar.getTimeInMillis()));
+                NoticeBoard_Chat noticeBoard_chat = new NoticeBoard_Chat(firebaseCommunicator.getMyUid(),comment,date);
+                firebaseCommunicator.addComment(promise.getPromiseid(),noticeBoard_chat);
             }
         } else if (mode == 2) {
 
