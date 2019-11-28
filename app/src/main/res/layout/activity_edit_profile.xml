@@ -13,12 +13,20 @@
         android:textStyle="bold"
         android:background="#FFA07F"
         android:text="내 프로필"/>
-    <ImageButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <ImageView
+        android:id="@+id/ivuser"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
         android:layout_marginTop="50dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/user_icon"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이미지 변경"
+        android:textSize="18dp"
+        android:id="@+id/profile_button"
+        android:layout_gravity="center_horizontal"/>
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

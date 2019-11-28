@@ -230,6 +230,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
+//                    startActivity(new Intent(getApplicationContext(),ProfileImage.class));
+                    startActivity(new Intent(getApplicationContext(),EditProfile.class));
 //                    Calendar start = Calendar.getInstance();
 //                    Calendar end = Calendar.getInstance();
 //                    Promise promise = new Promise("우리지금만나",myInfo.getUid(),myInfo,150.0,100.0,start,end);
