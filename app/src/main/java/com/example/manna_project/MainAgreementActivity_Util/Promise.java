@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
-import android.widget.BaseAdapter;
 
 import androidx.annotation.NonNull;
 
@@ -26,10 +25,13 @@ import java.util.Set;
 public class Promise implements Parcelable {
 
     public static final String TAG = "MANNAYC";
-    public static int INVITED =0;
-    public static int ACCEPTED=1;
-    public static int FIXED=2;
-    public static int CANCELED=3;
+    public static int INVITED = 0;
+    public static int ACCEPTED = 1;
+    public static int FIXED = 2;
+    public static int CANCELED = 3;
+    public static int DONE = 4;
+    public static int FiXEDTIME = 1;
+    public static int UNFIXEDTIME = -1;
 
     private String promiseid; //
     private String title; //
@@ -42,6 +44,7 @@ public class Promise implements Parcelable {
 
     private Calendar startTime;
     private Calendar endTime;
+    private int isTimeFixed;
 
     DatabaseReference DBRef;
 
@@ -59,6 +62,7 @@ public class Promise implements Parcelable {
         leader = in.readParcelable(MannaUser.class.getClassLoader());
         startTime = (Calendar) in.readSerializable();
         endTime = (Calendar) in.readSerializable();
+        isTimeFixed = in.readInt();
         acceptState = in.readHashMap(HashMap.class.getClassLoader());
         attendees = in.readArrayList(MannaUser.class.getClassLoader());
     }
@@ -74,6 +78,7 @@ public class Promise implements Parcelable {
         dest.writeParcelable(leader, flags);
         dest.writeSerializable(startTime);
         dest.writeSerializable(endTime);
+        dest.writeInt(isTimeFixed);
         dest.writeMap(acceptState);
         dest.writeList(attendees);
     }
@@ -107,7 +112,7 @@ public class Promise implements Parcelable {
         startTime = Calendar.getInstance();
         endTime = Calendar.getInstance();
 
-        if(dataSnapshot.child("StartTime").getValue() != null) {
+        if (dataSnapshot.child("StartTime").getValue() != null) {
             String temp = dataSnapshot.child("StartTime").getValue(String.class);
             String split[] = temp.split("/");
             startTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
@@ -118,6 +123,7 @@ public class Promise implements Parcelable {
             startTime = null;
             endTime = null;
         }
+        this.isTimeFixed = dataSnapshot.child("isTimeFixed").getValue(Integer.class);
 
         this.acceptState = new HashMap<>();
         DataSnapshot tmp = dataSnapshot.child("AcceptState");
@@ -127,7 +133,6 @@ public class Promise implements Parcelable {
         DBRef = FirebaseDatabase.getInstance().getReference();
         getLeaderInfo(context);
     }
-
 
 
     public static final Creator<Promise> CREATOR = new Creator<Promise>() {
@@ -205,6 +210,7 @@ public class Promise implements Parcelable {
     public void setEndTime(Calendar endTime) {
         this.endTime = endTime;
     }
+
     public HashMap<String, Integer> getAcceptState() {
         return acceptState;
     }
@@ -229,6 +235,14 @@ public class Promise implements Parcelable {
         this.attendees = attendees;
     }
 
+    public int isTimeFixed() {
+        return isTimeFixed;
+    }
+
+    public void setTimeFixed(int timeFixed) {
+        this.isTimeFixed = timeFixed;
+    }
+
     public void addAttendee(MannaUser user) {
         this.attendees.add(user);
         this.acceptState.put(user.getUid(), INVITED);
@@ -248,8 +262,6 @@ public class Promise implements Parcelable {
                     mainAgreementActivity.getInvited_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
                     mainAgreementActivity.getAcceptInvitation_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
                 }
-
-
             }
 
             @Override
@@ -262,7 +274,7 @@ public class Promise implements Parcelable {
     public void setAcceptState(MannaUser user, int state) {
         if (this.acceptState.containsKey(user.getUid()))
             this.acceptState.put(user.getUid(), state);
-        if(promiseid!=null)
+        if (promiseid != null)
             DBRef.child("promises").child(promiseid).child("AcceptState").child(user.getUid()).setValue(state);
     }
 
@@ -281,7 +293,7 @@ public class Promise implements Parcelable {
             @Override
             public void afterGetUser(MannaUser mannaUser) {
                 attendees.add(mannaUser);
-                Log.d(TAG,mannaUser.toString());
+                Log.d(TAG, mannaUser.toString());
             }
 
             @Override
@@ -304,7 +316,7 @@ public class Promise implements Parcelable {
 
             }
         });
-        for(String uid : attendeesUid){
+        for (String uid : attendeesUid) {
             firebaseCommunicator.getUserById(uid);
         }
     }
@@ -339,6 +351,7 @@ public class Promise implements Parcelable {
         if (endTime != null)
             result.put("EndTime", endTime.get(Calendar.YEAR) + "/" + endTime.get(Calendar.MONTH) + "/" + endTime.get(Calendar.DATE) + "/" + endTime.get(Calendar.HOUR_OF_DAY) + "/" + endTime.get(Calendar.MINUTE));
         result.put("AcceptState", acceptState);
+        result.put("isTimeFixed", this.isTimeFixed);
         return result;
     }
 

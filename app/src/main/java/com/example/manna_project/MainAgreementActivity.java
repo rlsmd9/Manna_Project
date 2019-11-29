@@ -70,14 +70,10 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     MannaUser myInfo;
 
-
-
     ArrayList<Promise> promiseArrayList;
     ArrayList<MannaUser> friendList;
     ArrayList<String> friendUids;
     ArrayList<String> promiseKeyList;
-
-
 
     static final String TAG = "MANNA_JS";
     static final String TAG2 = "MANNAYC";
