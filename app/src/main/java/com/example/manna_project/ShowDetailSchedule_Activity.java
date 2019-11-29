@@ -6,6 +6,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.PointF;
@@ -18,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import com.example.manna_project.MainAgreementActivity_Util.Custom_user_icon_view;
@@ -54,7 +57,10 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     Button refuseButton;
     Button chatAddButton;
     TextView chatText;
-    TextView activity_show_detail_schedule_choose_date;
+    LinearLayout activity_show_detail_schedule_date_group;
+    TextView activity_show_detail_schedule_date_start;
+    TextView activity_show_detail_schedule_date_end;
+    TextView activity_show_detail_schedule_date_label;
     //----------------
 
     ArrayList<MannaUser> attendees;
@@ -72,6 +78,12 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     MapView activity_search_place_map;
     Marker marker;
 
+    // date picker
+    Calendar start;
+    Calendar end;
+    int cal_switch;
+    SimpleDateFormat simpleDateFormat;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +91,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         firebaseCommunicator = new FirebaseCommunicator(this);
-
+        simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         mode = getIntent().getIntExtra("Mode", 1);
         promise = getIntent().getParcelableExtra("Promise_Info");
         myInfo = getIntent().getParcelableExtra("MyInfo");
@@ -91,25 +103,15 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
         Log.d("JS", "onCreate: " + promise.toString());
 
-        title = findViewById(R.id.activity_show_detail_schedule_title);
-        leader = findViewById(R.id.activity_show_detail_schedule_leader);
-        place = findViewById(R.id.activity_show_detail_schedule_place);
-        date = findViewById(R.id.activity_show_detail_schedule_date);
-        attendees_group = findViewById(R.id.activity_show_detail_schedule_attendees_group);
-        closeButton = findViewById(R.id.activity_show_detail_schedule_close_btn);
-        acceptButton = findViewById(R.id.activity_show_detail_schedule_accept_btn);
-        refuseButton = findViewById(R.id.activity_show_detail_schedule_cancel_btn);
-        chatAddButton = findViewById(R.id.activity_show_detail_schedule_chat_add_btn);
-        chatText = findViewById(R.id.activity_show_detail_schedule_chat_text);
-        activity_search_place_map = findViewById(R.id.activity_search_place_map);
-        activity_show_detail_schedule_choose_date = findViewById(R.id.activity_show_detail_schedule_choose_date);
+        setReferences();
 
         chatAddButton.setOnClickListener(this);
         acceptButton.setOnClickListener(this);
         closeButton.setOnClickListener(this);
         refuseButton.setOnClickListener(this);
-        activity_show_detail_schedule_choose_date.setOnClickListener(this);
-
+        date.setOnTouchListener(this);
+        activity_show_detail_schedule_date_end.setOnClickListener(this);
+        activity_show_detail_schedule_date_start.setOnClickListener(this);
 
         // naver map
         FragmentManager fm = getSupportFragmentManager();
@@ -124,7 +126,6 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         mapFragment.getMapAsync(this);
 
         place.setOnTouchListener(this);
-
 
         if (mode == 2) {
             if (promise.getLeaderId().equals(myInfo.getUid())) {
@@ -144,21 +145,23 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         leader.setText(promise.getLeader().getName());
         place.setText(promise.getLoadAddress());
 
-        if (promise.getStartTime() == null) {
-            date.setText("시간 미정");
+        StringBuilder txt = new StringBuilder();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
+        txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
+
+        txt.append(" ~ ");
+
+        if (promise.getEndTime().get(Calendar.YEAR) != promise.getStartTime().get(Calendar.YEAR)) simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        else simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
+
+        txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
+
+        if (promise.isTimeFixed() == Promise.UNFIXEDTIME) {
+            activity_show_detail_schedule_date_label.setText("기간");
+            date.setTextColor(getApplicationContext().getResources().getColor(R.color.lightRed));
+            date.setText(txt.toString() + "(시간 미정)");
         } else {
-            StringBuilder txt = new StringBuilder();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-
-            txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
-
-            txt.append(" ~ ");
-
-            if (promise.getEndTime().get(Calendar.YEAR) != promise.getStartTime().get(Calendar.YEAR)) simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-            else simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
-
-            txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
-
             date.setText(txt);
         }
 
@@ -205,6 +208,24 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
     }
 
+    private void setReferences() {
+        title = findViewById(R.id.activity_show_detail_schedule_title);
+        leader = findViewById(R.id.activity_show_detail_schedule_leader);
+        place = findViewById(R.id.activity_show_detail_schedule_place);
+        date = findViewById(R.id.activity_show_detail_schedule_date);
+        attendees_group = findViewById(R.id.activity_show_detail_schedule_attendees_group);
+        closeButton = findViewById(R.id.activity_show_detail_schedule_close_btn);
+        acceptButton = findViewById(R.id.activity_show_detail_schedule_accept_btn);
+        refuseButton = findViewById(R.id.activity_show_detail_schedule_cancel_btn);
+        chatAddButton = findViewById(R.id.activity_show_detail_schedule_chat_add_btn);
+        chatText = findViewById(R.id.activity_show_detail_schedule_chat_text);
+        activity_search_place_map = findViewById(R.id.activity_search_place_map);
+        activity_show_detail_schedule_date_group = findViewById(R.id.activity_show_detail_schedule_date_group);
+        activity_show_detail_schedule_date_start = findViewById(R.id.activity_show_detail_schedule_date_start);
+        activity_show_detail_schedule_date_end = findViewById(R.id.activity_show_detail_schedule_date_end);
+        activity_show_detail_schedule_date_label = findViewById(R.id.activity_show_detail_schedule_date_label);
+    }
+
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (v == place) {
@@ -216,10 +237,28 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 place.setPaintFlags(paint.getFlags());
 
                 if (activity_search_place_map.getVisibility() == View.GONE) {
+                    activity_show_detail_schedule_date_group.setVisibility(View.GONE);
                     activity_search_place_map.setVisibility(View.VISIBLE);
                     mapFragment.getMapAsync(this);
                 } else {
                     activity_search_place_map.setVisibility(View.GONE);
+                }
+            }
+        } else if (v == date) {
+            if (promise.isTimeFixed() != Promise.UNFIXEDTIME) return true;
+
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                date.setPaintFlags(date.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            } else if(event.getAction() == MotionEvent.ACTION_UP) {
+                Paint paint = new Paint();
+                paint.reset();
+                date.setPaintFlags(paint.getFlags());
+
+                if (activity_show_detail_schedule_date_group.getVisibility() == View.GONE) {
+                    activity_show_detail_schedule_date_group.setVisibility(View.VISIBLE);
+                    activity_search_place_map.setVisibility(View.GONE);
+                } else {
+                    activity_show_detail_schedule_date_group.setVisibility(View.GONE);
                 }
             }
         }
@@ -271,14 +310,61 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 firebaseCommunicator.addComment(promise.getPromiseid(),noticeBoard_chat);
                 chatAddButton.requestFocus();
             }
-        } else if(v == activity_show_detail_schedule_choose_date) {
-            Log.d(TAG, "onClick: dkdkdwkdwk");
+        } else if(v == activity_show_detail_schedule_date_start || v == activity_show_detail_schedule_date_end) {
+            if (v == activity_show_detail_schedule_date_start) cal_switch = 1;
+            if (v == activity_show_detail_schedule_date_end) cal_switch = 2;
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+
+            Log.d(MainAgreementActivity.TAG, "onClick: " + inflater);
+            View view = inflater.inflate(R.layout.custom_date_and_time_picker, null);
+
+            setInitDateAndTimePicker(view);
+
+            builder.setView(view);
+
+            builder.setPositiveButton("선택", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (cal_switch == 1) {
+                        start.set(Integer.parseInt(year.getText()+""), month.getValue(), day.getValue(),
+                                hour.getValue() + (ampm.getValue() == 1?12:0),min.getValue(),0);
+
+                        activity_show_detail_schedule_date_start.setText(simpleDateFormat.format(new Date(start.getTimeInMillis())));
+
+                        if (activity_show_detail_schedule_date_end.getText().toString().isEmpty()) {
+                            end.set(start.get(Calendar.YEAR),start.get(Calendar.MONTH),start.get(Calendar.DAY_OF_MONTH),
+                                    hour.getValue() + (ampm.getValue() == 1?12:0)+1,start.get(Calendar.MINUTE),0);
+                            activity_show_detail_schedule_date_end.setText(simpleDateFormat.format(new Date(end.getTimeInMillis())));
+                        }
+                    }
+                    else if(cal_switch == 2) {
+                        end.set(Integer.parseInt(year.getText()+""), month.getValue(), day.getValue(),
+                                hour.getValue() + (ampm.getValue() == 1?12:0),min.getValue(),0);
+
+                        activity_show_detail_schedule_date_end.setText(simpleDateFormat.format(new Date(end.getTimeInMillis())));
+                    }
+                }
+            });
+
+            builder.create().show();
         } else if (mode == 2) {
 
             // 수락된 약속 이고 방장일때
             if (promise.getLeaderId().equals(myInfo.getUid())) {
                 if (v == acceptButton) {
                     // 약속 확정
+                    if (promise.isTimeFixed() == Promise.UNFIXEDTIME) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setPositiveButton("확인", null);
+                        builder.setMessage("만날 시간을 정해주세요");
+                        activity_show_detail_schedule_date_group.setVisibility(View.VISIBLE);
+                        builder.create().show();
+                        return;
+                    }
+
                     Intent intent = new Intent(this, MainAgreementActivity.class);
 
                     intent.putExtra("FIXED_PROMISE", promise);
@@ -312,5 +398,92 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 finish();
             }
         }
+    }
+
+    TextView year;
+    NumberPicker month;
+    NumberPicker day;
+    NumberPicker hour;
+    NumberPicker min;
+    NumberPicker ampm;
+
+    private void setInitDateAndTimePicker(View view) {
+        year = view.findViewById(R.id.custom_date_and_time_datePicker_year);
+        month = view.findViewById(R.id.custom_date_and_time_datePicker_month);
+        month.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        day = view.findViewById(R.id.custom_date_and_time_datePicker_day);
+        day.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        hour = view.findViewById(R.id.custom_date_and_time_datePicker_hour);
+        hour.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        min = view.findViewById(R.id.custom_date_and_time_datePicker_min);
+        min.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        ampm = view.findViewById(R.id.custom_date_and_time_datePicker_ampm);
+        ampm.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS);
+        Calendar today;
+
+
+        start = Calendar.getInstance();
+        end = Calendar.getInstance();
+
+        if (cal_switch == 1) today = start;
+        else today = end;
+
+        Calendar cal = Calendar.getInstance();
+
+        month.setMinValue(0);
+        month.setMaxValue(11);
+        month.setValue(today.get(Calendar.MONTH));
+        month.setDisplayedValues(new String[]{"1","2","3","4","5","6","7","8","9","10","11","12"});
+
+        month.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                Calendar cal = Calendar.getInstance();
+
+                Log.d(MainAgreementActivity.TAG, "onValueChange: " + oldVal + ", " + newVal);
+
+                cal.set(Integer.parseInt(year.getText()+""), month.getValue()+1,0);
+
+                if (oldVal == 11 && newVal == 0) {
+                    cal.set(Calendar.YEAR, cal.get(Calendar.YEAR)+1);
+                    year.setText(cal.get(Calendar.YEAR) + "");
+                } else if(oldVal == 0 && newVal == 11) {
+                    cal.set(Calendar.YEAR, cal.get(Calendar.YEAR)-1);
+                    year.setText(cal.get(Calendar.YEAR) + "");
+                }
+
+                day.setMaxValue(cal.get(Calendar.DAY_OF_MONTH));
+            }
+        });
+
+        day.setMinValue(1);
+        cal.set(Calendar.MONTH, today.get(Calendar.MONTH)+1,0);
+        day.setMaxValue(cal.get(Calendar.DAY_OF_MONTH));
+        day.setValue(today.get(Calendar.DAY_OF_MONTH));
+
+        hour.setMinValue(1);
+        hour.setMaxValue(12);
+        hour.setValue(today.get(Calendar.HOUR));
+        hour.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                Log.d(MainAgreementActivity.TAG, "onValueChange: " + oldVal + ", " + newVal + ", ampd = " + ampm.getValue());
+
+                if ((oldVal == 12 && newVal == 1) || (oldVal == 1 && newVal == 12)) {
+                    if (ampm.getValue() == 0) ampm.setValue(1);
+                    else ampm.setValue(0);
+                }
+
+            }
+        });
+
+        min.setMinValue(0);
+        min.setMaxValue(59);
+        min.setValue(0);
+
+        ampm.setMinValue(0);
+        ampm.setMaxValue(1);
+        ampm.setValue(today.get(Calendar.AM_PM));
+        ampm.setDisplayedValues(new String[]{"오전","오후"});
     }
 }
