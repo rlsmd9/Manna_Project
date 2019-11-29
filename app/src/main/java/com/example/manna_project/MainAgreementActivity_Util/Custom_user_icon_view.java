@@ -38,9 +38,13 @@ public class Custom_user_icon_view extends LinearLayout {
         this.textView = textView;
     }
 
-    public void setUser(MannaUser user) {
+    public void setUser(MannaUser user, boolean isCanceled) {
         this.user = user;
         Log.d("JS", "setUser: " + user.toString());
+
+        if (isCanceled)
+            textView.setBackground(getResources().getDrawable(R.drawable.round_shape_red_color));
+
         textView.setText(user.getName() + "");
     }
 

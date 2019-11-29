@@ -63,6 +63,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
         mode = getIntent().getIntExtra("Mode", 1);
         promise = getIntent().getParcelableExtra("Promise_Info");
+        myInfo = getIntent().getParcelableExtra("MyInfo");
 
         if (promise == null) {
             Log.d("JS", "onCreate: promise is null");
@@ -88,7 +89,6 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         refuseButton.setOnClickListener(this);
 
         if (mode == 2) {
-            myInfo = getIntent().getParcelableExtra("MyInfo");
             if (promise.getLeaderId().equals(myInfo.getUid())) {
                 acceptButton.setVisibility(View.VISIBLE);
                 acceptButton.setText("약속 확정");
@@ -158,10 +158,11 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 }
                 chat_list.add(chat);
                 adapter.notifyDataSetChanged();
+                recyclerView.smoothScrollToPosition(chat_list.size()-1);
             }
         });
         firebaseCommunicator.getChatListByPromise(promise.getPromiseid());
-         adapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
+        adapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
         recyclerView.setAdapter(adapter);
 
     }
@@ -176,12 +177,9 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         for (MannaUser user: attendees) {
             String uid = user.getUid();
             int state = promise.getAcceptState().get(uid);
-            if(state == Promise.CANCELED)
-                continue;
             Custom_user_icon_view view = (Custom_user_icon_view) inflater.inflate(R.layout.user_name_icon_layout, null);
-
             view.setTextView((TextView) view.findViewById(R.id.user_name_icon));
-            view.setUser(user);
+            view.setUser(user, state == Promise.CANCELED);
 
             Log.d(MainAgreementActivity.TAG, "setAttendeeList: " + user.toString());
 
@@ -202,6 +200,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 String date = simpleDateFormat.format(new Date(calendar.getTimeInMillis()));
                 NoticeBoard_Chat noticeBoard_chat = new NoticeBoard_Chat(myInfo.getUid(),comment,date);
                 firebaseCommunicator.addComment(promise.getPromiseid(),noticeBoard_chat);
+                chatAddButton.requestFocus();
             }
         } else if (mode == 2) {
 

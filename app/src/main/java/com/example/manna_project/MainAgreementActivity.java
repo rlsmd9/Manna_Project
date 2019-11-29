@@ -196,6 +196,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         tabSpec.setContent(R.id.agreementCalendar);
         tabHost.addTab(tabSpec);
         currentDate = findViewById(R.id.calendar_currentDate);
+        currentDate.setOnClickListener(this);
         custom_calendar = new Custom_Calendar(this, this, (Custom_LinearLayout) findViewById(R.id.calendarRoot), (GridLayout) findViewById(R.id.main_agreement_calendarGridLayout),
                 (ListView) findViewById(R.id.main_agreement_listView), (TextView) findViewById(R.id.calendar_currentDate), Calendar.getInstance());
 
@@ -343,7 +344,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v == customDatePicker) {
+        if (v == customDatePicker || v == currentDate) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
