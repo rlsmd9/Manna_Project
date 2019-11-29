@@ -600,4 +600,12 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     public void setGoogleCalendarAPI(GoogleCalendarAPI googleCalendarAPI) {
         this.googleCalendarAPI = googleCalendarAPI;
     }
+
+    public Custom_Calendar getCustom_calendar() {
+        return custom_calendar;
+    }
+
+    public void setCustom_calendar(Custom_Calendar custom_calendar) {
+        this.custom_calendar = custom_calendar;
+    }
 }
