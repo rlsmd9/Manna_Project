@@ -87,7 +87,7 @@ public class Promise implements Parcelable {
 
     }
 
-    public Promise(String title, String leaderId, MannaUser leader, String loadAddress, double latitude, double longitude, Calendar startTime, Calendar endTime) {
+    public Promise(String title, String leaderId, MannaUser leader, String loadAddress, double latitude, double longitude, Calendar startTime, Calendar endTime, int isTimeFixed) {
         this.title = title;
         this.leaderId = leaderId;
         this.leader = leader;
@@ -96,6 +96,7 @@ public class Promise implements Parcelable {
         this.longitude = longitude;
         this.startTime = startTime;
         this.endTime = endTime;
+        this.isTimeFixed = isTimeFixed;
         attendees = new ArrayList<>();
         acceptState = new HashMap<>();
     }
