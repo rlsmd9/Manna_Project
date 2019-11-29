@@ -1,12 +1,18 @@
 package com.example.manna_project;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
+import android.graphics.Paint;
+import android.graphics.PointF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -19,6 +25,13 @@ import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBoard_Chat;
 import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBoard_RecyclerViewAdapter;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
+import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraPosition;
+import com.naver.maps.map.MapFragment;
+import com.naver.maps.map.MapView;
+import com.naver.maps.map.NaverMap;
+import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.Marker;
 
 import org.w3c.dom.Text;
 
@@ -27,7 +40,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-public class ShowDetailSchedule_Activity extends AppCompatActivity implements View.OnClickListener {
+public class ShowDetailSchedule_Activity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback, View.OnTouchListener {
 
     public static final int SHOW_DETAIL_CHEDULE_CODE=19970703;
     public static String TAG = "MANNAYC";
@@ -41,6 +54,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     Button refuseButton;
     Button chatAddButton;
     TextView chatText;
+    TextView activity_show_detail_schedule_choose_date;
     //----------------
 
     ArrayList<MannaUser> attendees;
@@ -52,6 +66,11 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     Promise promise;
     MannaUser myInfo;
     int mode;
+
+    // Naver Map
+    MapFragment mapFragment;
+    MapView activity_search_place_map;
+    Marker marker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,11 +101,30 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         refuseButton = findViewById(R.id.activity_show_detail_schedule_cancel_btn);
         chatAddButton = findViewById(R.id.activity_show_detail_schedule_chat_add_btn);
         chatText = findViewById(R.id.activity_show_detail_schedule_chat_text);
+        activity_search_place_map = findViewById(R.id.activity_search_place_map);
+        activity_show_detail_schedule_choose_date = findViewById(R.id.activity_show_detail_schedule_choose_date);
 
         chatAddButton.setOnClickListener(this);
         acceptButton.setOnClickListener(this);
         closeButton.setOnClickListener(this);
         refuseButton.setOnClickListener(this);
+        activity_show_detail_schedule_choose_date.setOnClickListener(this);
+
+
+        // naver map
+        FragmentManager fm = getSupportFragmentManager();
+        mapFragment = (MapFragment) fm.findFragmentById(R.id.activity_search_place_map);
+
+        if (mapFragment == null) {
+            mapFragment = MapFragment.newInstance();
+            fm.beginTransaction().add(R.id.activity_search_place_map, mapFragment).commit();
+        }
+
+        marker = new Marker();
+        mapFragment.getMapAsync(this);
+
+        place.setOnTouchListener(this);
+
 
         if (mode == 2) {
             if (promise.getLeaderId().equals(myInfo.getUid())) {
@@ -108,6 +146,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
         if (promise.getStartTime() == null) {
             date.setText("시간 미정");
+            activity_show_detail_schedule_choose_date.setVisibility(View.VISIBLE);
         } else {
             StringBuilder txt = new StringBuilder();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
@@ -167,6 +206,37 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
     }
 
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        if (v == place) {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                place.setPaintFlags(place.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            } else if(event.getAction() == MotionEvent.ACTION_UP) {
+                Paint paint = new Paint();
+                paint.reset();
+                place.setPaintFlags(paint.getFlags());
+
+                if (activity_search_place_map.getVisibility() == View.GONE) {
+                    activity_search_place_map.setVisibility(View.VISIBLE);
+                    mapFragment.getMapAsync(this);
+                } else {
+                    activity_search_place_map.setVisibility(View.GONE);
+                }
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public void onMapReady(@NonNull NaverMap naverMap) {
+        LatLng latLng = new LatLng(promise.getLatitude(), promise.getLongitude());
+
+        naverMap.setCameraPosition(new CameraPosition(latLng, 16));
+        marker.setPosition(latLng);
+        marker.setMap(naverMap);
+    }
+
     private void setAttendeeList() {
         LayoutInflater inflater = (LayoutInflater)getSystemService(LAYOUT_INFLATER_SERVICE);
 
@@ -202,12 +272,20 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 firebaseCommunicator.addComment(promise.getPromiseid(),noticeBoard_chat);
                 chatAddButton.requestFocus();
             }
+        } else if(v == activity_show_detail_schedule_choose_date) {
+            Log.d(TAG, "onClick: dkdkdwkdwk");
         } else if (mode == 2) {
 
             // 수락된 약속 이고 방장일때
             if (promise.getLeaderId().equals(myInfo.getUid())) {
                 if (v == acceptButton) {
+                    // 약속 확정
+                    Intent intent = new Intent(this, MainAgreementActivity.class);
 
+                    intent.putExtra("FIXED_PROMISE", promise);
+
+                    setResult(RESULT_OK, intent);
+                    finish();
                 } else if(v == refuseButton) {
                     firebaseCommunicator.deletePromise(promise);
                     setResult(RESULT_OK);

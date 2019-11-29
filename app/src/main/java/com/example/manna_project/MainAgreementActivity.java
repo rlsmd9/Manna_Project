@@ -296,6 +296,14 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             case ShowDetailSchedule_Activity.SHOW_DETAIL_CHEDULE_CODE:
                 Log.d(TAG2,resultCode+"");
                 if(resultCode == RESULT_OK){
+                    Promise fixedPromise = data.getParcelableExtra("FIXED_PROMISE");
+
+                    if (fixedPromise != null) {
+                        Log.d(TAG, "onActivityResult: " + fixedPromise.getStartTime());
+                        Log.d(TAG, "onActivityResult: " + fixedPromise.getEndTime());
+                    }
+
+
                     acceptInvitation_list.getArrayList().clear();
                     invited_list.getArrayList().clear();
                     Log.d(TAG2,"리절트 들어옴 showdetail");
