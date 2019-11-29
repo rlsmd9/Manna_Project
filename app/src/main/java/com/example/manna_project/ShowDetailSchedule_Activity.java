@@ -149,24 +149,12 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         leader.setText(promise.getLeader().getName());
         place.setText(promise.getLoadAddress());
 
-        StringBuilder txt = new StringBuilder();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-
-        txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
-
-        txt.append(" ~ ");
-
-        if (promise.getEndTime().get(Calendar.YEAR) != promise.getStartTime().get(Calendar.YEAR)) simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        else simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
-
-        txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
-
         if (promise.isTimeFixed() == Promise.UNFIXEDTIME) {
             activity_show_detail_schedule_date_label.setText("기간");
             date.setTextColor(getApplicationContext().getResources().getColor(R.color.lightRed));
-            date.setText(txt.toString() + "(시간 미정)");
+            date.setText(getConnectDate() + "(시간 미정)");
         } else {
-            date.setText(txt);
+            date.setText(getConnectDate());
         }
 
         recyclerView = findViewById(R.id.activity_show_detail_schedule_chat_list);
@@ -212,6 +200,22 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
     }
 
+    private String getConnectDate() {
+        StringBuilder txt = new StringBuilder();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
+        txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
+
+        txt.append(" ~ ");
+
+        if (promise.getEndTime().get(Calendar.YEAR) != promise.getStartTime().get(Calendar.YEAR)) simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        else simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
+
+        txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
+
+        return txt.toString();
+    }
+
     private void setReferences() {
         title = findViewById(R.id.activity_show_detail_schedule_title);
         leader = findViewById(R.id.activity_show_detail_schedule_leader);
@@ -250,7 +254,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 }
             }
         } else if (v == date) {
-            if (promise.isTimeFixed() != Promise.UNFIXEDTIME) return true;
+            if (promise.isTimeFixed() != Promise.UNFIXEDTIME || !promise.getLeaderId().equals(myInfo.getUid())) return true;
 
             if (event.getAction() == MotionEvent.ACTION_DOWN) {
                 date.setPaintFlags(date.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -358,8 +362,30 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         } else if(v == activity_show_detail_schedule_commit_date_btn) {
             if (activity_show_detail_schedule_date_start.getText().toString().isEmpty() || activity_show_detail_schedule_date_end.getText().toString().isEmpty()) {
                 AlertMsg.AlertMsg(this, "만날 시간을 정해주세요");
+            } else if(end.getTimeInMillis() < start.getTimeInMillis()) {
+                AlertMsg.AlertMsg(this, "종료시간은 시작시간보다 빠를수 없습니다.");
+            } else if((start.getTimeInMillis() < promise.getStartTime().getTimeInMillis() || start.getTimeInMillis() > promise.getEndTime().getTimeInMillis()) ||
+                    end.getTimeInMillis() < promise.getStartTime().getTimeInMillis() || end.getTimeInMillis() > promise.getEndTime().getTimeInMillis()) {
+                AlertMsg.AlertMsg(this, "시간은 처음 지정한 약속 기간내에서 정해주세요");
             } else {
+                AlertMsg.AlertMsgRes(this, "한번 정하면 수정할 수 없습니다.\n그래도 저장 하시겠습니까?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // 날짜 저장
+                        promise.setStartTime(start);
+                        promise.setEndTime(end);
+                        promise.setTimeFixed(Promise.FiXEDTIME);
 
+                        firebaseCommunicator.updatePromise(promise);
+
+                        activity_show_detail_schedule_date_label.setText("시간");
+                        date.setTextColor(place.getTextColors());
+                        date.setText(getConnectDate());
+
+                        activity_show_detail_schedule_date_group.setVisibility(View.GONE);
+                        setResult(RESULT_OK);
+                    }
+                });
             }
         } else if (mode == 2) {
 
@@ -441,6 +467,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         month.setMinValue(0);
         month.setMaxValue(11);
         month.setValue(today.get(Calendar.MONTH));
+
         month.setDisplayedValues(new String[]{"1","2","3","4","5","6","7","8","9","10","11","12"});
 
         month.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {

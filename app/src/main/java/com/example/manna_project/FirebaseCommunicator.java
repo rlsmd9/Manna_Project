@@ -167,6 +167,13 @@ public class FirebaseCommunicator {
         }
     }
 
+    public void updatePromise(Promise promise){
+        DatabaseReference Ref = promises.child(promise.getPromiseid());
+
+        //초대된 사용자에 초대된 약속에 고유 키를 추가하는 코드
+        Ref.updateChildren(promise.toMap());
+    }
+
     public void cancelPromise(Promise promise, String uid){
         promises.child(promise.getPromiseid()).child("AcceptState").child(uid).setValue(Promise.CANCELED);
         invitedPromises.child(uid).child(promise.getPromiseid()).removeValue();
