@@ -146,7 +146,6 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
         if (promise.getStartTime() == null) {
             date.setText("시간 미정");
-            activity_show_detail_schedule_choose_date.setVisibility(View.VISIBLE);
         } else {
             StringBuilder txt = new StringBuilder();
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
