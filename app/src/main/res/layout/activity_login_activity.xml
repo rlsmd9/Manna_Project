@@ -8,8 +8,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="80dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:layout_centerInParent="true">
 
         <ImageView
             android:layout_width="100dp"
@@ -24,13 +24,16 @@
             android:text="MANNA"
             android:textAlignment="center"
             android:textSize="20dp"/>
+
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/login_activity_signin"
+            android:layout_below="@id/login_Logo"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="160dp"
+            android:layout_marginRight="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <com.google.android.gms.common.SignInButton
-        android:id="@+id/login_activity_signin"
-        android:layout_centerInParent="true"
-        android:layout_marginLeft="30dp"
-        android:layout_marginRight="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+
 </RelativeLayout>
