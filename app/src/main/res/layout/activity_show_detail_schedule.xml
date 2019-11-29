@@ -74,12 +74,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-            <TextView
-                android:text="참가자"
-                android:textSize="15dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_marginLeft="10dp"
@@ -105,15 +101,55 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
-            <TextView
-                android:id="@+id/activity_show_detail_schedule_date"
-                android:text="시간"
-                android:textSize="15dp"
+            <LinearLayout
+                android:orientation="horizontal"
                 android:layout_marginBottom="5dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/activity_show_detail_schedule_date"
+                    android:text="시간"
+                    android:textSize="15dp"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
+                <TextView
+                    android:id="@+id/activity_show_detail_schedule_choose_date"
+                    android:text="시간 정하기"
+                    android:textColor="@color/white"
+                    android:visibility="gone"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="7dp"
+                    android:background="@drawable/round_button_shape"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.example.manna_project.MainAgreementActivity_Util.NaverMapUtil.Custom_MapView
+            android:id="@+id/activity_search_place_map"
+            android:name="com.naver.maps.map.MapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <TextView
+        android:text="참가자"
+        android:layout_marginLeft="10dp"
+        android:textSize="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
     <HorizontalScrollView
         android:padding="7dp"

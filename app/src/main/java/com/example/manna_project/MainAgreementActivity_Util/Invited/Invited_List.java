@@ -48,6 +48,7 @@ public class Invited_List {
                 Intent intent = new Intent(context, ShowDetailSchedule_Activity.class);
 
                 intent.putExtra("Mode", 1);
+                intent.putExtra("MyInfo", mainAgreementActivity.getMyInfo());
                 intent.putExtra("Promise_Info", invitedListAdapter.getItem(position));
 
                 ((MainAgreementActivity) context).startActivityForResult(intent,ShowDetailSchedule_Activity.SHOW_DETAIL_CHEDULE_CODE);
