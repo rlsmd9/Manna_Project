@@ -130,6 +130,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
         place.setOnTouchListener(this);
 
+
         if (mode == 2) {
             if (promise.getLeaderId().equals(myInfo.getUid())) {
                 acceptButton.setVisibility(View.VISIBLE);
