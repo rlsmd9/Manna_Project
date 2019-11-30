@@ -146,6 +146,19 @@ public class ScheduleOfDay {
         } else {
         }
     }
+
+
+    @Override
+    public String toString() {
+        return "ScheduleOfDay{" +
+                "date=" + date +
+                ", textDay=" + textDay +
+                ", dayList=" + dayList +
+                ", eventsOfDay=" + eventsOfDay +
+                ", context=" + context +
+                ", textViews=" + textViews +
+                '}';
+    }
 }
 
 

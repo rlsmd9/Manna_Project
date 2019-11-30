@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -98,16 +99,15 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    activity_add_schedule_date_start.setText("나중에 정하기");
-                    activity_add_schedule_date_end.setText("나중에 정하기");
-                    activity_add_schedule_date_start.setEnabled(false);
-                    activity_add_schedule_date_end.setEnabled(false);
+                    activity_add_schedule_date_start.setHint("만날 날짜 범위 선택");
+                    activity_add_schedule_date_end.setHint("만날 날짜 범위 선택");
                 } else {
-                    activity_add_schedule_date_start.setText("");
-                    activity_add_schedule_date_end.setText("");
-                    activity_add_schedule_date_start.setEnabled(true);
-                    activity_add_schedule_date_end.setEnabled(true);
+                    activity_add_schedule_date_start.setHint("시작시간");
+                    activity_add_schedule_date_end.setHint("종료시간");
                 }
+
+                activity_add_schedule_date_start.setText("");
+                activity_add_schedule_date_end.setText("");
             }
         });
 
@@ -143,7 +143,7 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
             Custom_user_icon_view view = (Custom_user_icon_view) inflater.inflate(R.layout.user_name_icon_layout, null);
 
             view.setTextView((TextView) view.findViewById(R.id.user_name_icon));
-            view.setUser(user);
+            view.setUser(user, Promise.INVITED);
 
             Log.d(MainAgreementActivity.TAG, "setAttendeeList: " + user.toString());
 
@@ -208,19 +208,25 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
                 public void onClick(DialogInterface dialog, int which) {
                     if (cal_switch == 1) {
                         start.set(Integer.parseInt(year.getText()+""), month.getValue(), day.getValue(),
-                                hour.getValue(),min.getValue(),0);
+                                hour.getValue() + (ampm.getValue() == 1?12:0),min.getValue(),0);
 
                         activity_add_schedule_date_start.setText(simpleDateFormat.format(new Date(start.getTimeInMillis())));
 
                         if (activity_add_schedule_date_end.getText().toString().isEmpty()) {
-                            end.set(start.get(Calendar.YEAR),start.get(Calendar.MONTH),start.get(Calendar.DAY_OF_MONTH),
-                                    start.get(Calendar.HOUR)+1,start.get(Calendar.MINUTE),0);
+                            if (activity_add_schedule_after_chk.isChecked()) {
+                                end.set(start.get(Calendar.YEAR),start.get(Calendar.MONTH),start.get(Calendar.DAY_OF_MONTH) + 7,
+                                        hour.getValue() + (ampm.getValue() == 1?12:0),start.get(Calendar.MINUTE),0);
+                            } else {
+                                end.set(start.get(Calendar.YEAR),start.get(Calendar.MONTH),start.get(Calendar.DAY_OF_MONTH),
+                                        hour.getValue() + (ampm.getValue() == 1?12:0)+1,start.get(Calendar.MINUTE),0);
+                            }
+
                             activity_add_schedule_date_end.setText(simpleDateFormat.format(new Date(end.getTimeInMillis())));
                         }
                     }
                     else if(cal_switch == 2) {
                         end.set(Integer.parseInt(year.getText()+""), month.getValue(), day.getValue(),
-                                hour.getValue(),min.getValue(),0);
+                                hour.getValue() + (ampm.getValue() == 1?12:0),min.getValue(),0);
 
                         activity_add_schedule_date_end.setText(simpleDateFormat.format(new Date(end.getTimeInMillis())));
                     }
@@ -258,19 +264,35 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
                 builder.create().show();
                 activity_add_schedule_place_detail.setFocusable(true);
                 return;
-            } else if(activity_add_schedule_after_chk.isChecked() == false) {
-                if (activity_add_schedule_date_start.getText().toString().isEmpty()) {
-                    builder.setMessage("시작 시간을 입력해 주세요.");
-                    builder.create().show();
-                    activity_add_schedule_date_start.setFocusable(true);
-                    return;
-                } else if (activity_add_schedule_date_end.getText().toString().isEmpty()) {
-                    builder.setMessage("종료 시간을 입력해 주세요.");
-                    builder.create().show();
-                    activity_add_schedule_date_end.setFocusable(true);
-                    return;
-                }
+            } else if (!activity_add_schedule_after_chk.isChecked() && activity_add_schedule_date_start.getText().toString().isEmpty()) {
+                builder.setMessage("시작 시간을 입력해 주세요.");
+                builder.create().show();
+                activity_add_schedule_date_start.setFocusable(true);
+                return;
+            } else if (!activity_add_schedule_after_chk.isChecked() && activity_add_schedule_date_end.getText().toString().isEmpty()) {
+                builder.setMessage("종료 시간을 입력해 주세요.");
+                builder.create().show();
+                activity_add_schedule_date_end.setFocusable(true);
+                return;
+            } else if (!activity_add_schedule_after_chk.isChecked() && activity_add_schedule_date_start.getText().toString().isEmpty()) {
+                builder.setMessage("만날 날짜 범위를 입력해 주세요.");
+                builder.create().show();
+                activity_add_schedule_date_start.setFocusable(true);
+                return;
+            } else if (!activity_add_schedule_after_chk.isChecked() && activity_add_schedule_date_end.getText().toString().isEmpty()) {
+                builder.setMessage("만날 날짜 범위를 입력해 주세요.");
+                builder.create().show();
+                activity_add_schedule_date_end.setFocusable(true);
+                return;
+            } else if((end.getTimeInMillis() - start.getTimeInMillis()) <= 0) {
+                builder.setMessage("종료 시간이 시작 시간보다 빠릅니다.");
+                builder.create().show();
+                activity_add_schedule_date_end.setFocusable(true);
+                return;
             }
+
+
+            Log.d("JS", "onClick: " + (end.getTimeInMillis() - start.getTimeInMillis()));
 
             String title = activity_add_schedule_title.getText().toString();
             String loadAddress = activity_add_schedule_place.getText().toString() + ", " + activity_add_schedule_place_detail.getText().toString();
@@ -283,7 +305,7 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
                 else acceptState.put(user.getUid(), Promise.INVITED);
             }
 
-            Promise promise = new Promise(title, leader.getUid(), leader, loadAddress, latLng.latitude, latLng.longitude, (activity_add_schedule_after_chk.isChecked()?null:start), (activity_add_schedule_after_chk.isChecked()?null:end));
+            Promise promise = new Promise(title, leader.getUid(), leader, loadAddress, latLng.latitude, latLng.longitude, start, end, (activity_add_schedule_after_chk.isChecked()?Promise.UNFIXEDTIME:Promise.FiXEDTIME));
             promise.setAcceptState(acceptState);
             promise.setAttendees(attendees);
 
@@ -378,6 +400,7 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
 
         ampm.setMinValue(0);
         ampm.setMaxValue(1);
+        ampm.setValue(today.get(Calendar.AM_PM));
         ampm.setDisplayedValues(new String[]{"오전","오후"});
     }
 }

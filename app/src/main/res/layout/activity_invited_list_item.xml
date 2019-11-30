@@ -23,15 +23,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
-
-<!--        <ImageView-->
-<!--            android:id="@+id/activity_main_accept_closeBtn_item"-->
-<!--            android:src="@drawable/closebuttonimg"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:paddingRight="5dp"-->
-<!--            android:paddingLeft="5dp"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"/>-->
     </LinearLayout>
 
     <TextView
@@ -65,6 +56,7 @@
                 android:layout_height="wrap_content"/>
 
             <TextView
+                android:id="@+id/activity_main_accept_date_item_label"
                 android:text="시간"
                 android:textSize="15dp"
                 android:layout_width="wrap_content"

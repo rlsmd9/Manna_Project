@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.example.manna_project.MainAgreementActivity_Util.AcceptInvitation.AcceptInvitation_List;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout;
+import com.example.manna_project.MainAgreementActivity_Util.Calendar.GoogleCalendarAPI;
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
 import com.example.manna_project.MainAgreementActivity_Util.Invited.Invited_List;
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
@@ -34,9 +35,16 @@ import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBo
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.api.client.util.DateTime;
+import com.google.api.services.calendar.model.Event;
+import com.google.api.services.calendar.model.EventDateTime;
+import com.google.api.services.calendar.model.Events;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -47,7 +55,10 @@ import androidx.annotation.NonNull;
 
 import org.w3c.dom.Text;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+
 import pub.devrel.easypermissions.EasyPermissions;
 
 
@@ -61,7 +72,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     Invited_List invited_list;
     TextView invited_Btn;
     TextView accept_Btn;
-    ProgressDialog progressDialog;
     FirebaseCommunicator firebaseCommunicator;
     TextView userName;
 
@@ -70,23 +80,28 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     MannaUser myInfo;
 
-
+    GoogleCalendarAPI googleCalendarAPI;
 
     ArrayList<Promise> promiseArrayList;
     ArrayList<MannaUser> friendList;
     ArrayList<String> friendUids;
     ArrayList<String> promiseKeyList;
 
-
-
     static final String TAG = "MANNA_JS";
     static final String TAG2 = "MANNAYC";
+
+    ProgressDialog mProgress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_agreement);
-        progressDialog = new ProgressDialog(this);
+
+        mProgress = new ProgressDialog(this);
+        mProgress.setCanceledOnTouchOutside(false);
+
+        mProgress.setMessage("초기화 작업중 입니다.");
+        mProgress.show();
 
         userName = findViewById(R.id.main_agreement_titleBar_userName);
         customDatePicker = findViewById(R.id.main_agreement_changeDateBtn);
@@ -95,14 +110,15 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         promiseArrayList = new ArrayList<>();
         friendList = new ArrayList<>();
 
+        googleCalendarAPI = new GoogleCalendarAPI(this);
         firebaseCommunicator = new FirebaseCommunicator(this);
 
         initTabHost();
-        custom_calendar.initCalendar();
 
         firebaseInitializing();
     }
 
+    int google_switch = 0;
     private void firebaseInitializing() {
 
         firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
@@ -120,26 +136,53 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     friend_list.getFriendListAdapter().notifyDataSetChanged();
                 }
             }
+
+
             @Override
             public void afterGetPromise(Promise promise){
-                Log.d(TAG2,promise.getPromiseid());
-                Log.d(TAG2,promise.getTitle());
                 promise.initialAttendees();
                 promiseArrayList.add(promise);
+
+                if (google_switch == 0) {
+
+                    if (promise.getAcceptState().get(myInfo.getUid()) == Promise.FIXED) {
+                        google_switch = 1;
+                        promise.getAcceptState().put(myInfo.getUid(), Promise.DONE);
+
+                        addGoogleCalendarData(promise, new GoogleCalendarAPI.RequestAddEventGoogleApiListener() {
+                            @Override
+                            public void onRequestAddEventGoogleApiListener(Promise addPromise, boolean isCanceled) {
+                                if (!isCanceled) {
+                                    HashMap hash = addPromise.getAcceptState();
+
+                                    hash.put(addPromise.getLeaderId(), Promise.DONE);
+
+                                    firebaseCommunicator.updatePromise(addPromise);
+                                }
+
+                                google_switch = 0;
+                            }
+                        });
+                    }
+                }
 
                 getAcceptInvitation_list().setListItem();
                 getInvited_list().setListItem();
             }
             @Override
             public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
-                Log.d(TAG, "afterGetPromiseKey: dwdw");
-                promiseArrayList.clear();
                 promiseKeyList = promiseKeys;
+                promiseArrayList.clear();
+                getAcceptInvitation_list().setListItem();
+                getInvited_list().setListItem();
                 int size = promiseKeys.size();
                 for(int i =0; i<size;i++){
                     String key = promiseKeys.get(i);
                     firebaseCommunicator.getPromiseByKey(key);
                 }
+
+                mProgress.cancel();
+                mProgress.hide();
             }
             @Override
             public void afterGetFriendUids(ArrayList<String> friends) {
@@ -153,9 +196,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             @Override
             public void afterGetChat(NoticeBoard_Chat chat) {
 
-//                for(NoticeBoard_Chat chat : chats){
-//                    Log.d(TAG2,chat.getChatId());
-//                }
             }
         });
 
@@ -168,13 +208,12 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         final TabHost tabHost = findViewById(R.id.host);
         tabHost.setup();
 
-
         tabHost.setOnTabChangedListener(new TabHost.OnTabChangeListener() {
             @Override
             public void onTabChanged(String tabId) {
                 if (tabId.equals("tab_agreement")) {
-                    custom_calendar.mID = 3;
-                    custom_calendar.getResultsFromApi();
+                    downloadGoogleCalendarData();
+
                 } else if(tabId.equals("tab03_friend")) {
                     // invited and accept reset
                     acceptInvitation_list.getArrayList().clear();
@@ -200,8 +239,50 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         tabSpec.setContent(R.id.agreementCalendar);
         tabHost.addTab(tabSpec);
         currentDate = findViewById(R.id.calendar_currentDate);
+        currentDate.setOnClickListener(this);
+
+        ListView agreementListView = findViewById(R.id.main_agreement_listView);
+
         custom_calendar = new Custom_Calendar(this, this, (Custom_LinearLayout) findViewById(R.id.calendarRoot), (GridLayout) findViewById(R.id.main_agreement_calendarGridLayout),
-                (ListView) findViewById(R.id.main_agreement_listView), (TextView) findViewById(R.id.calendar_currentDate), Calendar.getInstance());
+                agreementListView, (TextView) findViewById(R.id.calendar_currentDate), Calendar.getInstance());
+        
+//        agreementListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            @Override
+//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                Log.d(TAG, "onItemClick: selected agreementListView // " + custom_calendar.getSchedule_list().getArrayList().get(position).toString());
+//
+//                String promiseId = custom_calendar.getSchedule_list().getArrayList().get(position).getPromiseId();
+//
+//                firebaseCommunicator.getPromiseByKey(promiseId, new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                        //   Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
+//                        Promise promise;
+//                        try {
+//                            promise = new Promise(dataSnapshot, getApplicationContext());
+//                        } catch (Exception e) {
+//                            promise = null;
+//                        }
+//
+//                        if (promise != null) {
+//                            Intent intent = new Intent(getActivity(), ShowDetailSchedule_Activity.class);
+//
+//                            intent.putExtra("Mode", 3);
+//                            promise.setLeaderId("");
+//                            intent.putExtra("Promise_Info", promise);
+//                            intent.putExtra("MyInfo", getMyInfo());
+//
+//                            startActivity(intent);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        Log.d(TAG, "getUserById Error");
+//                    }
+//                });
+//            }
+//        });
 
         // 일정관리
         tabSpec = tabHost.newTabSpec("tab03_friend");
@@ -232,13 +313,12 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 if (position == 0) {
                     startActivity(new Intent(getApplicationContext(), EditProfile.class));
                 } else if (position == 1) {
-                    NoticeBoard_Chat noticeBoard_chat = new NoticeBoard_Chat(myInfo,"알림설정 누르면 예제 채팅 올라감","날짜 얻기 귀찮");
-                    firebaseCommunicator.addComment("-LuHFQhCz5UXdjHYV7lT",noticeBoard_chat);
+
                 } else if (position == 2) {
                     startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-                    firebaseCommunicator.getChatListByPromise("-LuHFQhCz5UXdjHYV7lT");
+
                 } else if (position == 4) {
                     Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
                     FirebaseAuth.getInstance().signOut();
@@ -257,46 +337,153 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     }
 
+    public void downloadGoogleCalendarData() {
+        googleCalendarAPI.setRequestGoogleApiListener(new GoogleCalendarAPI.RequestGoogleApiListener() {
+            @Override
+            public void onRequestEventsListener(Events events) {
+                if (events != null) {
+                    custom_calendar.setSchedule(events);
+                    custom_calendar.showView();
+                }
+            }
+        });
+
+        Calendar start = (Calendar) custom_calendar.getDate().clone();
+        Calendar end = (Calendar) custom_calendar.getDate().clone();
+
+        start.set(Calendar.DAY_OF_MONTH, 1);
+        end.set(start.get(Calendar.YEAR), start.get(Calendar.MONTH)+1,1);
+
+        googleCalendarAPI.setSearchDate(start, end);
+        googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.GET);
+    }
+
+    public void addGoogleCalendarData(Promise promise, GoogleCalendarAPI.RequestAddEventGoogleApiListener listener) {
+        googleCalendarAPI.setRequestAddEventGoogleApiListener(listener);
+
+        Event event = new Event()
+                .setSummary(promise.getTitle())
+                .setDescription(promise.getPromiseid())
+                .setLocation(promise.getLoadAddress());
+
+        SimpleDateFormat simpledateformat;
+
+        simpledateformat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREA);
+        String datetime = simpledateformat.format(promise.getStartTime().getTime());
+
+        DateTime startDateTime = new DateTime(datetime);
+        EventDateTime start = new EventDateTime()
+                .setDateTime(startDateTime)
+                .setTimeZone("Asia/Seoul");
+        event.setStart(start);
+
+        Log.d(TAG, datetime);
+
+        DateTime endDateTime = new  DateTime(promise.getEndTime().getTime());
+        EventDateTime end = new EventDateTime()
+                .setDateTime(endDateTime)
+                .setTimeZone("Asia/Seoul");
+        event.setEnd(end);
+
+        googleCalendarAPI.setAddPromise(promise);
+        googleCalendarAPI.setAddEvent(event);
+        googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.ADD);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
 
-            case Custom_Calendar.REQUEST_GOOGLE_PLAY_SERVICES:
+            case GoogleCalendarAPI.REQUEST_GOOGLE_PLAY_SERVICES:
 
                 if (resultCode != RESULT_OK) {
 
                     Log.d("MANNA_JS", "앱을 실행시키려면 구글 플레이 서비스가 필요합니다.\"\n" +
                             "                            + \"구글 플레이 서비스를 설치 후 다시 실행하세요.");
                 } else {
-
-                    custom_calendar.getResultsFromApi();
+                    googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.NONE);
                 }
                 break;
 
 
-            case Custom_Calendar.REQUEST_ACCOUNT_PICKER:
+            case GoogleCalendarAPI.REQUEST_ACCOUNT_PICKER:
                 if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
                     String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
                     if (accountName != null) {
                         SharedPreferences settings = getPreferences(Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = settings.edit();
-                        editor.putString(custom_calendar.PREF_ACCOUNT_NAME, accountName);
+                        editor.putString(GoogleCalendarAPI.PREF_ACCOUNT_NAME, accountName);
                         editor.apply();
-                        custom_calendar.mCredential.setSelectedAccountName(accountName);
-                        custom_calendar.getResultsFromApi();
+                        googleCalendarAPI.mCredential.setSelectedAccountName(accountName);
+                        googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.NONE);
                     }
                 }
                 break;
 
 
-            case Custom_Calendar.REQUEST_AUTHORIZATION:
+            case GoogleCalendarAPI.REQUEST_AUTHORIZATION:
 
                 if (resultCode == RESULT_OK) {
-                    custom_calendar.getResultsFromApi();
+                    googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.NONE);
                 }
                 break;
 
+            case ShowDetailSchedule_Activity.SHOW_DETAIL_CHEDULE_CODE:
+                Log.d(TAG2,resultCode+"");
+                if(resultCode == RESULT_OK){
+                    Promise fixedPromise;
+
+                    try {
+                        fixedPromise = data.getParcelableExtra("FIXED_PROMISE");
+                    } catch (Exception e) {
+                        fixedPromise = null;
+                    }
+
+
+                    if (fixedPromise != null) {
+                        Log.d(TAG, "onActivityResult: " + fixedPromise.getStartTime());
+                        Log.d(TAG, "onActivityResult: " + fixedPromise.getEndTime());
+
+                        ArrayList<MannaUser> attendees = fixedPromise.getAttendees();
+
+                        HashMap hash = fixedPromise.getAcceptState();
+
+                        Log.d(TAG, "onActivityResult: " + hash.toString());
+
+                        for (MannaUser user : attendees) {
+                            if (!(fixedPromise.getAcceptState().get(user.getUid()) == Promise.CANCELED) && !(fixedPromise.getAcceptState().get(user.getUid()) == Promise.INVITED))
+                                hash.put(user.getUid(), Promise.FIXED);
+                            else
+                                hash.put(user.getUid(), Promise.CANCELED);
+                        }
+
+                        addGoogleCalendarData(fixedPromise, new GoogleCalendarAPI.RequestAddEventGoogleApiListener() {
+                            @Override
+                            public void onRequestAddEventGoogleApiListener(Promise addPromise, boolean isCanceled) {
+                                Log.d(TAG, "onRequestAddEventGoogleApiListener: " + addPromise.toString() + ", is cancel = " + isCanceled);
+                                if (!isCanceled) {
+                                    HashMap hash = addPromise.getAcceptState();
+
+                                    hash.put(addPromise.getLeaderId(), Promise.DONE);
+
+                                    firebaseCommunicator.updatePromise(addPromise);
+                                }
+                            }
+                        });
+
+
+
+                        Log.d(TAG, "onActivityResult: " + hash.toString());
+                    }
+
+                    firebaseCommunicator.updatePromise(fixedPromise);
+                    acceptInvitation_list.getArrayList().clear();
+                    invited_list.getArrayList().clear();
+                    Log.d(TAG2,"리절트 들어옴 showdetail");
+                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+                }
+                break;
             case AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE:
 
                 if (resultCode == RESULT_OK) {
@@ -339,7 +526,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v == customDatePicker) {
+        if (v == customDatePicker || v == currentDate) {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
             LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
@@ -362,10 +549,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     custom_calendar.setDate(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
                     if (calendar.get(Calendar.YEAR) != datePicker.getYear() || calendar.get(Calendar.MONTH) != datePicker.getMonth()) {
                         Log.d(TAG, "onClick: @@mkmckm");
-                        custom_calendar.mID = 3;
-                        custom_calendar.initCalendarUI();
-                        custom_calendar.getResultsFromApi();
-                        custom_calendar.showView();
+                        downloadGoogleCalendarData();
                     }
 
                 }
@@ -548,5 +732,25 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     public void setMyInfo(MannaUser myInfo) {
         this.myInfo = myInfo;
+    }
+
+    public GoogleCalendarAPI getGoogleCalendarAPI() {
+        return googleCalendarAPI;
+    }
+
+    public void setGoogleCalendarAPI(GoogleCalendarAPI googleCalendarAPI) {
+        this.googleCalendarAPI = googleCalendarAPI;
+    }
+
+    public Custom_Calendar getCustom_calendar() {
+        return custom_calendar;
+    }
+
+    public void setCustom_calendar(Custom_Calendar custom_calendar) {
+        this.custom_calendar = custom_calendar;
+    }
+
+    public MainAgreementActivity getActivity() {
+        return this;
     }
 }

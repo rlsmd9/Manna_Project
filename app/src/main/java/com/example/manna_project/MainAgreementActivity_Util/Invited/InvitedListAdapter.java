@@ -58,24 +58,30 @@ public class InvitedListAdapter extends BaseAdapter {
         TextView leaderTextView = convertView.findViewById(R.id.activity_main_accept_learder_item);
         TextView dateTextView = convertView.findViewById(R.id.activity_main_accept_date_item);
         TextView placeTextView = convertView.findViewById(R.id.activity_main_accept_place_item);
+        TextView activity_main_accept_date_item_label = convertView.findViewById(R.id.activity_main_accept_date_item_label);
+
+        // 재활용 뷰 버그.. 처리를 위해
+        dateTextView.setTextColor(placeTextView.getTextColors());
 
         titleTextView.setText(promise.getTitle());
         leaderTextView.setText((promise.getLeader()!=null?promise.getLeader().getName():""));
 
-        if (promise.getStartTime() == null) {
-            dateTextView.setText("시간 미정");
+        StringBuilder txt = new StringBuilder();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+
+        txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
+
+        txt.append(" ~ ");
+
+        simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
+
+        txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
+
+        if (promise.isTimeFixed() == Promise.UNFIXEDTIME) {
+            activity_main_accept_date_item_label.setText("기간");
+            dateTextView.setTextColor(context.getResources().getColor(R.color.lightRed));
+            dateTextView.setText(txt.toString() + "(시간 미정)");
         } else {
-            StringBuilder txt = new StringBuilder();
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-
-            txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
-
-            txt.append(" ~ ");
-
-            simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
-
-            txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
-
             dateTextView.setText(txt);
         }
 

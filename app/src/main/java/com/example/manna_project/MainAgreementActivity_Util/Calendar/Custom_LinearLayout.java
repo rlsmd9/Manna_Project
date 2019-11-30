@@ -9,6 +9,7 @@ import android.widget.GridLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import com.example.manna_project.MainAgreementActivity;
 import com.example.manna_project.R;
 
 import java.util.ArrayList;
@@ -20,8 +21,10 @@ public class Custom_LinearLayout extends LinearLayout {
     Calendar date;
     Custom_LinearLayout calendar_root;
     final static String TAG = "MANNA_DONE";
+    Context context;
 
     public void setCalendar_root(Custom_LinearLayout calendar_root) {
+
         this.calendar_root = calendar_root;
     }
 
@@ -29,10 +32,12 @@ public class Custom_LinearLayout extends LinearLayout {
 
     public Custom_LinearLayout(Context context) {
         super(context);
+        this.context = context;
     }
 
     public Custom_LinearLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
     }
 
 
@@ -41,12 +46,16 @@ public class Custom_LinearLayout extends LinearLayout {
     }
 
     private float dragY;
+    private float dragX;
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
         Log.d(TAG, "onInterceptTouchEvent: " + event.getAction());
         if (event.getAction() == MotionEvent.ACTION_DOWN) {
             dragY = event.getY();
-        } else if (event.getAction() == MotionEvent.ACTION_MOVE && Math.abs(event.getY() - dragY) >= 50.0) {
+            dragX = event.getX();
+        } else if ((event.getAction() == MotionEvent.ACTION_MOVE && Math.abs(event.getY() - dragY) >= 50.0) ||
+                event.getAction() == MotionEvent.ACTION_MOVE && Math.abs(event.getX() - dragX) >= 80.0) {
             return true;
         }
         return false;
@@ -66,6 +75,12 @@ public class Custom_LinearLayout extends LinearLayout {
             return true;
         } else if (event.getAction() == MotionEvent.ACTION_UP && event.getY() - dragY <= -50.0) {
             moveCalendarType(Custom_Calendar.TouchType.UP);
+            return true;
+        } else if (event.getAction() == MotionEvent.ACTION_UP && event.getX() - dragX >= 80.0) {
+            ((MainAgreementActivity)context).getCustom_calendar().decreaseMonth(1);
+            return true;
+        } else if (event.getAction() == MotionEvent.ACTION_UP && event.getX() - dragX <= -80.0) {
+            ((MainAgreementActivity)context).getCustom_calendar().increaseMonth(1);
             return true;
         }
         return super.onTouchEvent(event);
