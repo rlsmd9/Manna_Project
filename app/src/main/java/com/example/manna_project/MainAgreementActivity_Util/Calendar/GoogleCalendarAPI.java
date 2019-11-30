@@ -370,6 +370,8 @@ public class GoogleCalendarAPI {
 
             String calendarID = getCalendarID(CALENDAR_ID);
             if ( calendarID == null ){
+                createCalendar();
+                getEvent();
                 return "캘린더를 먼저 생성하세요.";
             }
 

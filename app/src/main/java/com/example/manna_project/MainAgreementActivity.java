@@ -341,8 +341,10 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         googleCalendarAPI.setRequestGoogleApiListener(new GoogleCalendarAPI.RequestGoogleApiListener() {
             @Override
             public void onRequestEventsListener(Events events) {
-                custom_calendar.setSchedule(events);
-                custom_calendar.showView();
+                if (events != null) {
+                    custom_calendar.setSchedule(events);
+                    custom_calendar.showView();
+                }
             }
         });
 
