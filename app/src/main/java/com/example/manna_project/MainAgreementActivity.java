@@ -298,7 +298,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    startActivity(new Intent(getApplicationContext(), EditProfile.class));
+                    Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                    intent.putExtra("myInfo", myInfo);
+                    startActivityForResult(intent, EditProfile.EDITPROFILE_REQUEST_CODE);
                 } else if (position == 1) {
 
                 } else if (position == 2) {
@@ -495,6 +497,17 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     Log.d(TAG, "onActivityResult: " + promise.toString());
                 } else if(resultCode == RESULT_CANCELED) {
                     Log.d(TAG, "onActivityResult: Cancel");
+                }
+                break;
+            case EditProfile.EDITPROFILE_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    if (data.getBooleanExtra("isReplaced", false)) {
+                        MannaUser user = data.getParcelableExtra("replacedMyInfo");
+
+                        firebaseCommunicator.updateMannaUser(user);
+                        myInfo = user;
+
+                    }
                 }
                 break;
         }

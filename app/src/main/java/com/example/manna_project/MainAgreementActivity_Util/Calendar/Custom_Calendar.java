@@ -166,7 +166,7 @@ public class Custom_Calendar implements View.OnClickListener {
             Log.d(TAG, "setSchedule: temp : " + temp.get(Calendar.DAY_OF_MONTH));
 
 
-            for (int i = 0; i <= days; i++) {
+            for (int i = 0; i < days; i++) {
 
                 if (eventDay.get(Calendar.YEAR) == getDate().get(Calendar.YEAR) && eventDay.get(Calendar.MONTH) == getDate().get(Calendar.MONTH)) {
                     index = eventDay.get(Calendar.DAY_OF_MONTH) + start - 2;

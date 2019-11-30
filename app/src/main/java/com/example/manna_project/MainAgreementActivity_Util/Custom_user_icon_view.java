@@ -46,7 +46,12 @@ public class Custom_user_icon_view extends LinearLayout {
             textView.setBackground(getResources().getDrawable(R.drawable.round_shape_red_color));
         else if (isCanceled == Promise.INVITED)
             textView.setBackground(getResources().getDrawable(R.drawable.round_shape_gray_color));
-        textView.setText(user.getName() + "");
+
+        if (user.getNickName() == null || user.getNickName().isEmpty())
+            textView.setText(user.getName() + "");
+        else
+            textView.setText(user.getNickName() + "");
+
     }
 
     @Override

@@ -64,7 +64,12 @@ public class InvitedListAdapter extends BaseAdapter {
         dateTextView.setTextColor(placeTextView.getTextColors());
 
         titleTextView.setText(promise.getTitle());
-        leaderTextView.setText((promise.getLeader()!=null?promise.getLeader().getName():""));
+        if (promise.getLeader() != null) {
+            if (promise.getLeader().getNickName() == null || promise.getLeader().getNickName().isEmpty())
+                leaderTextView.setText((promise.getLeader()!=null?promise.getLeader().getName():""));
+            else
+                leaderTextView.setText((promise.getLeader().getNickName()));
+        }
 
         StringBuilder txt = new StringBuilder();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");

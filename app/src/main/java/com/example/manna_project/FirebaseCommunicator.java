@@ -70,7 +70,7 @@ public class FirebaseCommunicator {
     //-------------------------------------MannaUser에 관한 부분------------------------------------
 
     public void updateMannaUser(MannaUser myInfo) {
-        users.child(myUid).setValue(myInfo);
+        users.child(myUid).setValue(myInfo.toMap());
     }
 
     public void updateUserInfo(Map<String, Object> src) {
