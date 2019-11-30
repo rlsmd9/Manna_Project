@@ -63,7 +63,10 @@ public class AcceptInvitationListAdapter extends BaseAdapter {
         dateTextView.setTextColor(placeTextView.getTextColors());
 
         titleTextView.setText(promise.getTitle());
-        leaderTextView.setText((promise.getLeader()!=null?promise.getLeader().getName():""));
+        if (promise.getLeader().getNickName() == null || promise.getLeader().getNickName().isEmpty())
+            leaderTextView.setText((promise.getLeader()!=null?promise.getLeader().getName():""));
+        else
+            leaderTextView.setText((promise.getLeader().getNickName()));
 
         placeTextView.setText(promise.getLoadAddress());
 

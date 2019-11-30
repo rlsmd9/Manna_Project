@@ -92,7 +92,11 @@ public class FriendListAdapter extends BaseAdapter {
         }
 
         TextView tx = convertView.findViewById(R.id.user_name);
-        tx.setText(friendListItem.getName());
+
+        if (friendListItem.getNickName() == null || friendListItem.getNickName().isEmpty())
+            tx.setText(friendListItem.getName());
+        else
+            tx.setText(friendListItem.getNickName());
 
         check_switch = false;
         return convertView;
