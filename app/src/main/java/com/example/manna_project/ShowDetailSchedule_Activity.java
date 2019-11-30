@@ -63,6 +63,8 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     TextView activity_show_detail_schedule_date_end;
     TextView activity_show_detail_schedule_date_label;
     Button activity_show_detail_schedule_commit_date_btn;
+    LinearLayout activity_show_detail_schedule_chat_group;
+    TextView activity_show_detail_schedule_leader_label;
     //----------------
 
     ArrayList<MannaUser> attendees;
@@ -146,7 +148,13 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         setAttendeeList();
 
         title.setText(promise.getTitle());
-        leader.setText(promise.getLeader().getName());
+        if (mode == 3) {
+            activity_show_detail_schedule_leader_label.setVisibility(View.GONE);
+            leader.setVisibility(View.GONE);
+        } else {
+            leader.setText(promise.getLeader().getName());
+        }
+
         place.setText(promise.getLoadAddress());
 
         if (promise.isTimeFixed() == Promise.UNFIXEDTIME) {
@@ -198,6 +206,9 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         adapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
         recyclerView.setAdapter(adapter);
 
+
+        start = Calendar.getInstance();
+        end = Calendar.getInstance();
     }
 
     private String getConnectDate() {
@@ -233,6 +244,8 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         activity_show_detail_schedule_date_end = findViewById(R.id.activity_show_detail_schedule_date_end);
         activity_show_detail_schedule_date_label = findViewById(R.id.activity_show_detail_schedule_date_label);
         activity_show_detail_schedule_commit_date_btn = findViewById(R.id.activity_show_detail_schedule_commit_date_btn);
+        activity_show_detail_schedule_chat_group = findViewById(R.id.activity_show_detail_schedule_chat_group);
+        activity_show_detail_schedule_leader_label = findViewById(R.id.activity_show_detail_schedule_leader_label);
     }
 
     @Override
@@ -296,7 +309,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
             int state = promise.getAcceptState().get(uid);
             Custom_user_icon_view view = (Custom_user_icon_view) inflater.inflate(R.layout.user_name_icon_layout, null);
             view.setTextView((TextView) view.findViewById(R.id.user_name_icon));
-            view.setUser(user, state == Promise.CANCELED);
+            view.setUser(user, state);
 
             Log.d(MainAgreementActivity.TAG, "setAttendeeList: " + user.toString());
 
@@ -360,6 +373,23 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
             builder.create().show();
         } else if(v == activity_show_detail_schedule_commit_date_btn) {
+            try {
+                start.setTime(simpleDateFormat.parse(activity_show_detail_schedule_date_start.getText().toString()));
+                end.setTime(simpleDateFormat.parse(activity_show_detail_schedule_date_end.getText().toString()));
+            } catch (Exception e) {
+
+            }
+
+            promise.getStartTime().set(Calendar.MILLISECOND, 0);
+            promise.getEndTime().set(Calendar.MILLISECOND, 0);
+            promise.getStartTime().set(Calendar.SECOND, 0);
+            promise.getEndTime().set(Calendar.SECOND, 0);
+
+            Log.d(TAG, "onClick: start = " + start.getTimeInMillis());
+            Log.d(TAG, "onClick: end = " + end.getTimeInMillis());
+            Log.d(TAG, "onClick: pro start = " + promise.getStartTime().getTimeInMillis());
+            Log.d(TAG, "onClick: pro end = " + promise.getEndTime().getTimeInMillis());
+
             if (activity_show_detail_schedule_date_start.getText().toString().isEmpty() || activity_show_detail_schedule_date_end.getText().toString().isEmpty()) {
                 AlertMsg.AlertMsg(this, "만날 시간을 정해주세요");
             } else if(end.getTimeInMillis() < start.getTimeInMillis()) {
@@ -456,9 +486,6 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         Calendar today;
 
 
-        start = Calendar.getInstance();
-        end = Calendar.getInstance();
-
         if (cal_switch == 1) today = start;
         else today = end;
 
@@ -477,7 +504,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
                 Log.d(MainAgreementActivity.TAG, "onValueChange: " + oldVal + ", " + newVal);
 
-                cal.set(Integer.parseInt(year.getText()+""), month.getValue()+1,0);
+                cal.set(Integer.parseInt(year.getText()+""), month.getValue()+1,0,0,0,0);
 
                 if (oldVal == 11 && newVal == 0) {
                     cal.set(Calendar.YEAR, cal.get(Calendar.YEAR)+1);

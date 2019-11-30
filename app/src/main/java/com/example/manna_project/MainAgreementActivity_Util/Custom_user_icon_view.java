@@ -38,13 +38,14 @@ public class Custom_user_icon_view extends LinearLayout {
         this.textView = textView;
     }
 
-    public void setUser(MannaUser user, boolean isCanceled) {
+    public void setUser(MannaUser user, int isCanceled) {
         this.user = user;
         Log.d("JS", "setUser: " + user.toString());
 
-        if (isCanceled)
+        if (isCanceled == Promise.CANCELED)
             textView.setBackground(getResources().getDrawable(R.drawable.round_shape_red_color));
-
+        else if (isCanceled == Promise.INVITED)
+            textView.setBackground(getResources().getDrawable(R.drawable.round_shape_gray_color));
         textView.setText(user.getName() + "");
     }
 

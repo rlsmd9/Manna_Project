@@ -51,6 +51,8 @@ public class Promise implements Parcelable {
     HashMap<String, Integer> acceptState;
     ArrayList<MannaUser> attendees;
 
+    Context context;
+
 
     protected Promise(Parcel in) {
         promiseid = in.readString();
@@ -109,6 +111,7 @@ public class Promise implements Parcelable {
         this.loadAddress = dataSnapshot.child("loadAddress").getValue(String.class);
         this.latitude = dataSnapshot.child("Latitude").getValue(Double.class).doubleValue();
         this.longitude = dataSnapshot.child("Longitude").getValue(Double.class).doubleValue();
+        this.context = context;
 
         startTime = Calendar.getInstance();
         endTime = Calendar.getInstance();
@@ -132,7 +135,8 @@ public class Promise implements Parcelable {
             this.acceptState.put(hashSnapshot.getKey(), hashSnapshot.getValue(Integer.class));
         }
         DBRef = FirebaseDatabase.getInstance().getReference();
-        getLeaderInfo(context);
+
+        getLeaderInfo();
     }
 
 
@@ -249,7 +253,7 @@ public class Promise implements Parcelable {
         this.acceptState.put(user.getUid(), INVITED);
     }
 
-    public void getLeaderInfo(final Context context) {
+    public void getLeaderInfo() {
         DatabaseReference Ref = FirebaseDatabase.getInstance().getReference();
         Ref = Ref.child("users").child(leaderId);
         Ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -257,12 +261,17 @@ public class Promise implements Parcelable {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 leader = new MannaUser(dataSnapshot);
 //                Log.d(TAG, "onDataChange: " + leader.toString());
-                MainAgreementActivity mainAgreementActivity = (MainAgreementActivity) context;
+                Log.d(TAG, "onDataChange: "+ leader.toString());
 
-                if (mainAgreementActivity != null) {
-                    mainAgreementActivity.getInvited_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
-                    mainAgreementActivity.getAcceptInvitation_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
-                }
+                try {
+                    MainAgreementActivity mainAgreementActivity = (MainAgreementActivity) context;
+
+                    if (mainAgreementActivity != null) {
+                        mainAgreementActivity.getInvited_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
+                        mainAgreementActivity.getAcceptInvitation_list().getAcceptInvitationListAdapter().notifyDataSetChanged();
+                    }
+                } catch (Exception e){}
+
             }
 
             @Override

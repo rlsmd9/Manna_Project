@@ -50,6 +50,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
@@ -140,14 +141,41 @@ public class Custom_Calendar implements View.OnClickListener {
 
         for (Event event: events.getItems()) {
             DateTime startEventTime = event.getStart().getDateTime();
+            DateTime endEventTime = event.getEnd().getDateTime();
 
             if (startEventTime == null)
                 startEventTime = event.getStart().getDate();
+            if (endEventTime == null)
+                endEventTime = event.getEnd().getDate();
+
             Calendar eventDay = Calendar.getInstance();
             eventDay.setTime(new Date(startEventTime.getValue()));
-            index = eventDay.get(Calendar.DAY_OF_MONTH) + start - 2;
-            ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
-            scheduleOfDay.addEvent(event);
+
+            Calendar eventEndDay = Calendar.getInstance();
+            eventEndDay.setTime(new Date(endEventTime.getValue()));
+
+            long days = TimeUnit.MILLISECONDS.toDays(eventEndDay.getTimeInMillis() - eventDay.getTimeInMillis()) + 1;
+
+            for (int i = 0; i < days; i++) {
+
+                if (eventDay.get(Calendar.YEAR) == getDate().get(Calendar.YEAR) && eventDay.get(Calendar.MONTH) == getDate().get(Calendar.MONTH)) {
+                    index = eventDay.get(Calendar.DAY_OF_MONTH) + start - 2;
+                    ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
+                    scheduleOfDay.addEvent(event);
+                }
+
+                eventDay.set(Calendar.DAY_OF_MONTH, eventDay.get(Calendar.DAY_OF_MONTH) + 1);
+            }
+
+//            if (days > 1) {
+//                Log.d(TAG, "setSchedule: time = " + days);
+//
+//
+//            } else {
+//                index = eventDay.get(Calendar.DAY_OF_MONTH) + start - 2;
+//                ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
+//                scheduleOfDay.addEvent(event);
+//            }
         }
     }
 
@@ -359,4 +387,15 @@ public class Custom_Calendar implements View.OnClickListener {
         return false;
     }
 
+    public ListView getListView() {
+        return listView;
+    }
+
+    public ArrayList<ScheduleOfDay> getScheduleOfDays() {
+        return scheduleOfDays;
+    }
+
+    public Schedule_List getSchedule_list() {
+        return schedule_list;
+    }
 }

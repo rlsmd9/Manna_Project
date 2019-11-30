@@ -46,7 +46,6 @@ public class FirebaseCommunicator {
     private String myUid;
     private CallBackListener callBackListener;
 
-
     public FirebaseCommunicator(Context context) {
         this.user = FirebaseAuth.getInstance().getCurrentUser();
         this.myUid = user.getUid();
@@ -194,6 +193,24 @@ public class FirebaseCommunicator {
     }
     public void acceptPromise(Promise promise, String uid){
         promises.child(promise.getPromiseid()).child("AcceptState").child(uid).setValue(Promise.ACCEPTED);
+    }
+
+//    public void getPromiseByFixedState(AddPromiseToGoogleCalendar listener) {
+//        invitedPromises.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        })
+//    }
+
+    public interface AddPromiseToGoogleCalendar {
+        void OnAddPromiseToGoogleCalendar();
     }
 
     //-------------------------------------------친구에 관한 부분-------------------------------------

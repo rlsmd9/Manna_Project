@@ -12,6 +12,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.manna_project.MainAgreementActivity;
+import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.api.client.extensions.android.http.AndroidHttp;
@@ -48,6 +49,7 @@ public class GoogleCalendarAPI {
 
     public GoogleAccountCredential mCredential;
     RequestGoogleApiListener requestGoogleApiListener;
+    RequestAddEventGoogleApiListener requestAddEventGoogleApiListener;
 
     public static final int REQUEST_ACCOUNT_PICKER = 1000;
     public static final int REQUEST_AUTHORIZATION = 1001;
@@ -61,7 +63,9 @@ public class GoogleCalendarAPI {
 
     ProgressDialog mProgress;
     Calendar searchStart, searchEnd;
+    Event addEvent;
     Events result;
+    Promise addPromise;
 
     public enum APIMode {
         NONE, CREATE, ADD, GET;
@@ -91,6 +95,10 @@ public class GoogleCalendarAPI {
     public void setSearchDate(Calendar searchStart, Calendar searchEnd) {
         this.searchStart = searchStart;
         this.searchEnd = searchEnd;
+    }
+
+    public void setAddPromise(Promise promise) {
+        this.addPromise = promise;
     }
 
     private String getCalendarID(String calendarTitle){
@@ -269,8 +277,24 @@ public class GoogleCalendarAPI {
         void onRequestEventsListener(Events events);
     }
 
+    public interface RequestAddEventGoogleApiListener {
+        void onRequestAddEventGoogleApiListener(Promise addPromise, boolean isCanceled);
+    }
+
+    public void setRequestAddEventGoogleApiListener(RequestAddEventGoogleApiListener requestAddEventGoogleApiListener) {
+        this.requestAddEventGoogleApiListener = requestAddEventGoogleApiListener;
+    }
+
     public void setRequestGoogleApiListener(RequestGoogleApiListener requestGoogleApiListener) {
         this.requestGoogleApiListener = requestGoogleApiListener;
+    }
+
+    public Event getAddEvent() {
+        return addEvent;
+    }
+
+    public void setAddEvent(Event addEvent) {
+        this.addEvent = addEvent;
     }
 
     private class MakeRequestTask extends AsyncTask<Void, Void, String> {
@@ -313,7 +337,7 @@ public class GoogleCalendarAPI {
                     return createCalendar();
 
                 }else if (apiMode == APIMode.ADD) {
-//                    return addEvent();
+                    return addEvent();
                 } else if (apiMode == APIMode.GET) {
                     Log.d(TAG, "doInBackground: dwdwdwdwdwdads,n,");
                     Calendar start = Calendar.getInstance();
@@ -461,54 +485,35 @@ public class GoogleCalendarAPI {
         }
 
 
-        private String addEvent(Calendar date) {
+        private String addEvent() {
             String calendarID = getCalendarID(CALENDAR_ID);
 
             if ( calendarID == null ){
+                if (requestAddEventGoogleApiListener != null)
+                    requestAddEventGoogleApiListener.onRequestAddEventGoogleApiListener( addPromise, true);
                 return "캘린더 생성 오류";
             }
-
-            Event event = new Event()
-                    .setSummary("구글 캘린더 테스트")
-                    .setLocation("서울시")
-                    .setDescription("캘린더에 이벤트 추가하는 것을 테스트합니다.");
-
-
-            java.util.Calendar calander;
-            calander = date;
-            SimpleDateFormat simpledateformat;
-
-            simpledateformat = new SimpleDateFormat( "yyyy-MM-dd'nestedclass'HH:mm:ss+09:00", Locale.KOREA);
-            // 추가
-            String datetime = simpledateformat.format(calander.getTime());
-
-            DateTime startDateTime = new DateTime(datetime);
-            EventDateTime start = new EventDateTime()
-                    .setDateTime(startDateTime)
-                    .setTimeZone("Asia/Seoul");
-            event.setStart(start);
-
-            Log.d(TAG, datetime );
-
-
-            DateTime endDateTime = new  DateTime(datetime);
-            EventDateTime end = new EventDateTime()
-                    .setDateTime(endDateTime)
-                    .setTimeZone("Asia/Seoul");
-            event.setEnd(end);
-
             //String[] recurrence = new String[]{"RRULE:FREQ=DAILY;COUNT=2"};
             //event.setRecurrence(Arrays.asList(recurrence));
 
+            Event res = null;
+
             try {
-                event = mService.events().insert(calendarID, event).execute();
+                res = mService.events().insert(calendarID, addEvent).execute();
             } catch (Exception e) {
+                if (requestAddEventGoogleApiListener != null)
+                    requestAddEventGoogleApiListener.onRequestAddEventGoogleApiListener(addPromise, true);
                 e.printStackTrace();
+                res = null;
                 Log.e("Exception", "Exception : " + e.toString());
             }
-            System.out.printf("Event created: %s\n", event.getHtmlLink());
-            Log.e("Event", "created : " + event.getHtmlLink());
-            String eventStrings = "created : " + event.getHtmlLink();
+
+            if (requestAddEventGoogleApiListener != null && res != null) {
+                requestAddEventGoogleApiListener.onRequestAddEventGoogleApiListener(addPromise, false);
+            }
+
+            String eventStrings = "created : " + res;
+
             return eventStrings;
         }
     }

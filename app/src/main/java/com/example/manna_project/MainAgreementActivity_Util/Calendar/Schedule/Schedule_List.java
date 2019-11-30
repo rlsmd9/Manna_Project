@@ -5,6 +5,11 @@ import android.provider.CalendarContract;
 import android.util.Log;
 import android.widget.ListView;
 
+import com.example.manna_project.FirebaseCommunicator;
+import com.example.manna_project.MainAgreementActivity;
+import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
+import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBoard_Chat;
+import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.R;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.Events;
@@ -55,7 +60,7 @@ public class Schedule_List {
             startDate.setTime(event.getStart().getDateTime().getValue());
             endDate.setTime(event.getEnd().getDateTime().getValue());
 
-            arrayList.add(new ScheduleListItem(event.getSummary(), event.getLocation(), simpleDateFormat.format(startDate), simpleDateFormat.format(endDate)));
+            arrayList.add(new ScheduleListItem(event.getSummary(), event.getLocation(), simpleDateFormat.format(startDate), simpleDateFormat.format(endDate), event.getDescription()));
         }
 
         Log.d("MANNA_JS", "transferToArrayList: why!!");

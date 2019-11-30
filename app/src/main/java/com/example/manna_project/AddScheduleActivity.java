@@ -143,7 +143,7 @@ public class AddScheduleActivity extends AppCompatActivity implements View.OnCli
             Custom_user_icon_view view = (Custom_user_icon_view) inflater.inflate(R.layout.user_name_icon_layout, null);
 
             view.setTextView((TextView) view.findViewById(R.id.user_name_icon));
-            view.setUser(user, false);
+            view.setUser(user, Promise.INVITED);
 
             Log.d(MainAgreementActivity.TAG, "setAttendeeList: " + user.toString());
 

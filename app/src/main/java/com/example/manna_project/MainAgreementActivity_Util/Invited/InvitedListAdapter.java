@@ -60,6 +60,9 @@ public class InvitedListAdapter extends BaseAdapter {
         TextView placeTextView = convertView.findViewById(R.id.activity_main_accept_place_item);
         TextView activity_main_accept_date_item_label = convertView.findViewById(R.id.activity_main_accept_date_item_label);
 
+        // 재활용 뷰 버그.. 처리를 위해
+        dateTextView.setTextColor(placeTextView.getTextColors());
+
         titleTextView.setText(promise.getTitle());
         leaderTextView.setText((promise.getLeader()!=null?promise.getLeader().getName():""));
 
