@@ -1,10 +1,14 @@
 package com.example.manna_project.MainAgreementActivity_Util.Calendar.Schedule;
 
+import android.util.EventLog;
+
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
+import com.google.api.services.calendar.model.Event;
 
 import java.util.Arrays;
 
 public class ScheduleListItem {
+    private Event event;
     private String title;
     private String place;
     private String startDate;
@@ -13,12 +17,13 @@ public class ScheduleListItem {
     private Promise promise;
     private int img[];
 
-    public ScheduleListItem(String title, String place, String startDate, String endDate, String promiseId) {
+    public ScheduleListItem(String title, String place, String startDate, String endDate, Event event, String promiseId) {
         this.title = title;
         this.place = place;
         this.startDate = startDate;
         this.endDate = endDate;
         this.promiseId = promiseId;
+        this.event = event;
     }
 
     public ScheduleListItem(String title, String place, String startDate, String endDate, int[] img) {
@@ -96,5 +101,13 @@ public class ScheduleListItem {
 
     public void setPromise(Promise promise) {
         this.promise = promise;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 }

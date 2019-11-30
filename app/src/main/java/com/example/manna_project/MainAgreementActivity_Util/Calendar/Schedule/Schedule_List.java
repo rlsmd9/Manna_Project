@@ -60,7 +60,7 @@ public class Schedule_List {
             startDate.setTime(event.getStart().getDateTime().getValue());
             endDate.setTime(event.getEnd().getDateTime().getValue());
 
-            arrayList.add(new ScheduleListItem(event.getSummary(), event.getLocation(), simpleDateFormat.format(startDate), simpleDateFormat.format(endDate), event.getDescription()));
+            arrayList.add(new ScheduleListItem(event.getSummary(), event.getLocation(), simpleDateFormat.format(startDate), simpleDateFormat.format(endDate), event, event.getDescription()));
         }
 
         Log.d("MANNA_JS", "transferToArrayList: why!!");

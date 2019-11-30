@@ -139,6 +139,8 @@ public class Custom_Calendar implements View.OnClickListener {
 
         initCalendarUI();
 
+        if (events == null) return;
+
         for (Event event: events.getItems()) {
             DateTime startEventTime = event.getStart().getDateTime();
             DateTime endEventTime = event.getEnd().getDateTime();
@@ -156,7 +158,15 @@ public class Custom_Calendar implements View.OnClickListener {
 
             long days = TimeUnit.MILLISECONDS.toDays(eventEndDay.getTimeInMillis() - eventDay.getTimeInMillis()) + 1;
 
-            for (int i = 0; i < days; i++) {
+            Calendar temp = (Calendar) eventDay.clone();
+
+            Log.d(TAG, "setSchedule: " + (temp.get(Calendar.HOUR_OF_DAY) + Math.abs(eventEndDay.get(Calendar.HOUR_OF_DAY) - temp.get(Calendar.HOUR_OF_DAY))));
+            Log.d(TAG, "setSchedule: temp : " + temp.get(Calendar.DAY_OF_MONTH));
+            temp.set(Calendar.HOUR_OF_DAY, temp.get(Calendar.HOUR_OF_DAY) + Math.abs(eventEndDay.get(Calendar.HOUR_OF_DAY) - temp.get(Calendar.HOUR_OF_DAY)));
+            Log.d(TAG, "setSchedule: temp : " + temp.get(Calendar.DAY_OF_MONTH));
+
+
+            for (int i = 0; i <= days; i++) {
 
                 if (eventDay.get(Calendar.YEAR) == getDate().get(Calendar.YEAR) && eventDay.get(Calendar.MONTH) == getDate().get(Calendar.MONTH)) {
                     index = eventDay.get(Calendar.DAY_OF_MONTH) + start - 2;
