@@ -11,6 +11,7 @@ import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBoard_Chat;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.MainAgreementActivity_Util.Routine;
+import com.example.manna_project.MainAgreementActivity_Util.Schedule;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -21,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.sql.Array;
 import java.sql.Ref;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,9 +44,11 @@ public class FirebaseCommunicator {
     public DatabaseReference invitedPromises;
     public DatabaseReference myRef;
     public DatabaseReference comments;
+    public DatabaseReference promiseSchedules;
     private FirebaseUser user;
     private String myUid;
     private CallBackListener callBackListener;
+    private ScheduleCallBackListner scheduleCallBackListner;
 
     public FirebaseCommunicator(Context context) {
         this.user = FirebaseAuth.getInstance().getCurrentUser();
@@ -58,6 +62,7 @@ public class FirebaseCommunicator {
         this.invitedPromises = root.child("invited");
         this.comments = root.child("comments");
         this.myRef = users.child(myUid);
+        this.promiseSchedules = root.child("promiseSchedule");
         this.context = context;
     }
 
@@ -316,6 +321,31 @@ public class FirebaseCommunicator {
             }
         });
     }
+    //----------------------------------------schedule에 관한 부분---------------------------------
+
+    public void updateSchdule(String promiseId, ArrayList<Schedule> schedules){
+        for(Schedule element : schedules){
+            promiseSchedules.push().setValue(element.toMap());
+        }
+    }
+    public void getSchdules(String promiseId){
+        promiseSchedules.child(promiseId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                ArrayList<Schedule> result = new ArrayList<>();
+                for(DataSnapshot scheduleSnapshot : dataSnapshot.getChildren()){
+                    result.add(new Schedule(scheduleSnapshot));
+                }
+                if(scheduleCallBackListner!= null)
+                    scheduleCallBackListner.afterGetSchedules(result);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 
     //----------------------------------------getter setter-----------------------------------------
 
@@ -347,10 +377,17 @@ public class FirebaseCommunicator {
         void afterGetFriendUids(ArrayList<String> friendList);
 
         void afterGetChat(NoticeBoard_Chat chat);
+
     }
 
     public interface SearchCallBackListener {
         void afterFindUser(boolean exist, DataSnapshot userSnap);
+    }
+    public interface ScheduleCallBackListner{
+        void afterGetSchedules(ArrayList<Schedule> schedules);
+    }
+    public void addSchduleCallBackListner(ScheduleCallBackListner scheduleCallBackListner){
+        this.scheduleCallBackListner = scheduleCallBackListner;
     }
 
     public void addCallBackListener(CallBackListener callBackListener) {

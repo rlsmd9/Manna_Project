@@ -444,7 +444,6 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 // 방장 아닐때
                 if (v == refuseButton) {
                     firebaseCommunicator.cancelPromise(promise,myInfo.getUid());
-                    Log.d(TAG,"버튼이 눌렸는데?");
                     setResult(RESULT_OK);
                     finish();
                 }
