@@ -67,6 +67,8 @@ public class Custom_Calendar implements View.OnClickListener {
         DOWN, UP;
     }
 
+    public static String colorList[] = {"#FF9C7E", "#157DA1", "#FF7077", "#706492", "#4BC8BD", "#FFA9AB", "#FFBCA2", "#FFA9AB", "#FFD2E1", "#AFD4E0", "#C9CECF"};
+
     Context context;
     LayoutInflater layout;
     Custom_LinearLayout calendar_root;
@@ -141,6 +143,8 @@ public class Custom_Calendar implements View.OnClickListener {
 
         if (events == null) return;
 
+        int itemCount = 0;
+
         for (Event event: events.getItems()) {
             DateTime startEventTime = event.getStart().getDateTime();
             DateTime endEventTime = event.getEnd().getDateTime();
@@ -165,17 +169,19 @@ public class Custom_Calendar implements View.OnClickListener {
             temp.set(Calendar.HOUR_OF_DAY, temp.get(Calendar.HOUR_OF_DAY) + Math.abs(eventEndDay.get(Calendar.HOUR_OF_DAY) - temp.get(Calendar.HOUR_OF_DAY)));
             Log.d(TAG, "setSchedule: temp : " + temp.get(Calendar.DAY_OF_MONTH));
 
-
             for (int i = 0; i < days; i++) {
 
                 if (eventDay.get(Calendar.YEAR) == getDate().get(Calendar.YEAR) && eventDay.get(Calendar.MONTH) == getDate().get(Calendar.MONTH)) {
                     index = eventDay.get(Calendar.DAY_OF_MONTH) + start - 2;
                     ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
+                    event.setColorId(colorList[itemCount]);
                     scheduleOfDay.addEvent(event);
                 }
 
                 eventDay.set(Calendar.DAY_OF_MONTH, eventDay.get(Calendar.DAY_OF_MONTH) + 1);
             }
+
+            itemCount++;
 
 //            if (days > 1) {
 //                Log.d(TAG, "setSchedule: time = " + days);

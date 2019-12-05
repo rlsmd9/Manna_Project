@@ -24,6 +24,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class Invited_List {
     ListView listView;
@@ -81,6 +83,24 @@ public class Invited_List {
                 arrayList.add(promise);
             }
         }
+
+        // 방장인것 우선 정렬 이후 날짜 빠른 순
+        Comparator<Promise> comparator = new Comparator<Promise>() {
+            @Override
+            public int compare(Promise o1, Promise o2) {
+                try {
+                    if (o1.getStartTime().getTimeInMillis() > o2.getStartTime().getTimeInMillis())
+                        return -1;
+                    else if(o1.getStartTime().getTimeInMillis() == o2.getStartTime().getTimeInMillis())
+                        return 0;
+                    else return 1;
+                } catch (Exception e) {return 0;}
+
+            }
+        };
+
+        if (arrayList!=null)
+            Collections.sort(arrayList, comparator);
 
         getAcceptInvitationListAdapter().notifyDataSetChanged();
     }

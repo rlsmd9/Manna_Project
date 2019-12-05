@@ -29,6 +29,7 @@ public class ScheduleOfDay {
     private LinearLayout dayList;
     private Events eventsOfDay;
     private Context context;
+    private int color;
     private ArrayList<TextView> textViews;
 
     final static String TAG = "MANNA_J1S";
@@ -66,16 +67,16 @@ public class ScheduleOfDay {
                 textView.setText(title);
                 textView.setMaxWidth(0);
                 textView.setSingleLine(true);
+
                 textView.setEllipsize(TextUtils.TruncateAt.END);
                 textView.setTextSize(8);
 
                 // default
-                textView.setBackgroundColor(Color.rgb(242,177, 112));
-
+                textView.setBackgroundColor(Color.parseColor(Custom_Calendar.colorList[0]));
 
                 // 달력 일정 색깔작업
                 if (event.getColorId() != null) {
-
+                    textView.setBackgroundColor(Color.parseColor(event.getColorId()));
                 }
 
                 textViews.add(textView);
@@ -84,6 +85,14 @@ public class ScheduleOfDay {
 
         } else {
         }
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
     }
 
     public LinearLayout getDayList() {
