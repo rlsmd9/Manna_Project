@@ -326,7 +326,7 @@ public class FirebaseCommunicator {
 
     public void updateSchdule(String promiseId, ArrayList<Schedule> schedules){
         for(Schedule element : schedules){
-            promiseSchedules.push().setValue(element.toMap());
+            promiseSchedules.child(promiseId).push().setValue(element.toMap());
         }
     }
     public void getSchdules(String promiseId){
