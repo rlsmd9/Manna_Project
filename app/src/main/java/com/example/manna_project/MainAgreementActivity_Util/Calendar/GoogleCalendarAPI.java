@@ -51,6 +51,8 @@ public class GoogleCalendarAPI {
     RequestGoogleApiListener requestGoogleApiListener;
     RequestAddEventGoogleApiListener requestAddEventGoogleApiListener;
     RequestDeleteEventGoogleApiListener requestDeleteEventGoogleApiListener;
+    RequestGetAllEventGoogleApiListener requestGetAllEventGoogleApiListener;
+
     public static final int REQUEST_ACCOUNT_PICKER = 1000;
     public static final int REQUEST_AUTHORIZATION = 1001;
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
@@ -66,10 +68,13 @@ public class GoogleCalendarAPI {
     Event addEvent;
     Event deleteEvent;
     Events result;
+    Events searchResult;
     Promise addPromise;
 
+    CalendarList allUserCalendarList;
+
     public enum APIMode {
-        NONE, CREATE, ADD, GET, DELETE;
+        NONE, CREATE, ADD, GET, DELETE, GET_ALL_EVENTS_FROM_GOOGLE_CALENDAR
     }
 
     APIMode apiMode = APIMode.NONE;
@@ -123,9 +128,10 @@ public class GoogleCalendarAPI {
             }
             List<CalendarListEntry> items = calendarList.getItems();
 
+            allUserCalendarList = calendarList;
 
             for (CalendarListEntry calendarListEntry : items) {
-
+                Log.d(TAG, "getCalendarID: jstest " + calendarListEntry.getSummary());
                 if ( calendarListEntry.getSummary().toString().equals(calendarTitle)) {
 
                     id = calendarListEntry.getId().toString();
@@ -293,6 +299,10 @@ public class GoogleCalendarAPI {
         void onRequestDeleteEventGoogleApiListener(boolean isCanceled);
     }
 
+    public interface RequestGetAllEventGoogleApiListener {
+        void onRequestGetAllEventGoogleApiListener(Events events);
+    }
+
     public void setRequestAddEventGoogleApiListener(RequestAddEventGoogleApiListener requestAddEventGoogleApiListener) {
         this.requestAddEventGoogleApiListener = requestAddEventGoogleApiListener;
     }
@@ -303,6 +313,10 @@ public class GoogleCalendarAPI {
 
     public void setRequestDeleteEventGoogleApiListener(RequestDeleteEventGoogleApiListener requestDeleteEventGoogleApiListener) {
         this.requestDeleteEventGoogleApiListener = requestDeleteEventGoogleApiListener;
+    }
+
+    public void setRequestGetAllEventGoogleApiListener(RequestGetAllEventGoogleApiListener requestGetAllEventGoogleApiListener) {
+        this.requestGetAllEventGoogleApiListener = requestGetAllEventGoogleApiListener;
     }
 
     public Event getAddEvent() {
@@ -359,6 +373,8 @@ public class GoogleCalendarAPI {
                     return getEvent();
                 } else if (apiMode == APIMode.DELETE) {
                     return deleteEvent();
+                } else if (apiMode == APIMode.GET_ALL_EVENTS_FROM_GOOGLE_CALENDAR) {
+                    return getAllEvent();
                 }
 
 
@@ -416,6 +432,40 @@ public class GoogleCalendarAPI {
             }
 
             result = events;
+
+            return eventStrings.size() + "개의 데이터를 가져왔습니다.";
+        }
+
+        private String getAllEvent() throws IOException {
+            DateTime startTime = new DateTime(searchStart.getTime());
+            DateTime endTime = new DateTime(searchEnd.getTime());
+
+            getCalendarID("");
+            List<CalendarListEntry> calendarListEntryItems = allUserCalendarList.getItems();
+
+            Events allEvents = new Events();
+            List<Event> data = new ArrayList<>();
+
+            for (CalendarListEntry calendarListEntry : calendarListEntryItems) {
+                String calendarID = calendarListEntry.getId();
+
+                Log.d(TAG, "getEvent_: " + calendarListEntry.getSummary());
+
+                Events events = mService.events().list(calendarID)//"primary")
+                        .setMaxResults(100)
+                        //.setTimeMin(now)
+                        .setTimeMin(startTime)
+                        .setTimeMax(endTime)
+                        .setOrderBy("startTime")
+                        .setSingleEvents(true)
+                        .execute();
+
+                data.addAll(events.getItems());
+            }
+
+            allEvents.setItems(data);
+            searchResult = allEvents;
+//            List<Event> items = events.getItems();
 
             return eventStrings.size() + "개의 데이터를 가져왔습니다.";
         }
@@ -478,9 +528,11 @@ public class GoogleCalendarAPI {
             } else if(apiMode == APIMode.DELETE) {
                 mProgress.cancel();
                 mProgress.hide();
+            } else if(apiMode == APIMode.GET_ALL_EVENTS_FROM_GOOGLE_CALENDAR) {
+                if (requestGetAllEventGoogleApiListener != null)
+                    requestGetAllEventGoogleApiListener.onRequestGetAllEventGoogleApiListener(searchResult);
             }
         }
-
 
         @Override
         protected void onCancelled() {

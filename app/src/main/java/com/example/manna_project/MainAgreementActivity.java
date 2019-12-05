@@ -220,7 +220,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             public void onTabChanged(String tabId) {
                 if (tabId.equals("tab_agreement")) {
                     downloadGoogleCalendarData();
-
                 } else if(tabId.equals("tab03_friend")) {
                     // invited and accept reset
                     acceptInvitation_list.getArrayList().clear();
@@ -337,6 +336,14 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             public void onRequestEventsListener(Events events) {
                 custom_calendar.setSchedule(events);
                 custom_calendar.showView();
+
+                Calendar start = Calendar.getInstance();
+
+                start.set(Calendar.MONTH, 7);
+
+                Calendar end = Calendar.getInstance();
+
+                downloadGoogleCalendarData(start, end);
             }
         });
 
@@ -348,6 +355,32 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
         googleCalendarAPI.setSearchDate(start, end);
         googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.GET);
+    }
+
+    public void downloadGoogleCalendarData(Calendar start, Calendar end) {
+        googleCalendarAPI.setRequestGetAllEventGoogleApiListener(new GoogleCalendarAPI.RequestGetAllEventGoogleApiListener() {
+            @Override
+            public void onRequestGetAllEventGoogleApiListener(Events events) {
+                // 예찬아 요기서 작업해
+                for (Event event : events.getItems()) {
+
+                    DateTime start = event.getStart().getDateTime();
+                    DateTime end = event.getEnd().getDateTime();
+                    if (start == null)
+                        start = event.getStart().getDate();
+                    if (end == null)
+                        end = event.getEnd().getDate();
+
+                    Log.d(TAG, "getEvent_: " + String.format("%s (start time : %s), (end time : %s)", event.getSummary(), start, end));
+                }
+            }
+        });
+
+        Calendar searchStart = (Calendar) start.clone();
+        Calendar searchEnd = (Calendar) end.clone();
+
+        googleCalendarAPI.setSearchDate(searchStart, searchEnd);
+        googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.GET_ALL_EVENTS_FROM_GOOGLE_CALENDAR);
     }
 
     public void addGoogleCalendarData(Promise promise, GoogleCalendarAPI.RequestAddEventGoogleApiListener listener) {
@@ -500,6 +533,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     Log.d(TAG, "onActivityResult: OK");
                     Promise promise = data.getParcelableExtra("made_promise");
                     firebaseCommunicator.upLoadPromise(promise);
+
+                    downloadGoogleCalendarData(promise.getStartTime(), promise.getEndTime());
 
                     acceptInvitation_list.getArrayList().clear();
                     invited_list.getArrayList().clear();
