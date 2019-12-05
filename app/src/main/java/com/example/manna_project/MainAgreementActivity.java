@@ -336,6 +336,14 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             public void onRequestGetAllEventGoogleApiListener(Events events) {
                 custom_calendar.setSchedule(events);
                 custom_calendar.showView();
+
+                Calendar start = Calendar.getInstance();
+
+                start.set(Calendar.MONTH, 7);
+
+                Calendar end = Calendar.getInstance();
+
+                downloadGoogleCalendarData(start, end);
             }
         });
 
