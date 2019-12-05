@@ -48,72 +48,97 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp">
+
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/emailLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="30dp"
+            android:text="이메일"
+            android:textSize="15sp"/>
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/inputName"
+            android:layout_marginRight="40dp"
+            android:layout_toRightOf="@id/emailLabel"
+            android:layout_alignBaseline="@id/emailLabel"
+            android:inputType="text"
+            android:hint="rlsmd9@naver.co "
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_below="@id/emailLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:layout_marginLeft="30dp"
             android:text="이름"
             android:textSize="15sp"/>
 
-        <EditText
+        <TextView
             android:id="@+id/inputName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
+            android:layout_marginLeft="40dp"
             android:layout_toRightOf="@id/name"
             android:layout_alignBaseline="@id/name"
-            android:hint="이름을 입력하세요"
             android:singleLine="true"
             android:textSize="15sp" />
+
         <TextView
-            android:id="@+id/address"
+            android:id="@+id/nickNameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/name"
             android:layout_marginTop="30dp"
             android:layout_marginLeft="30dp"
-            android:text="주소"
+            android:text="닉네임"
             android:textSize="15sp"/>
 
         <EditText
-            android:layout_width="wrap_content"
+            android:id="@+id/nickName"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignLeft="@id/inputName"
-            android:layout_toRightOf="@id/address"
-            android:layout_alignTop="@id/address"
-            android:layout_alignBaseline="@id/address"
-            android:hint="주소를 입력하세요"
+            android:layout_alignTop="@id/nickNameLabel"
+            android:layout_alignBaseline="@id/nickNameLabel"
+            android:layout_marginRight="30dp"
+            android:padding="7dp"
+            android:background="@drawable/round_edittext_shape"
+            android:hint="닉네임을 입력하세요"
             android:inputType="text"
-            android:textSize="15sp" />
-        <TextView
-            android:id="@+id/bornDay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/address"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="30dp"
-            android:text="생년월일"
-            android:textSize="15sp"/>
-
-        <EditText
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/inputName"
-            android:layout_marginLeft="30dp"
-            android:layout_toRightOf="@id/bornDay"
-            android:layout_alignTop="@id/bornDay"
-            android:layout_alignBaseline="@id/bornDay"
-            android:inputType="text"
-            android:hint="생년월일을 입력하세요"
             android:textSize="15sp" />
     </RelativeLayout>
-    <Button
-        android:id="@+id/activity_edit_profile_save_btn"
+
+    <Space
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:text="저장" />
+        android:layout_weight="1"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/activity_edit_profile_save_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:text="저장" />
+
+        <Button
+            android:id="@+id/activity_edit_profile_close_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:text="나가기" />
+    </LinearLayout>
 </LinearLayout>

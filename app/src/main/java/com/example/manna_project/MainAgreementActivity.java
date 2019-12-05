@@ -90,6 +90,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     static final String TAG = "MANNA_JS";
     static final String TAG2 = "MANNAYC";
 
+    private Event selectedScheduleevent;
+
     ProgressDialog mProgress;
 
     @Override
@@ -246,43 +248,28 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         custom_calendar = new Custom_Calendar(this, this, (Custom_LinearLayout) findViewById(R.id.calendarRoot), (GridLayout) findViewById(R.id.main_agreement_calendarGridLayout),
                 agreementListView, (TextView) findViewById(R.id.calendar_currentDate), Calendar.getInstance());
         
-//        agreementListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                Log.d(TAG, "onItemClick: selected agreementListView // " + custom_calendar.getSchedule_list().getArrayList().get(position).toString());
-//
-//                String promiseId = custom_calendar.getSchedule_list().getArrayList().get(position).getPromiseId();
-//
-//                firebaseCommunicator.getPromiseByKey(promiseId, new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-//                        //   Log.d(TAG, "onDataChange: " + dataSnapshot.toString());
-//                        Promise promise;
-//                        try {
-//                            promise = new Promise(dataSnapshot, getApplicationContext());
-//                        } catch (Exception e) {
-//                            promise = null;
-//                        }
-//
-//                        if (promise != null) {
-//                            Intent intent = new Intent(getActivity(), ShowDetailSchedule_Activity.class);
-//
-//                            intent.putExtra("Mode", 3);
-//                            promise.setLeaderId("");
-//                            intent.putExtra("Promise_Info", promise);
-//                            intent.putExtra("MyInfo", getMyInfo());
-//
-//                            startActivity(intent);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError databaseError) {
-//                        Log.d(TAG, "getUserById Error");
-//                    }
-//                });
-//            }
-//        });
+        agreementListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Log.d(TAG, "onItemClick: selected agreementListView // " + custom_calendar.getSchedule_list().getArrayList().get(position).toString());
+
+                String promiseId = custom_calendar.getSchedule_list().getArrayList().get(position).getPromiseId();
+                selectedScheduleevent = custom_calendar.getSchedule_list().getArrayList().get(position).getEvent();
+
+                for (Promise promise: promiseArrayList) {
+                    if (promise.getPromiseid().equals(promiseId)) {
+                        Intent intent = new Intent(getActivity(), ShowDetailSchedule_Activity.class);
+
+                        intent.putExtra("Mode", 3);
+                        intent.putExtra("Promise_Info", promise);
+                        intent.putExtra("MyInfo", getMyInfo());
+
+                        startActivityForResult(intent, ShowDetailSchedule_Activity.SHOW_DETAIL_CHEDULE_CODE);
+                        return;
+                    }
+                }
+            }
+        });
 
         // 일정관리
         tabSpec = tabHost.newTabSpec("tab03_friend");
@@ -311,7 +298,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    startActivity(new Intent(getApplicationContext(), EditProfile.class));
+                    Intent intent = new Intent(getApplicationContext(), EditProfile.class);
+                    intent.putExtra("myInfo", myInfo);
+                    startActivityForResult(intent, EditProfile.EDITPROFILE_REQUEST_CODE);
                 } else if (position == 1) {
 
                 } else if (position == 2) {
@@ -341,10 +330,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         googleCalendarAPI.setRequestGoogleApiListener(new GoogleCalendarAPI.RequestGoogleApiListener() {
             @Override
             public void onRequestEventsListener(Events events) {
-                if (events != null) {
-                    custom_calendar.setSchedule(events);
-                    custom_calendar.showView();
-                }
+                custom_calendar.setSchedule(events);
+                custom_calendar.showView();
             }
         });
 
@@ -468,20 +455,31 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                                     hash.put(addPromise.getLeaderId(), Promise.DONE);
 
                                     firebaseCommunicator.updatePromise(addPromise);
+                                    acceptInvitation_list.getArrayList().clear();
+                                    invited_list.getArrayList().clear();
+                                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
                                 }
                             }
                         });
 
-
-
                         Log.d(TAG, "onActivityResult: " + hash.toString());
                     }
+                } else if(resultCode == ShowDetailSchedule_Activity.RESULT_DELETE) {
+                    Log.d(TAG, "onActivityResult: zzfzz");
+                    Log.d(TAG, "onActivityResult: " + selectedScheduleevent.getSummary());
+                    googleCalendarAPI.setRequestDeleteEventGoogleApiListener(new GoogleCalendarAPI.RequestDeleteEventGoogleApiListener() {
+                        @Override
+                        public void onRequestDeleteEventGoogleApiListener(boolean isCanceled) {
+                            Log.d(TAG, "onRequestDeleteEventGoogleApiListener: " + isCanceled);
+                            if (!isCanceled) {
+                                downloadGoogleCalendarData();
+                            }
+                        }
+                    });
 
-                    firebaseCommunicator.updatePromise(fixedPromise);
-                    acceptInvitation_list.getArrayList().clear();
-                    invited_list.getArrayList().clear();
-                    Log.d(TAG2,"리절트 들어옴 showdetail");
-                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+                    googleCalendarAPI.setDeleteEvent(selectedScheduleevent);
+                    googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.DELETE);
+                    selectedScheduleevent = null;
                 }
                 break;
             case AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE:
@@ -499,6 +497,17 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     Log.d(TAG, "onActivityResult: " + promise.toString());
                 } else if(resultCode == RESULT_CANCELED) {
                     Log.d(TAG, "onActivityResult: Cancel");
+                }
+                break;
+            case EditProfile.EDITPROFILE_REQUEST_CODE:
+                if (resultCode == RESULT_OK) {
+                    if (data.getBooleanExtra("isReplaced", false)) {
+                        MannaUser user = data.getParcelableExtra("replacedMyInfo");
+
+                        firebaseCommunicator.updateMannaUser(user);
+                        myInfo = user;
+
+                    }
                 }
                 break;
         }

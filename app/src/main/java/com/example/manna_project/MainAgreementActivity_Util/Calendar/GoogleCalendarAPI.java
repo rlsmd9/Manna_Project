@@ -50,7 +50,7 @@ public class GoogleCalendarAPI {
     public GoogleAccountCredential mCredential;
     RequestGoogleApiListener requestGoogleApiListener;
     RequestAddEventGoogleApiListener requestAddEventGoogleApiListener;
-
+    RequestDeleteEventGoogleApiListener requestDeleteEventGoogleApiListener;
     public static final int REQUEST_ACCOUNT_PICKER = 1000;
     public static final int REQUEST_AUTHORIZATION = 1001;
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
@@ -64,11 +64,12 @@ public class GoogleCalendarAPI {
     ProgressDialog mProgress;
     Calendar searchStart, searchEnd;
     Event addEvent;
+    Event deleteEvent;
     Events result;
     Promise addPromise;
 
     public enum APIMode {
-        NONE, CREATE, ADD, GET;
+        NONE, CREATE, ADD, GET, DELETE;
     }
 
     APIMode apiMode = APIMode.NONE;
@@ -99,6 +100,10 @@ public class GoogleCalendarAPI {
 
     public void setAddPromise(Promise promise) {
         this.addPromise = promise;
+    }
+
+    public void setDeleteEvent(Event deleteEvent) {
+        this.deleteEvent = deleteEvent;
     }
 
     private String getCalendarID(String calendarTitle){
@@ -218,6 +223,9 @@ public class GoogleCalendarAPI {
                 result = null;
                 mProgress.setMessage("Calendar 데이터를 읽어오는중 입니다.");
                 mProgress.show();
+            } else if (mode == APIMode.DELETE) {
+                mProgress.setMessage("Calendar 데이터를 삭제하는중 입니다.");
+                mProgress.show();
             }
 
             Log.d(TAG, "getResultsFromApi: mod = " + mode.name());
@@ -281,12 +289,20 @@ public class GoogleCalendarAPI {
         void onRequestAddEventGoogleApiListener(Promise addPromise, boolean isCanceled);
     }
 
+    public interface RequestDeleteEventGoogleApiListener {
+        void onRequestDeleteEventGoogleApiListener(boolean isCanceled);
+    }
+
     public void setRequestAddEventGoogleApiListener(RequestAddEventGoogleApiListener requestAddEventGoogleApiListener) {
         this.requestAddEventGoogleApiListener = requestAddEventGoogleApiListener;
     }
 
     public void setRequestGoogleApiListener(RequestGoogleApiListener requestGoogleApiListener) {
         this.requestGoogleApiListener = requestGoogleApiListener;
+    }
+
+    public void setRequestDeleteEventGoogleApiListener(RequestDeleteEventGoogleApiListener requestDeleteEventGoogleApiListener) {
+        this.requestDeleteEventGoogleApiListener = requestDeleteEventGoogleApiListener;
     }
 
     public Event getAddEvent() {
@@ -336,16 +352,13 @@ public class GoogleCalendarAPI {
 
                     return createCalendar();
 
-                }else if (apiMode == APIMode.ADD) {
+                } else if (apiMode == APIMode.ADD) {
                     return addEvent();
                 } else if (apiMode == APIMode.GET) {
                     Log.d(TAG, "doInBackground: dwdwdwdwdwdads,n,");
-                    Calendar start = Calendar.getInstance();
-                    start.set(Calendar.DAY_OF_MONTH, 1);
-                    Calendar end = Calendar.getInstance();
-                    end.set(Calendar.DAY_OF_MONTH, 28);
-
                     return getEvent();
+                } else if (apiMode == APIMode.DELETE) {
+                    return deleteEvent();
                 }
 
 
@@ -462,6 +475,9 @@ public class GoogleCalendarAPI {
                     requestGoogleApiListener.onRequestEventsListener(result);
                 mProgress.cancel();
                 mProgress.hide();
+            } else if(apiMode == APIMode.DELETE) {
+                mProgress.cancel();
+                mProgress.hide();
             }
         }
 
@@ -518,5 +534,25 @@ public class GoogleCalendarAPI {
 
             return eventStrings;
         }
+
+        private String deleteEvent() {
+            String calendarID = getCalendarID(CALENDAR_ID);
+
+            if ( calendarID == null || requestDeleteEventGoogleApiListener == null || deleteEvent == null ) return "data null error";
+
+            try {
+                Log.d(TAG, "deleteEvent: " + deleteEvent.getId());
+                mService.events().delete(calendarID, deleteEvent.getId()).execute();
+                deleteEvent = null;
+                requestDeleteEventGoogleApiListener.onRequestDeleteEventGoogleApiListener(false);
+                return "Delete Success";
+            } catch (Exception e) {
+                requestDeleteEventGoogleApiListener.onRequestDeleteEventGoogleApiListener(true);
+                return "Delete Fail";
+            }
+        }
     }
+
+
+
 }

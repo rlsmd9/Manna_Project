@@ -56,7 +56,6 @@ public class AcceptInvitation_List {
     public void setListItem() {
         Log.d(TAG, "Invited_List: " + mainAgreementActivity.getFirebaseCommunicator().getMyUid());
 
-
         arrayList.clear();
 
         for (Promise promise: mainAgreementActivity.getPromiseArrayList()) {

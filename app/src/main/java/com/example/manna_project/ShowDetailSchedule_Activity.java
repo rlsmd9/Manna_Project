@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -47,6 +48,7 @@ import java.util.Date;
 public class ShowDetailSchedule_Activity extends AppCompatActivity implements View.OnClickListener, OnMapReadyCallback, View.OnTouchListener {
 
     public static final int SHOW_DETAIL_CHEDULE_CODE=19970703;
+    public static final int RESULT_DELETE = 88982;
     public static String TAG = "MANNAYC";
     // Activity Object
     TextView title;
@@ -149,8 +151,9 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
         title.setText(promise.getTitle());
         if (mode == 3) {
-            activity_show_detail_schedule_leader_label.setVisibility(View.GONE);
-            leader.setVisibility(View.GONE);
+            activity_show_detail_schedule_chat_group.setVisibility(View.GONE);
+            refuseButton.setText("삭제하기");
+            acceptButton.setVisibility(View.GONE);
         } else {
             leader.setText(promise.getLeader().getName());
         }
@@ -205,7 +208,6 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         firebaseCommunicator.getChatListByPromise(promise.getPromiseid());
         adapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
         recyclerView.setAdapter(adapter);
-
 
         start = Calendar.getInstance();
         end = Calendar.getInstance();
@@ -449,6 +451,24 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 }
             }
 
+        } else if (mode == 3) {
+            if (v == refuseButton) {
+                Log.d(TAG, "onClick: www");
+
+                setResult(RESULT_CANCELED);
+
+                AlertMsg.AlertMsgRes(getContext(), "삭제하면 복구 할 수 없습니다.\n그래도 삭제 하시겠습니까?", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getContext(), MainAgreementActivity.class);
+
+                        intent.putExtra("deletedPromise", promise);
+
+                        ((ShowDetailSchedule_Activity)getContext()).setResult(RESULT_DELETE, intent);
+                        ((ShowDetailSchedule_Activity)getContext()).finish();
+                    }
+                });
+            }
         } else {
             // 초대된 약속
             if (v == acceptButton) {
@@ -546,5 +566,9 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         ampm.setMaxValue(1);
         ampm.setValue(today.get(Calendar.AM_PM));
         ampm.setDisplayedValues(new String[]{"오전","오후"});
+    }
+
+    protected Context getContext() {
+        return this;
     }
 }
