@@ -57,8 +57,14 @@ public class Schedule_List {
 
             Date startDate = new Date();
             Date endDate = new Date();
-            startDate.setTime(event.getStart().getDateTime().getValue());
-            endDate.setTime(event.getEnd().getDateTime().getValue());
+            if (event.getStart().getDateTime() == null) {
+                startDate.setTime(event.getStart().getDate().getValue());
+                endDate.setTime(event.getEnd().getDate().getValue());
+            } else {
+                startDate.setTime(event.getStart().getDateTime().getValue());
+                endDate.setTime(event.getEnd().getDateTime().getValue());
+            }
+
 
             arrayList.add(new ScheduleListItem(event.getSummary(), event.getLocation(), simpleDateFormat.format(startDate), simpleDateFormat.format(endDate), event, event.getDescription()));
         }

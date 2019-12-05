@@ -67,7 +67,9 @@ public class Custom_Calendar implements View.OnClickListener {
         DOWN, UP;
     }
 
-    public static String colorList[] = {"#FF9C7E", "#157DA1", "#FF7077", "#706492", "#4BC8BD", "#FFA9AB", "#FFBCA2", "#FFA9AB", "#FFD2E1", "#AFD4E0", "#C9CECF"};
+    public static String colorList[] = {"#FF9C7E", "#157DA1", "#FF7077", "#706492", "#4BC8BD",
+            "#FFA9AB", "#FFBCA2", "#FFA9AB", "#FFD2E1", "#AFD4E0", "#C9CECF",
+            "#F6EFD0", "#C9DCCC", "#C9DCCC", "#FF8E7E", "#FF8E7E", "#44C19D"};
 
     Context context;
     LayoutInflater layout;
@@ -174,7 +176,11 @@ public class Custom_Calendar implements View.OnClickListener {
                 if (eventDay.get(Calendar.YEAR) == getDate().get(Calendar.YEAR) && eventDay.get(Calendar.MONTH) == getDate().get(Calendar.MONTH)) {
                     index = eventDay.get(Calendar.DAY_OF_MONTH) + start - 2;
                     ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
-                    event.setColorId(colorList[itemCount]);
+
+                    if (itemCount >= colorList.length)
+                        event.setColorId("#CE3");
+                    else
+                        event.setColorId(colorList[itemCount]);
                     scheduleOfDay.addEvent(event);
                 }
 
