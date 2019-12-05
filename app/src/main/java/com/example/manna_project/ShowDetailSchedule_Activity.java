@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.manna_project.MainAgreementActivity_Util.AlertMsg;
@@ -154,9 +155,12 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
             activity_show_detail_schedule_chat_group.setVisibility(View.GONE);
             refuseButton.setText("삭제하기");
             acceptButton.setVisibility(View.GONE);
-        } else {
-            leader.setText(promise.getLeader().getName());
         }
+
+        if (promise.getLeader().getNickName() == null)
+            leader.setText(promise.getLeader().getName());
+        else
+            leader.setText(promise.getLeader().getNickName());
 
         place.setText(promise.getLoadAddress());
 
@@ -202,7 +206,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 }
                 chat_list.add(chat);
                 adapter.notifyDataSetChanged();
-                recyclerView.smoothScrollToPosition(chat_list.size()-1);
+                recyclerView.smoothScrollToPosition(chat_list.size());
             }
         });
         firebaseCommunicator.getChatListByPromise(promise.getPromiseid());
@@ -331,8 +335,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String date = simpleDateFormat.format(new Date(calendar.getTimeInMillis()));
                 NoticeBoard_Chat noticeBoard_chat = new NoticeBoard_Chat(myInfo.getUid(),comment,date);
-                firebaseCommunicator.addComment(promise.getPromiseid(),noticeBoard_chat);
-                chatAddButton.requestFocus();
+                firebaseCommunicator.addComment(promise.getPromiseid(), noticeBoard_chat);
             }
         } else if(v == activity_show_detail_schedule_date_start || v == activity_show_detail_schedule_date_end) {
             if (v == activity_show_detail_schedule_date_start) cal_switch = 1;

@@ -15,6 +15,8 @@ import com.example.manna_project.ShowDetailSchedule_Activity;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class AcceptInvitation_List {
     ListView listView;
@@ -64,6 +66,38 @@ public class AcceptInvitation_List {
                 arrayList.add(promise);
             }
         }
+
+        // 방장인것 우선 정렬 이후 날짜 빠른 순
+        Comparator<Promise> comparator = new Comparator<Promise>() {
+            @Override
+            public int compare(Promise o1, Promise o2) {
+                boolean d1;
+                boolean d2;
+
+                try {
+                    d1 = o1.getLeader().equals(mainAgreementActivity.getMyInfo().getUid());
+                    d2 = o2.getLeader().equals(mainAgreementActivity.getMyInfo().getUid());
+                } catch (Exception e) {
+                    d1 = false;
+                    d2 = false;
+                }
+
+                if (d1 && !d2) {
+                    return -1;
+                } else if(!d1 && d2) {
+                    return 1;
+                } else {
+                    if (o1.getStartTime().getTimeInMillis() > o2.getStartTime().getTimeInMillis())
+                        return 1;
+                    else if(o1.getStartTime().getTimeInMillis() == o2.getStartTime().getTimeInMillis())
+                        return 0;
+                    else return -1;
+                }
+            }
+        };
+
+        if (arrayList!=null)
+            Collections.sort(arrayList, comparator);
 
         getAcceptInvitationListAdapter().notifyDataSetChanged();
     }

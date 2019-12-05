@@ -147,6 +147,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
                 if (google_switch == 0) {
 
+
                     if (promise.getAcceptState().get(myInfo.getUid()) == Promise.FIXED) {
                         google_switch = 1;
                         promise.getAcceptState().put(myInfo.getUid(), Promise.DONE);
@@ -464,6 +465,10 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
                         Log.d(TAG, "onActivityResult: " + hash.toString());
                     }
+
+                    acceptInvitation_list.getArrayList().clear();
+                    invited_list.getArrayList().clear();
+                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
                 } else if(resultCode == ShowDetailSchedule_Activity.RESULT_DELETE) {
                     Log.d(TAG, "onActivityResult: zzfzz");
                     Log.d(TAG, "onActivityResult: " + selectedScheduleevent.getSummary());
@@ -481,6 +486,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.DELETE);
                     selectedScheduleevent = null;
                 }
+
+
+
                 break;
             case AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE:
 

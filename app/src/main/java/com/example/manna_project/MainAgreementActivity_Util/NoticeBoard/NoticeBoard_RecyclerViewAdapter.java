@@ -60,7 +60,11 @@ public class NoticeBoard_RecyclerViewAdapter extends RecyclerView.Adapter<Notice
         }
 
         public void bindData(NoticeBoard_Chat chat) {
-            userName.setText(chat.getUser().getName());
+            if (chat.getUser().getNickName() == null)
+                userName.setText(chat.getUser().getName());
+            else
+                userName.setText(chat.getUser().getNickName());
+
             userContent.setText(chat.getContent());
             contentWriteDate.setText(chat.getDate());
         }

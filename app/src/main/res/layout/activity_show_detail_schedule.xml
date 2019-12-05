@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="8dp">
 
@@ -158,8 +159,8 @@
             android:dividerHeight="1dp"
             android:divider="#ccc"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_height="match_parent"
+            />
 
         <Button
             android:id="@+id/activity_show_detail_schedule_commit_date_btn"
@@ -234,7 +235,6 @@
         android:id="@+id/activity_show_detail_schedule_chat_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:layout_weight="1"/>
 
     <LinearLayout
