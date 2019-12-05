@@ -11,7 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Paint;
-import android.graphics.PointF;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.example.manna_project.MainAgreementActivity_Util.AlertMsg;
@@ -31,6 +29,9 @@ import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBoard_Chat;
 import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBoard_RecyclerViewAdapter;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
+import com.example.manna_project.MainAgreementActivity_Util.RecommendDate.RecommendDate;
+import com.example.manna_project.MainAgreementActivity_Util.RecommendDate.RecommendDateAdapter;
+import com.example.manna_project.MainAgreementActivity_Util.Schedule;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.MapFragment;
@@ -38,8 +39,6 @@ import com.naver.maps.map.MapView;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.Marker;
-
-import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -71,11 +70,14 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
     //----------------
 
     ArrayList<MannaUser> attendees;
-    NoticeBoard_RecyclerViewAdapter adapter;
     FirebaseCommunicator firebaseCommunicator;
-    RecyclerView recyclerView;
+    RecyclerView chatRecyclerView;
+    RecyclerView recommendDateRecyclerView;
+    NoticeBoard_RecyclerViewAdapter noticeBoard_recyclerViewAdapter;
+    RecommendDateAdapter recommendDateAdapter;
     LinearLayout attendees_group;
     ArrayList<NoticeBoard_Chat> chat_list;
+    ArrayList<RecommendDate> recommendDateArrayList;
     Promise promise;
     MannaUser myInfo;
     int mode;
@@ -172,9 +174,8 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
             date.setText(getConnectDate());
         }
 
-        recyclerView = findViewById(R.id.activity_show_detail_schedule_chat_list);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        chatRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         chat_list = new ArrayList<>();
 
         firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
@@ -205,16 +206,16 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                         chat.setUser(mannaUser);
                 }
                 chat_list.add(chat);
-                adapter.notifyDataSetChanged();
-                recyclerView.smoothScrollToPosition(chat_list.size());
+                noticeBoard_recyclerViewAdapter.notifyDataSetChanged();
+                chatRecyclerView.smoothScrollToPosition(chat_list.size());
             }
         });
         firebaseCommunicator.getChatListByPromise(promise.getPromiseid());
-        adapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
-        recyclerView.setAdapter(adapter);
-
+        noticeBoard_recyclerViewAdapter = new NoticeBoard_RecyclerViewAdapter(getLayoutInflater(), chat_list);
+        chatRecyclerView.setAdapter(noticeBoard_recyclerViewAdapter);
         start = Calendar.getInstance();
         end = Calendar.getInstance();
+
     }
 
     private String getConnectDate() {
@@ -252,6 +253,8 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         activity_show_detail_schedule_commit_date_btn = findViewById(R.id.activity_show_detail_schedule_commit_date_btn);
         activity_show_detail_schedule_chat_group = findViewById(R.id.activity_show_detail_schedule_chat_group);
         activity_show_detail_schedule_leader_label = findViewById(R.id.activity_show_detail_schedule_leader_label);
+        chatRecyclerView = findViewById(R.id.activity_show_detail_schedule_chat_list);
+        recommendDateRecyclerView = findViewById(R.id.activity_show_detail_schedule_recommend_date);
     }
 
     @Override
@@ -569,6 +572,19 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         ampm.setMaxValue(1);
         ampm.setValue(today.get(Calendar.AM_PM));
         ampm.setDisplayedValues(new String[]{"오전","오후"});
+    }
+    public void initialRecommend(){
+        firebaseCommunicator.addSchduleCallBackListner(new FirebaseCommunicator.ScheduleCallBackListner() {
+            @Override
+            public void afterGetSchedules(ArrayList<Schedule> schedules) {
+
+            }
+        });
+//        RecommendAlgorithm recommendAlgorithm = new RecommendAlgorithm();
+//        recommendDateAdapter = new RecommendDateAdapter(this);
+        recommendDateRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recommendDateRecyclerView.setAdapter(recommendDateAdapter);
+
     }
 
     protected Context getContext() {

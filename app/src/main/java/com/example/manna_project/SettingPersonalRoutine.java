@@ -93,6 +93,7 @@ public class SettingPersonalRoutine extends AppCompatActivity implements View.On
                 start++;
             }
         }
+
     }
 
     private void setTimetable(TableLayout table) {

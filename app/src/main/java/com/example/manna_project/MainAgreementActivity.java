@@ -206,6 +206,10 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         firebaseCommunicator.getUserById(firebaseCommunicator.getMyUid());
     }
 
+    public void refreshPromiseList(){
+
+    }
+
 
     protected void initTabHost() {
         final TabHost tabHost = findViewById(R.id.host);
