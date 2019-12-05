@@ -337,15 +337,18 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 custom_calendar.setSchedule(events);
                 custom_calendar.showView();
 
-                Calendar start = Calendar.getInstance();
-
-                start.set(Calendar.MONTH, 7);
-
-                Calendar end = Calendar.getInstance();
-
-                downloadGoogleCalendarData(start, end);
+//                Calendar start = Calendar.getInstance();
+//
+//                start.set(Calendar.MONTH, 7);
+//
+//                Calendar end = Calendar.getInstance();
+//
+//                downloadGoogleCalendarData(start, end);
             }
         });
+
+        custom_calendar.setSchedule(null);
+        custom_calendar.showView();
 
         Calendar start = (Calendar) custom_calendar.getDate().clone();
         Calendar end = (Calendar) custom_calendar.getDate().clone();

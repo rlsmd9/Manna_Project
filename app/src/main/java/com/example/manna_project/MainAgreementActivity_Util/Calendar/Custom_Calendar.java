@@ -178,7 +178,7 @@ public class Custom_Calendar implements View.OnClickListener {
                     ScheduleOfDay scheduleOfDay = scheduleOfDays.get(index);
 
                     if (itemCount >= colorList.length)
-                        event.setColorId("#CE3");
+                        event.setColorId("#CCEE33");
                     else
                         event.setColorId(colorList[itemCount]);
                     scheduleOfDay.addEvent(event);
