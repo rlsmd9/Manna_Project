@@ -151,7 +151,7 @@ public class FirebaseCommunicator {
         });
     }
 
-    public void upLoadPromise(Promise promise){
+    public String upLoadPromise(Promise promise){
         DatabaseReference Ref = promises.push();
         String key = Ref.getKey();
         promise.setPromiseid(key);
@@ -169,6 +169,7 @@ public class FirebaseCommunicator {
         for(int i=0;i<size;i++){
             invitedPromises.child(invitedUser.get(i)).child(key).setValue(key);
         }
+        return key;
     }
 
     public void updatePromise(Promise promise){

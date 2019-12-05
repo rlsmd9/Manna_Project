@@ -1,14 +1,16 @@
 package com.example.manna_project;
 
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,9 +22,10 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TabHost;
-import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.example.manna_project.MainAgreementActivity_Util.AcceptInvitation.AcceptInvitation_List;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
@@ -33,6 +36,7 @@ import com.example.manna_project.MainAgreementActivity_Util.Invited.Invited_List
 import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.NoticeBoard.NoticeBoard_Chat;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
+import com.example.manna_project.MainAgreementActivity_Util.Schedule;
 import com.example.manna_project.MainAgreementActivity_Util.Setting.Setting_List;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.api.client.util.DateTime;
@@ -41,20 +45,10 @@ import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import android.accounts.AccountManager;
-import android.content.Context;
-import android.content.SharedPreferences;
-import androidx.annotation.NonNull;
-
-import org.w3c.dom.Text;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -121,19 +115,19 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     }
 
     int google_switch = 0;
+
     private void firebaseInitializing() {
 
         firebaseCommunicator.addCallBackListener(new FirebaseCommunicator.CallBackListener() {
             @Override
             public void afterGetUser(MannaUser mannaUser) {
                 Log.d(TAG, "afterGetUser: " + mannaUser.toString());
-                if(myInfo == null) {
+                if (myInfo == null) {
                     myInfo = mannaUser;
                     userName.setText(mannaUser.getName());
                     firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
                     firebaseCommunicator.getFriendList(myInfo.getUid());
-                }
-                else{
+                } else {
                     friendList.add(mannaUser);
                     friend_list.getFriendListAdapter().notifyDataSetChanged();
                 }
@@ -141,7 +135,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
 
             @Override
-            public void afterGetPromise(Promise promise){
+            public void afterGetPromise(Promise promise) {
                 promise.initialAttendees();
                 promiseArrayList.add(promise);
 
@@ -172,6 +166,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 getAcceptInvitation_list().setListItem();
                 getInvited_list().setListItem();
             }
+
             @Override
             public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
                 promiseKeyList = promiseKeys;
@@ -179,7 +174,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 getAcceptInvitation_list().setListItem();
                 getInvited_list().setListItem();
                 int size = promiseKeys.size();
-                for(int i =0; i<size;i++){
+                for (int i = 0; i < size; i++) {
                     String key = promiseKeys.get(i);
                     firebaseCommunicator.getPromiseByKey(key);
                 }
@@ -187,13 +182,14 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 mProgress.cancel();
                 mProgress.hide();
             }
+
             @Override
             public void afterGetFriendUids(ArrayList<String> friends) {
-                 friendUids = friends;
-                 int size = friendUids.size();
-                 for(int i=0;i<size ; i++) {
-                     firebaseCommunicator.getUserById(friendUids.get(i));
-                 }
+                friendUids = friends;
+                int size = friendUids.size();
+                for (int i = 0; i < size; i++) {
+                    firebaseCommunicator.getUserById(friendUids.get(i));
+                }
             }
 
             @Override
@@ -206,7 +202,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         firebaseCommunicator.getUserById(firebaseCommunicator.getMyUid());
     }
 
-    public void refreshPromiseList(){
+    public void refreshPromiseList() {
 
     }
 
@@ -220,7 +216,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             public void onTabChanged(String tabId) {
                 if (tabId.equals("tab_agreement")) {
                     downloadGoogleCalendarData();
-                } else if(tabId.equals("tab03_friend")) {
+                } else if (tabId.equals("tab03_friend")) {
                     // invited and accept reset
                     acceptInvitation_list.getArrayList().clear();
                     invited_list.getArrayList().clear();
@@ -251,7 +247,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
         custom_calendar = new Custom_Calendar(this, this, (Custom_LinearLayout) findViewById(R.id.calendarRoot), (GridLayout) findViewById(R.id.main_agreement_calendarGridLayout),
                 agreementListView, (TextView) findViewById(R.id.calendar_currentDate), Calendar.getInstance());
-        
+
         agreementListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -260,7 +256,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 String promiseId = custom_calendar.getSchedule_list().getArrayList().get(position).getPromiseId();
                 selectedScheduleevent = custom_calendar.getSchedule_list().getArrayList().get(position).getEvent();
 
-                for (Promise promise: promiseArrayList) {
+                for (Promise promise : promiseArrayList) {
                     if (promise.getPromiseid().equals(promiseId)) {
                         Intent intent = new Intent(getActivity(), ShowDetailSchedule_Activity.class);
 
@@ -268,7 +264,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                         intent.putExtra("Promise_Info", promise);
                         intent.putExtra("MyInfo", getMyInfo());
 
-                        startActivityForResult(intent, ShowDetailSchedule_Activity.SHOW_DETAIL_CHEDULE_CODE);
+                        startActivityForResult(intent, ShowDetailSchedule_Activity.ACCEPTED_PROMISE_CODE);
                         return;
                     }
                 }
@@ -280,8 +276,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         tabSpec.setIndicator("", getResources().getDrawable(R.drawable.tabhost_agreement));
         tabSpec.setContent(R.id.tab04_friend);
         tabHost.addTab(tabSpec);
-        acceptInvitation_list = new AcceptInvitation_List(this, (ListView)findViewById(R.id.main_accept_list));
-        invited_list = new Invited_List(this, (ListView)findViewById(R.id.main_invited_list));
+        acceptInvitation_list = new AcceptInvitation_List(this, (ListView) findViewById(R.id.main_accept_list));
+        invited_list = new Invited_List(this, (ListView) findViewById(R.id.main_invited_list));
 
         main_schedule_add_floating_btn = findViewById(R.id.main_schedule_add_floating_btn);
         main_schedule_add_floating_btn.setOnClickListener(this);
@@ -308,7 +304,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 } else if (position == 1) {
 
                 } else if (position == 2) {
-                    startActivity(new Intent(getApplicationContext(),SettingPersonalRoutine.class));
+                    startActivity(new Intent(getApplicationContext(), SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
 
@@ -354,19 +350,20 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         Calendar end = (Calendar) custom_calendar.getDate().clone();
 
         start.set(Calendar.DAY_OF_MONTH, 1);
-        end.set(start.get(Calendar.YEAR), start.get(Calendar.MONTH)+1,1);
+        end.set(start.get(Calendar.YEAR), start.get(Calendar.MONTH) + 1, 1);
 
         googleCalendarAPI.setSearchDate(start, end);
         googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.GET_ALL_EVENTS_FROM_GOOGLE_CALENDAR);
     }
 
-    public void downloadGoogleCalendarData(Calendar start, Calendar end) {
+    public void downloadGoogleCalendarData(Calendar start, Calendar end, final String promiseId) {
         googleCalendarAPI.setRequestGetAllEventGoogleApiListener(new GoogleCalendarAPI.RequestGetAllEventGoogleApiListener() {
             @Override
             public void onRequestGetAllEventGoogleApiListener(Events events) {
                 // 예찬아 요기서 작업해
+                ArrayList<Schedule> schedules = new ArrayList<>();
                 for (Event event : events.getItems()) {
-
+                   schedules.add(new Schedule(event));
                     DateTime start = event.getStart().getDateTime();
                     DateTime end = event.getEnd().getDateTime();
                     if (start == null)
@@ -376,6 +373,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
                     Log.d(TAG, "getEvent_: " + String.format("%s (start time : %s), (end time : %s)", event.getSummary(), start, end));
                 }
+            firebaseCommunicator.updateSchdule(promiseId,schedules);
             }
         });
 
@@ -396,7 +394,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
         SimpleDateFormat simpledateformat;
 
-        simpledateformat = new SimpleDateFormat( "yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREA);
+        simpledateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss+09:00", Locale.KOREA);
         String datetime = simpledateformat.format(promise.getStartTime().getTime());
 
         DateTime startDateTime = new DateTime(datetime);
@@ -407,7 +405,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
         Log.d(TAG, datetime);
 
-        DateTime endDateTime = new  DateTime(promise.getEndTime().getTime());
+        DateTime endDateTime = new DateTime(promise.getEndTime().getTime());
         EventDateTime end = new EventDateTime()
                 .setDateTime(endDateTime)
                 .setTimeZone("Asia/Seoul");
@@ -456,37 +454,55 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.NONE);
                 }
                 break;
+            case ShowDetailSchedule_Activity.INVITED_PROMISE_CODE:
+                if (resultCode == RESULT_OK) {
+                    Promise promise;
+                    boolean isAccept = data.getBooleanExtra("isAccept", false);
+                    if(isAccept) {
+                        try {
+                            promise = data.getParcelableExtra("Accept Promise");
+                        } catch (Exception e) {
+                            promise = null;
+                        }
+                        if(promise.isTimeFixed()==Promise.UNFIXEDTIME) {
+                            Calendar start = promise.getStartTime();
+                            Calendar end = promise.getEndTime();
+                            downloadGoogleCalendarData(start, end,promise.getPromiseid());
+                        }
+                    }
+                }
+                break;
 
-            case ShowDetailSchedule_Activity.SHOW_DETAIL_CHEDULE_CODE:
-                Log.d(TAG2,resultCode+"");
-                if(resultCode == RESULT_OK){
-                    Promise fixedPromise;
+            case ShowDetailSchedule_Activity.ACCEPTED_PROMISE_CODE:
+                //         Log.d(TAG2,resultCode+"");
+                if (resultCode == RESULT_OK) {
+                    Promise promise;
 
                     try {
-                        fixedPromise = data.getParcelableExtra("FIXED_PROMISE");
+                        promise = data.getParcelableExtra("FIXED_PROMISE");
                     } catch (Exception e) {
-                        fixedPromise = null;
+                        promise = null;
                     }
 
 
-                    if (fixedPromise != null) {
-                        Log.d(TAG, "onActivityResult: " + fixedPromise.getStartTime());
-                        Log.d(TAG, "onActivityResult: " + fixedPromise.getEndTime());
+                    if (promise != null) {
+                        Log.d(TAG, "onActivityResult: " + promise.getStartTime());
+                        Log.d(TAG, "onActivityResult: " + promise.getEndTime());
 
-                        ArrayList<MannaUser> attendees = fixedPromise.getAttendees();
+                        ArrayList<MannaUser> attendees = promise.getAttendees();
 
-                        HashMap hash = fixedPromise.getAcceptState();
+                        HashMap hash = promise.getAcceptState();
 
                         Log.d(TAG, "onActivityResult: " + hash.toString());
 
                         for (MannaUser user : attendees) {
-                            if (!(fixedPromise.getAcceptState().get(user.getUid()) == Promise.CANCELED) && !(fixedPromise.getAcceptState().get(user.getUid()) == Promise.INVITED))
+                            if (!(promise.getAcceptState().get(user.getUid()) == Promise.CANCELED) && !(promise.getAcceptState().get(user.getUid()) == Promise.INVITED))
                                 hash.put(user.getUid(), Promise.FIXED);
                             else
                                 hash.put(user.getUid(), Promise.CANCELED);
                         }
 
-                        addGoogleCalendarData(fixedPromise, new GoogleCalendarAPI.RequestAddEventGoogleApiListener() {
+                        addGoogleCalendarData(promise, new GoogleCalendarAPI.RequestAddEventGoogleApiListener() {
                             @Override
                             public void onRequestAddEventGoogleApiListener(Promise addPromise, boolean isCanceled) {
                                 Log.d(TAG, "onRequestAddEventGoogleApiListener: " + addPromise.toString() + ", is cancel = " + isCanceled);
@@ -509,7 +525,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     acceptInvitation_list.getArrayList().clear();
                     invited_list.getArrayList().clear();
                     firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
-                } else if(resultCode == ShowDetailSchedule_Activity.RESULT_DELETE) {
+                } else if (resultCode == ShowDetailSchedule_Activity.RESULT_DELETE) {
                     Log.d(TAG, "onActivityResult: zzfzz");
                     Log.d(TAG, "onActivityResult: " + selectedScheduleevent.getSummary());
                     googleCalendarAPI.setRequestDeleteEventGoogleApiListener(new GoogleCalendarAPI.RequestDeleteEventGoogleApiListener() {
@@ -526,26 +542,22 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.DELETE);
                     selectedScheduleevent = null;
                 }
-
-
-
                 break;
             case AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE:
 
                 if (resultCode == RESULT_OK) {
                     Log.d(TAG, "onActivityResult: OK");
                     Promise promise = data.getParcelableExtra("made_promise");
-                    firebaseCommunicator.upLoadPromise(promise);
-
-                    downloadGoogleCalendarData(promise.getStartTime(), promise.getEndTime());
-
+                    String key = firebaseCommunicator.upLoadPromise(promise);
+                    if(promise.isTimeFixed()==Promise.UNFIXEDTIME){
+                        downloadGoogleCalendarData(promise.getStartTime(),promise.getEndTime(),key);
+                    }
                     acceptInvitation_list.getArrayList().clear();
                     invited_list.getArrayList().clear();
-
                     firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
 
                     Log.d(TAG, "onActivityResult: " + promise.toString());
-                } else if(resultCode == RESULT_CANCELED) {
+                } else if (resultCode == RESULT_CANCELED) {
                     Log.d(TAG, "onActivityResult: Cancel");
                 }
                 break;
@@ -615,20 +627,20 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             });
 
             builder.create().show();
-        } else if(v == accept_Btn) {
+        } else if (v == accept_Btn) {
             acceptInvitation_list.getListView().setVisibility(View.VISIBLE);
             accept_Btn.setTextColor(getResources().getColor(R.color.lightRed));
             invited_Btn.setTextColor(getResources().getColor(R.color.white));
             invited_list.getListView().setVisibility(View.GONE);
             acceptInvitation_list.setListItem();
-        } else if(v == invited_Btn) {
+        } else if (v == invited_Btn) {
             acceptInvitation_list.getListView().setVisibility(View.GONE);
             accept_Btn.setTextColor(getResources().getColor(R.color.white));
             invited_Btn.setTextColor(getResources().getColor(R.color.lightRed));
             invited_list.getListView().setVisibility(View.VISIBLE);
             // 리스트 갱신
             invited_list.setListItem();
-        } else if(v == main_schedule_add_floating_btn) {
+        } else if (v == main_schedule_add_floating_btn) {
             Intent intent = new Intent(this, AddScheduleActivity.class);
 
             Log.d(TAG, "onClick: " + myInfo.toString());
@@ -637,7 +649,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             intent.putExtra("MYINFO", myInfo);
 
             startActivityForResult(intent, AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE);
-        } else if(v == main_add_friend_btn) {
+        } else if (v == main_add_friend_btn) {
 //            Intent intent = new Intent(this, Friend_Add_Activity.class);
             final AlertDialog dialog;
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -706,7 +718,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
 
                         add_friend_status_txt.setVisibility(View.VISIBLE);
-                    } else if(findbtn.getText().equals("X")) {
+                    } else if (findbtn.getText().equals("X")) {
                         emailEdit.setEnabled(true);
                         findbtn.setText("찾기");
                         add_friend_status_txt.setVisibility(View.GONE);
@@ -777,6 +789,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     public void setAcceptInvitation_list(AcceptInvitation_List acceptInvitation_list) {
         this.acceptInvitation_list = acceptInvitation_list;
     }
+
     public ArrayList<MannaUser> getFriendList() {
         return friendList;
     }

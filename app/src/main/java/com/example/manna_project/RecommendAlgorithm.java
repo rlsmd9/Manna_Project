@@ -127,14 +127,6 @@ public class RecommendAlgorithm {
         this.routines = routines;
     }
 
-    public ArrayList<RecommendDate> getRecomendDates() {
-        return recommendDates;
-    }
-
-    public void setRecommendDates(ArrayList<RecommendDate> recommendDates) {
-        this.recommendDates = recommendDates;
-    }
-
     public int[][] getTable() {
         return table;
     }
@@ -143,9 +135,6 @@ public class RecommendAlgorithm {
         this.table = table;
     }
 
-    public int numberOfDayInMonth(int month) {
-        return 0;
-    }
     public ArrayList<RecommendDate> getRecommendDates() {
         return recommendDates;
     }

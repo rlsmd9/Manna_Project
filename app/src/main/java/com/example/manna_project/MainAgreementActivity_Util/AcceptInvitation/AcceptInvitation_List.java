@@ -8,13 +8,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.example.manna_project.MainAgreementActivity;
-import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.R;
 import com.example.manna_project.ShowDetailSchedule_Activity;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -44,7 +42,7 @@ public class AcceptInvitation_List {
                 intent.putExtra("Mode", 2);
                 intent.putExtra("Promise_Info", acceptInvitationListAdapter.getItem(position));
                 intent.putExtra("MyInfo", mainAgreementActivity.getMyInfo());
-                ((MainAgreementActivity) context).startActivityForResult(intent,ShowDetailSchedule_Activity.SHOW_DETAIL_CHEDULE_CODE);
+                ((MainAgreementActivity) context).startActivityForResult(intent,ShowDetailSchedule_Activity.ACCEPTED_PROMISE_CODE);
             }
         });
 
