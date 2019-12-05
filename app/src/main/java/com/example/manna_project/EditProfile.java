@@ -19,12 +19,9 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,21 +32,13 @@ import java.nio.channels.FileChannel;
 
 public class EditProfile extends Activity implements View.OnClickListener {
 
-    public static final int EDITPROFILE_REQUEST_CODE = 6547;
     ImageView activity_edit_profile_img;
-    TextView email;
-    TextView name;
-    EditText nickName;
-
     Button activity_edit_profile_save_btn;
-    Button activity_edit_profile_close_btn;
     private File userProfilleImage;
     private File tempFile;
     private File targetDir;
     boolean fileReadPermission;
     boolean fileWritePermission;
-
-    MannaUser myInfo;
 
     public final static int SELECT_IMAGE_REQUEST_CODE = 1123;
 
@@ -72,18 +61,8 @@ public class EditProfile extends Activity implements View.OnClickListener {
         setReferences();
         setEvents();
 
-        Intent intent = getIntent();
-
-        myInfo = intent.getParcelableExtra("myInfo");
-
         targetDir = new File(getApplicationContext().getFilesDir()+File.separator+"MannaProject"+File.separator+"userIcon");
         userProfilleImage = new File(targetDir, "UserProfileImage.jpg");
-
-        if (myInfo != null) {
-            email.setText(myInfo.geteMail());
-            name.setText(myInfo.getName());
-            nickName.setText(myInfo.getNickName());
-        }
 
         if (userProfilleImage.exists()) {
             Bitmap bitmap = BitmapFactory.decodeFile(userProfilleImage.getAbsolutePath());
@@ -95,16 +74,11 @@ public class EditProfile extends Activity implements View.OnClickListener {
     private void setReferences() {
         activity_edit_profile_img = findViewById(R.id.activity_edit_profile_img);
         activity_edit_profile_save_btn = findViewById(R.id.activity_edit_profile_save_btn);
-        activity_edit_profile_close_btn = findViewById(R.id.activity_edit_profile_close_btn);
-        email = findViewById(R.id.email);
-        name = findViewById(R.id.inputName);
-        nickName = findViewById(R.id.nickName);
     }
 
     private void setEvents() {
         activity_edit_profile_img.setOnClickListener(this);
         activity_edit_profile_save_btn.setOnClickListener(this);
-        activity_edit_profile_close_btn.setOnClickListener(this);
     }
 
     @Override
@@ -158,26 +132,11 @@ public class EditProfile extends Activity implements View.OnClickListener {
         } else if(v == activity_edit_profile_save_btn) {
             try {
                 copy(tempFile, userProfilleImage);
-            } catch (Exception e){e.printStackTrace();}
+                finish();
+            } catch (Exception e){
 
-            Intent intent = new Intent(this, MainAgreementActivity.class);
-
-            intent.putExtra("isReplaced", false);
-
-            if (myInfo.getNickName() == null) myInfo.setNickName("");
-
-            if (!myInfo.getNickName().equals(nickName.getText().toString())) {
-
-                myInfo.setNickName(nickName.getText().toString());
-
-                intent.putExtra("isReplaced", true);
-                intent.putExtra("replacedMyInfo", myInfo);
+                e.printStackTrace();
             }
-
-            setResult(RESULT_OK, intent);
-            finish();
-        } else if(v == activity_edit_profile_close_btn) {
-            finish();
         }
     }
 
