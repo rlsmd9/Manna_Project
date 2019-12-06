@@ -85,6 +85,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     static final String TAG2 = "MANNAYC";
 
     private Event selectedScheduleevent;
+    private boolean initial;
 
     ProgressDialog mProgress;
 
@@ -92,7 +93,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_agreement);
-
+        initial = true;
         mProgress = new ProgressDialog(this);
         mProgress.setCanceledOnTouchOutside(false);
 
@@ -326,6 +327,17 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!initial) {
+            acceptInvitation_list.getArrayList().clear();
+            invited_list.getArrayList().clear();
+            firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+        }
+        initial = false;
+    }
+
     public void downloadGoogleCalendarData() {
         googleCalendarAPI.setRequestGetAllEventGoogleApiListener(new GoogleCalendarAPI.RequestGetAllEventGoogleApiListener() {
             @Override
@@ -363,17 +375,15 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 // 예찬아 요기서 작업해
                 ArrayList<Schedule> schedules = new ArrayList<>();
                 for (Event event : events.getItems()) {
-                   schedules.add(new Schedule(event));
                     DateTime start = event.getStart().getDateTime();
                     DateTime end = event.getEnd().getDateTime();
-                    if (start == null)
-                        start = event.getStart().getDate();
-                    if (end == null)
-                        end = event.getEnd().getDate();
-
+                    if (start == null||end ==null){
+                      return;
+                    }
+                    schedules.add(new Schedule(event));
                     Log.d(TAG, "getEvent_: " + String.format("%s (start time : %s), (end time : %s)", event.getSummary(), start, end));
                 }
-            firebaseCommunicator.updateSchdule(promiseId,schedules);
+            firebaseCommunicator.updateSchdule(promiseId, myInfo.getUid(), schedules);
             }
         });
 
@@ -484,7 +494,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                         promise = null;
                     }
 
-
                     if (promise != null) {
                         Log.d(TAG, "onActivityResult: " + promise.getStartTime());
                         Log.d(TAG, "onActivityResult: " + promise.getEndTime());
@@ -512,9 +521,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                                     hash.put(addPromise.getLeaderId(), Promise.DONE);
 
                                     firebaseCommunicator.updatePromise(addPromise);
-                                    acceptInvitation_list.getArrayList().clear();
-                                    invited_list.getArrayList().clear();
-                                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+//                                    acceptInvitation_list.getArrayList().clear();
+//                                    invited_list.getArrayList().clear();
+//                                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
                                 }
                             }
                         });
@@ -552,9 +561,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     if(promise.isTimeFixed()==Promise.UNFIXEDTIME){
                         downloadGoogleCalendarData(promise.getStartTime(),promise.getEndTime(),key);
                     }
-                    acceptInvitation_list.getArrayList().clear();
-                    invited_list.getArrayList().clear();
-                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+//                    acceptInvitation_list.getArrayList().clear();
+//                    invited_list.getArrayList().clear();
+//                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
 
                     Log.d(TAG, "onActivityResult: " + promise.toString());
                 } else if (resultCode == RESULT_CANCELED) {
@@ -568,7 +577,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
                         firebaseCommunicator.updateMannaUser(user);
                         myInfo = user;
-
                     }
                 }
                 break;
