@@ -334,6 +334,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             acceptInvitation_list.getArrayList().clear();
             invited_list.getArrayList().clear();
             firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+            getAcceptInvitation_list().setListItem();
+            getInvited_list().setListItem();
         }
         initial = false;
     }
