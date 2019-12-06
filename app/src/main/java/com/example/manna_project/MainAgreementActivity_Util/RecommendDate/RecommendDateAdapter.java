@@ -38,7 +38,7 @@ public class RecommendDateAdapter extends RecyclerView.Adapter<RecommendDateAdap
     public void onBindViewHolder(@NonNull DateViewHolder holder, int position) {
         RecommendDate recommendDate = recommendDates.get(position);
         holder.startTimeText.setText(recommendDate.getRecommendStarttime());
-        holder.endTimeText.setText(recommendDate.getRecommendStarttime());
+        holder.endTimeText.setText(recommendDate.getRecommendEndTime());
     }
 
     @Override

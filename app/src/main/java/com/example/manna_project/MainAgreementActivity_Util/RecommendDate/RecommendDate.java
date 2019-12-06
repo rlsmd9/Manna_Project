@@ -12,6 +12,7 @@ public class RecommendDate {
     Calendar startCalendar;
     Calendar endCalendar;
     int time;
+    int impossibleUserNumber;
 
     public RecommendDate(Calendar start, Calendar end){
         this.startCalendar = start;
@@ -23,6 +24,23 @@ public class RecommendDate {
         recommendEndTime = simpleDateFormat.format(end.getTime());
         time = end.get(Calendar.HOUR_OF_DAY)- start.get(Calendar.HOUR_OF_DAY);
     }
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public int getImpossibleUserNumber() {
+        return impossibleUserNumber;
+    }
+
+    public void setImpossibleUserNumber(int impossibleUserNumber) {
+        this.impossibleUserNumber = impossibleUserNumber;
+    }
+
     public void getStringDate(){
     }
 
