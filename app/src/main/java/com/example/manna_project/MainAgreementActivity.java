@@ -172,6 +172,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
                 promiseKeyList = promiseKeys;
                 promiseArrayList.clear();
+
                 getAcceptInvitation_list().setListItem();
                 getInvited_list().setListItem();
                 int size = promiseKeys.size();
@@ -563,14 +564,10 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     if(promise.isTimeFixed()==Promise.UNFIXEDTIME){
                         downloadGoogleCalendarData(promise.getStartTime(),promise.getEndTime(),key);
                     }
-//                    acceptInvitation_list.getArrayList().clear();
-//                    invited_list.getArrayList().clear();
-//                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
-
-                    Log.d(TAG, "onActivityResult: " + promise.toString());
                 } else if (resultCode == RESULT_CANCELED) {
                     Log.d(TAG, "onActivityResult: Cancel");
                 }
+
                 break;
             case EditProfile.EDITPROFILE_REQUEST_CODE:
                 if (resultCode == RESULT_OK) {

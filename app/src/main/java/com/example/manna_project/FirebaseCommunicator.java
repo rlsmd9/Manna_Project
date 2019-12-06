@@ -112,7 +112,6 @@ public class FirebaseCommunicator {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-
                 if (callBackListener != null) {
                     ArrayList<String> promises = new ArrayList<>();
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
