@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import com.example.manna_project.MainAgreementActivity_Util.AcceptInvitation.AcceptInvitation_List;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_LinearLayout;
+import com.example.manna_project.MainAgreementActivity_Util.Calendar.EventVO;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.GoogleCalendarAPI;
 import com.example.manna_project.MainAgreementActivity_Util.Friend.Friend_List;
 import com.example.manna_project.MainAgreementActivity_Util.Invited.Invited_List;
@@ -49,10 +50,17 @@ import com.google.firebase.database.DataSnapshot;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import io.realm.Case;
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
+import io.realm.Sort;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
@@ -89,6 +97,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
     ProgressDialog mProgress;
 
+    Realm realm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -112,7 +122,12 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
         initTabHost();
 
+        // realm
+        Realm.init(MainAgreementActivity.this);
+        realm = Realm.getDefaultInstance();
+
         firebaseInitializing();
+
     }
 
     int google_switch = 0;
@@ -345,21 +360,47 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         googleCalendarAPI.setRequestGetAllEventGoogleApiListener(new GoogleCalendarAPI.RequestGetAllEventGoogleApiListener() {
             @Override
             public void onRequestGetAllEventGoogleApiListener(Events events) {
+                // Google Calendar 데이터 로컬 저장
+//                Calendar calendar = Calendar.getInstance();
+//
+//                calendar.setTimeInMillis(events.getItems().get(1).getUpdated().getValue());
+//
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//
+//                Log.d(TAG, "onRequestGetAllEventGoogleApiListener: size " + events.getItems().size());
+                if (events != null) {
+                    for (Event e : events.getItems()) {
+                        EventVO eventVO = realm.where(EventVO.class).equalTo("mId", e.getId()).findFirst();
+
+                        Log.d(TAG, "onRequestGetAllEventGoogleApiListener: " + e.toString());
+                        if (eventVO == null) {
+                            Log.d(TAG, "onRequestGetAllEventGoogleApiListener: is null!! i make");
+
+                            realm.beginTransaction();
+                            EventVO event = realm.createObject(EventVO.class);
+                            event.setEventVO(e);
+                            realm.commitTransaction();
+
+                        } else {
+                            if (!eventVO.getmUpdated().equals(simpleDateFormat.format(new Date(e.getUpdated().getValue())))) {
+                                realm.beginTransaction();
+                                eventVO.setEventVO(e);
+                                realm.commitTransaction();
+                            }
+
+                            Log.d(TAG, "onRequestGetAllEventGoogleApiListener: " + eventVO.toString());
+                        }
+                    }
+                }
+
                 custom_calendar.setSchedule(events);
                 custom_calendar.showView();
-
-//                Calendar start = Calendar.getInstance();
-//
-//                start.set(Calendar.MONTH, 7);
-//
-//                Calendar end = Calendar.getInstance();
-//
-//                downloadGoogleCalendarData(start, end);
             }
         });
 
-        custom_calendar.setSchedule(null);
-        custom_calendar.showView();
+//        realm.beginTransaction();
+//        realm.delete(EventVO.class);
+//        realm.commitTransaction();
 
         Calendar start = (Calendar) custom_calendar.getDate().clone();
         Calendar end = (Calendar) custom_calendar.getDate().clone();
@@ -367,15 +408,34 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         start.set(Calendar.DAY_OF_MONTH, 1);
         end.set(start.get(Calendar.YEAR), start.get(Calendar.MONTH) + 1, 1);
 
+        Events savedPromiseData = getSavedPromiseData(start, end);
+
+        custom_calendar.setSchedule(savedPromiseData);
+        custom_calendar.showView();
+
         googleCalendarAPI.setSearchDate(start, end);
         googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.GET_ALL_EVENTS_FROM_GOOGLE_CALENDAR);
+    }
+
+    public Events getSavedPromiseData(Calendar start, Calendar end) {
+        RealmResults<EventVO> realmResults = realm.where(EventVO.class).contains("mStart", start.get(Calendar.YEAR) + "-" + (start.get(Calendar.MONTH)+1)).findAll().sort("mStart", Sort.ASCENDING);
+        Events events = new Events();
+
+        ArrayList<Event> eventList = new ArrayList<>();
+
+        for (EventVO eventVO : realmResults) {
+            eventList.add(eventVO.getEvent());
+        }
+
+        events.setItems(eventList);
+
+        return events;
     }
 
     public void downloadGoogleCalendarData(Calendar start, Calendar end, final String promiseId) {
         googleCalendarAPI.setRequestGetAllEventGoogleApiListener(new GoogleCalendarAPI.RequestGetAllEventGoogleApiListener() {
             @Override
             public void onRequestGetAllEventGoogleApiListener(Events events) {
-                // 예찬아 요기서 작업해
                 ArrayList<Schedule> schedules = new ArrayList<>();
                 for (Event event : events.getItems()) {
                     DateTime start = event.getStart().getDateTime();
@@ -524,9 +584,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                                     hash.put(addPromise.getLeaderId(), Promise.DONE);
 
                                     firebaseCommunicator.updatePromise(addPromise);
-//                                    acceptInvitation_list.getArrayList().clear();
-//                                    invited_list.getArrayList().clear();
-//                                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+                                    acceptInvitation_list.getArrayList().clear();
+                                    invited_list.getArrayList().clear();
+                                    firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
                                 }
                             }
                         });
@@ -543,6 +603,17 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                             if (!isCanceled) {
                                 downloadGoogleCalendarData();
                             }
+                        }
+                    });
+
+
+                    realm.executeTransaction(new Realm.Transaction() {
+                        @Override
+                        public void execute(Realm realm) {
+                            EventVO eventVO = realm.where(EventVO.class).equalTo("mId", selectedScheduleevent.getId()).findFirst();
+                            Log.d(TAG, "onRequestDeleteEventGoogleApiListener: " + eventVO.toString());
+                            eventVO.deleteFromRealm();
+                            downloadGoogleCalendarData();
                         }
                     });
 

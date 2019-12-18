@@ -411,9 +411,9 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 AlertMsg.AlertMsg(this, "만날 시간을 정해주세요");
             } else if (end.getTimeInMillis() < start.getTimeInMillis()) {
                 AlertMsg.AlertMsg(this, "종료시간은 시작시간보다 빠를수 없습니다.");
-            } else if ((start.getTimeInMillis() < promise.getStartTime().getTimeInMillis() || start.getTimeInMillis() > promise.getEndTime().getTimeInMillis()) ||
-                    end.getTimeInMillis() < promise.getStartTime().getTimeInMillis() || end.getTimeInMillis() > promise.getEndTime().getTimeInMillis()) {
-                AlertMsg.AlertMsg(this, "시간은 처음 지정한 약속 기간내에서 정해주세요");
+//            } else if ((start.getTimeInMillis() < promise.getStartTime().getTimeInMillis() || start.getTimeInMillis() > promise.getEndTime().getTimeInMillis()) ||
+//                    end.getTimeInMillis() < promise.getStartTime().getTimeInMillis() || end.getTimeInMillis() > promise.getEndTime().getTimeInMillis()) {
+//                AlertMsg.AlertMsg(this, "시간은 처음 지정한 약속 기간내에서 정해주세요");
             } else {
                 AlertMsg.AlertMsgRes(this, "한번 정하면 수정할 수 없습니다.\n그래도 저장 하시겠습니까?", new DialogInterface.OnClickListener() {
                     @Override

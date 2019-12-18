@@ -166,10 +166,10 @@ public class Custom_Calendar implements View.OnClickListener {
 
             Calendar temp = (Calendar) eventDay.clone();
 
-            Log.d(TAG, "setSchedule: " + (temp.get(Calendar.HOUR_OF_DAY) + Math.abs(eventEndDay.get(Calendar.HOUR_OF_DAY) - temp.get(Calendar.HOUR_OF_DAY))));
-            Log.d(TAG, "setSchedule: temp : " + temp.get(Calendar.DAY_OF_MONTH));
+//            Log.d(TAG, "setSchedule: " + (temp.get(Calendar.HOUR_OF_DAY) + Math.abs(eventEndDay.get(Calendar.HOUR_OF_DAY) - temp.get(Calendar.HOUR_OF_DAY))));
+//            Log.d(TAG, "setSchedule: temp : " + temp.get(Calendar.DAY_OF_MONTH));
             temp.set(Calendar.HOUR_OF_DAY, temp.get(Calendar.HOUR_OF_DAY) + Math.abs(eventEndDay.get(Calendar.HOUR_OF_DAY) - temp.get(Calendar.HOUR_OF_DAY)));
-            Log.d(TAG, "setSchedule: temp : " + temp.get(Calendar.DAY_OF_MONTH));
+//            Log.d(TAG, "setSchedule: temp : " + temp.get(Calendar.DAY_OF_MONTH));
 
             for (int i = 0; i < days; i++) {
 
