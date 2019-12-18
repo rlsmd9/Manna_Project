@@ -159,7 +159,8 @@
             android:dividerHeight="1dp"
             android:divider="#ccc"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             />
 
         <Button
@@ -204,7 +205,7 @@
 
             <TextView
                 android:gravity="center"
-                android:text="정지승"
+                android:text=""
                 android:background="@drawable/round_shape_blue_color"
                 android:textColor="@color/white"
                 android:textStyle="bold"
@@ -214,7 +215,7 @@
 
             <TextView
                 android:gravity="center"
-                android:text="진예찬"
+                android:text=""
                 android:background="@drawable/round_shape_blue_color"
                 android:textColor="@color/white"
                 android:textStyle="bold"

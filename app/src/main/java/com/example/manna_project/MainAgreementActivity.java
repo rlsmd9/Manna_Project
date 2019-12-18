@@ -551,9 +551,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     selectedScheduleevent = null;
                 }
 
-                acceptInvitation_list.getArrayList().clear();
-                invited_list.getArrayList().clear();
-                firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+//                acceptInvitation_list.getArrayList().clear();
+//                invited_list.getArrayList().clear();
+//                firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
                 break;
             case AddScheduleActivity.ADD_SCHEDULE_REQUEST_CODE:
 

@@ -622,9 +622,11 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
             @Override
             public void OnItemClciked(View v, int position) {
 
-                promise.setStartTime(recommendAlgorithm.getRecommendDates().get(position).getStartCalendar());
-                promise.setEndTime(recommendAlgorithm.getRecommendDates().get(position).getEndCalendar());
+                start = recommendAlgorithm.getRecommendDates().get(position).getStartCalendar();
+                end = recommendAlgorithm.getRecommendDates().get(position).getEndCalendar();
 
+                activity_show_detail_schedule_date_start.setText(simpleDateFormat.format(new Date(start.getTimeInMillis())));
+                activity_show_detail_schedule_date_end.setText(simpleDateFormat.format(new Date(end.getTimeInMillis())));
             }
         });
         recommendDateRecyclerView.setAdapter(recommendDateAdapter);
