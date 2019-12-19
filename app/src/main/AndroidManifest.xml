@@ -32,6 +32,7 @@
         <activity android:name=".SettingPersonalRoutine" />
         <activity android:name=".MakingPromise" />
         <activity android:name=".EditProfile" />
+        <activity android:name=".UserGuide"/>
         <activity android:name=".MainAgreementActivity" />
         <activity android:name=".Login_activity">
             <intent-filter>
@@ -40,6 +41,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
