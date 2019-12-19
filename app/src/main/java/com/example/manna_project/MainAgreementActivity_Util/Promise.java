@@ -122,7 +122,14 @@ public class Promise implements Parcelable {
             startTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1])-1, Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
             temp = dataSnapshot.child("EndTime").getValue(String.class);
             split = temp.split("/");
+
+            Log.d(TAG, "Promiseww: " + split.toString());
+            Log.d(TAG, "Promise: hour " + split[3]);
+            Log.d(TAG, "Promise: min " + split[4]);
+
             endTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1])-1, Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
+
+            Log.d(TAG, "Promise:zzz " + endTime.get(Calendar.DAY_OF_MONTH) + " " + endTime.get(Calendar.HOUR_OF_DAY) + ":" + endTime.get(Calendar.MINUTE));
         } else {
             startTime = null;
             endTime = null;

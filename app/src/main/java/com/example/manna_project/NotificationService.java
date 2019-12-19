@@ -88,7 +88,9 @@ public class NotificationService extends Service {
 
     @Override
     public void onDestroy() {
-        firebaseCommunicator.removeNotifyingListener(myInfo.getUid());
+//        try {
+//            firebaseCommunicator.removeNotifyingListener(myInfo.getUid());
+//        } catch (Exception e){};
     }
 
     @Override

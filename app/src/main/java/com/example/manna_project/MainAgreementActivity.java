@@ -357,9 +357,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     startActivity(new Intent(getApplicationContext(), SettingPersonalRoutine.class));
                     // 일정관리
                 } else if (position == 3) {
-
+                    startActivity(new Intent(getApplicationContext(),UserGuide.class));
                 } else if (position == 4) {
-                    Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getApplicationContext(), "Sign Out", Toast.LENGTH_SHORT).show();
                     FirebaseAuth.getInstance().signOut();
 
                     Intent intent = new Intent(getApplicationContext(), Login_activity.class);
@@ -597,6 +597,9 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             case ShowDetailSchedule_Activity.INVITED_PROMISE_CODE:
                 if (resultCode == RESULT_OK) {
                     Promise promise;
+
+                    if (data == null) return;
+
                     boolean isAccept = data.getBooleanExtra("isAccept", false);
                     if(isAccept) {
                         try {
