@@ -426,7 +426,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     }
 
     public Events getSavedPromiseData(Calendar start, Calendar end) {
-        RealmResults<EventVO> realmResults = realm.where(EventVO.class).contains("mStart", start.get(Calendar.YEAR) + "-" + (start.get(Calendar.MONTH)+1)).findAll().sort("mStart", Sort.ASCENDING);
+        RealmResults<EventVO> realmResults = realm.where(EventVO.class).contains("mStart", start.get(Calendar.YEAR) + "-" + (start.get(Calendar.MONTH)+1)).findAll().sort("mMTStart", Sort.ASCENDING);
         Events events = new Events();
 
         ArrayList<Event> eventList = new ArrayList<>();
