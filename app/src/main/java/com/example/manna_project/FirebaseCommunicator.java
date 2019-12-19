@@ -49,6 +49,8 @@ public class FirebaseCommunicator {
     private String myUid;
     private CallBackListener callBackListener;
     private ScheduleCallBackListner scheduleCallBackListner;
+    private NotifyingListener notifyingListener;
+    private ValueEventListener notifyingValueEvent;
 
     public FirebaseCommunicator(Context context) {
         this.user = FirebaseAuth.getInstance().getCurrentUser();
@@ -149,6 +151,31 @@ public class FirebaseCommunicator {
             }
         });
     }
+    public void setNotifyingIfInvited(String uid){
+        notifyingValueEvent = new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.hasChildren()){
+                    ArrayList<String> keyList = new ArrayList<>();
+                    for(DataSnapshot keySnapshot : dataSnapshot.getChildren()){
+                        keyList.add(keySnapshot.getValue(String.class));
+                    }
+                    if(notifyingListener!=null){
+                        notifyingListener.afterNotifyIntvited(keyList);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        };
+        invitedPromises.child(uid).addValueEventListener(notifyingValueEvent);
+    }
+    public void removeNotifyingListener(String uid){
+        invitedPromises.child(uid).removeEventListener(notifyingValueEvent);
+    }
 
     public String upLoadPromise(Promise promise){
         DatabaseReference Ref = promises.push();
@@ -188,16 +215,15 @@ public class FirebaseCommunicator {
         comments.child(promiseId).removeValue();
         promiseSchedules.child(promiseId).removeValue();
         ArrayList<MannaUser> attendees = promise.getAttendees();
-        HashMap<String, Integer> acceptState = promise.getAcceptState();
+    HashMap<String, Integer> acceptState = promise.getAcceptState();
         for(MannaUser mannaUser : attendees){
-            String uid = mannaUser.getUid();
-            int state = acceptState.get(uid);
-            if(state != Promise.CANCELED) {
-                invitedPromises.child(uid).child(promiseId).removeValue();
-            }
+        String uid = mannaUser.getUid();
+        int state = acceptState.get(uid);
+        if(state != Promise.CANCELED) {
+            invitedPromises.child(uid).child(promiseId).removeValue();
         }
-
     }
+}
     public void acceptPromise(Promise promise, String uid){
         promises.child(promise.getPromiseid()).child("AcceptState").child(uid).setValue(Promise.ACCEPTED);
     }
@@ -394,11 +420,17 @@ public class FirebaseCommunicator {
     public interface ScheduleCallBackListner{
         void afterGetSchedules(ArrayList<Schedule> schedules);
     }
+    public interface NotifyingListener{
+        void afterNotifyIntvited(ArrayList<String> keyList);
+    }
     public void addSchduleCallBackListner(ScheduleCallBackListner scheduleCallBackListner){
         this.scheduleCallBackListner = scheduleCallBackListner;
     }
 
     public void addCallBackListener(CallBackListener callBackListener) {
         this.callBackListener = callBackListener;
+    }
+    public void addNotifyingListner(NotifyingListener notifyingListener){
+        this.notifyingListener = notifyingListener;
     }
 }

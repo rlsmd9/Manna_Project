@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.example.manna_project.MainAgreementActivity_Util.AcceptInvitation.AcceptInvitation_List;
 import com.example.manna_project.MainAgreementActivity_Util.Calendar.Custom_Calendar;
@@ -147,10 +148,12 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                         myInfo.seteMail(user.getEmail());
                         myInfo.setName(user.getDisplayName());
                         firebaseCommunicator.updateUserInfo(myInfo.toMap(),myInfo.getUid());
+                        startNotificationService();
                     }
                     userName.setText(mannaUser.getName());
                     firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
                     firebaseCommunicator.getFriendList(myInfo.getUid());
+
                 } else {
                     friendList.add(mannaUser);
                     friend_list.getFriendListAdapter().notifyDataSetChanged();
@@ -227,10 +230,13 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         firebaseCommunicator.getUserById(firebaseCommunicator.getMyUid());
     }
 
-    public void refreshPromiseList() {
-
+    public void startNotificationService(){
+        if(NotificationManagerCompat.from(getApplicationContext()).areNotificationsEnabled()){
+            Intent intent = new Intent(this,NotificationService.class);
+            intent.putExtra("MyInfo",myInfo);
+            startService(intent);
+        }
     }
-
 
     protected void initTabHost() {
         final TabHost tabHost = findViewById(R.id.host);

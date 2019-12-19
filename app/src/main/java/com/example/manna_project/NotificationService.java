@@ -28,7 +28,7 @@ public class NotificationService extends Service {
     Notification notification;
     ArrayList<String> invitedPromiseKeys;
     ArrayList<Promise> promises;
-    int keyNum=0;
+    int keyNum = 0;
 
 
     public NotificationService() {
@@ -53,17 +53,14 @@ public class NotificationService extends Service {
 
             @Override
             public void afterGetPromise(Promise promise) {
-                promises.add(promise);
-                if(promises.size()>=keyNum){
-                    setListener();
-                }
+               if(promise.getAcceptState().get(myInfo.getUid())==Promise.INVITED){
+                   notifying(promise);
+               }
             }
 
             @Override
             public void afterGetPromiseKey(ArrayList<String> promiseKeys) {
-                keyNum = promiseKeys.size();
-                for(String key : promiseKeys)
-                    firebaseCommunicator.getPromiseByKey(key);
+
             }
 
             @Override
@@ -76,13 +73,22 @@ public class NotificationService extends Service {
 
             }
         });
-        firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
+        firebaseCommunicator.addNotifyingListner(new FirebaseCommunicator.NotifyingListener() {
+            @Override
+            public void afterNotifyIntvited(ArrayList<String> keyList) {
+                keyNum = keyList.size();
+                for(String key : keyList){
+                    firebaseCommunicator.getPromiseByKey(key);
+                }
+            }
+        });
+        firebaseCommunicator.setNotifyingIfInvited(myInfo.getUid());
         return START_STICKY;
-}
+    }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
+        firebaseCommunicator.removeNotifyingListener(myInfo.getUid());
     }
 
     @Override
@@ -90,39 +96,39 @@ public class NotificationService extends Service {
         // TODO: Return the communication channel to the service.
         throw new UnsupportedOperationException("Not yet implemented");
     }
+
     public void createNotification() {
         notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         Intent intent = new Intent(NotificationService.this, MainAgreementActivity.class);
-        intent.putExtra("Started By Notification",true);
+        intent.putExtra("Started By Notification", true);
         PendingIntent pendingIntent = PendingIntent.getActivity(NotificationService.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder = new NotificationCompat.Builder(getApplicationContext(),"MANNA")
-                .setContentTitle("구매요청!")
+        builder = new NotificationCompat.Builder(getApplicationContext(), "MANNA")
+                .setContentTitle("초대된 약속이 있습니다.")
                 .setContentText("구매요청이 있습니다.")
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder.setSmallIcon(R.drawable.setting_alarm);
-            NotificationChannel channel = new NotificationChannel("MANNA", "구매요청 알림", NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("구매요청 알림입니다.");
+            NotificationChannel channel = new NotificationChannel("MANNA", "약속 초대 알림", NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("약속 초대 알림");
             if (notificationManager != null)
                 notificationManager.createNotificationChannel(channel);
-        }
-        else {
+        } else {
             builder.setSmallIcon(R.mipmap.ic_launcher);
         }
     }
-    public void setListener(){
-        for(Promise promise : promises){
-            if(promise.getAcceptState().get(myInfo.getUid())==Promise.INVITED){
-                String title= promise.getTitle();
-                if(title.length()>20) {
-                    title = title.substring(0, 20);
-                }
-                builder.setContentText(title+"...의 약속 초대가 있습니다.");
-                notification = builder.build();
-                notificationManager.notify(INVITE_NOTI_ID,notification);
-            }
+
+    public void notifying(Promise promise) {
+
+        String title = promise.getTitle();
+        if (title.length() > 20) {
+            title = title.substring(0, 20);
         }
+        builder.setContentText(title + "...의 약속 초대가 있습니다.");
+        notification = builder.build();
+        notificationManager.notify(INVITE_NOTI_ID, notification);
+
+
     }
 }
