@@ -162,9 +162,17 @@ public class Custom_Calendar implements View.OnClickListener {
             Calendar eventEndDay = Calendar.getInstance();
             eventEndDay.setTime(new Date(endEventTime.getValue()));
 
-            long days = TimeUnit.MILLISECONDS.toDays(eventEndDay.getTimeInMillis() - eventDay.getTimeInMillis()) + 1;
+            Calendar to = Calendar.getInstance();
+
+            to.set(eventDay.get(Calendar.YEAR), eventDay.get(Calendar.MONTH), eventDay.get(Calendar.DAY_OF_MONTH), 0,0,0);
+            eventDay.set(Calendar.MILLISECOND, 0);
+
+            long days = TimeUnit.MILLISECONDS.toDays(eventEndDay.getTimeInMillis() - eventDay.getTimeInMillis() + (eventDay.getTimeInMillis() - to.getTimeInMillis()));
 
             Calendar temp = (Calendar) eventDay.clone();
+
+            if (days == 0) days+=1;
+
 
 //            Log.d(TAG, "setSchedule: " + (temp.get(Calendar.HOUR_OF_DAY) + Math.abs(eventEndDay.get(Calendar.HOUR_OF_DAY) - temp.get(Calendar.HOUR_OF_DAY))));
 //            Log.d(TAG, "setSchedule: temp : " + temp.get(Calendar.DAY_OF_MONTH));
