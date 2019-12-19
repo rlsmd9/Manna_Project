@@ -3,6 +3,8 @@ package com.example.manna_project;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +12,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +24,7 @@ import android.widget.EditText;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,16 +61,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-import io.realm.Case;
 import io.realm.Realm;
-import io.realm.RealmObject;
-import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 import pub.devrel.easypermissions.EasyPermissions;
 
 
 public class MainAgreementActivity extends Activity implements View.OnClickListener, EasyPermissions.PermissionCallbacks {
+
+    public static final String NOTIFICATION_CHANNEL_ID = "MANNA";
     TextView currentDate;
     ImageView customDatePicker;
     Custom_Calendar custom_calendar;
@@ -78,6 +81,10 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     TextView accept_Btn;
     FirebaseCommunicator firebaseCommunicator;
     TextView userName;
+
+    Switch settingNotificationRequestSwitch;
+    AlertDialog notificationSettingDialog;
+    SharedPreferences sharedPreferences;
 
     FloatingActionButton main_schedule_add_floating_btn;
     FloatingActionButton main_add_friend_btn;
@@ -108,6 +115,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         initial = true;
         mProgress = new ProgressDialog(this);
         mProgress.setCanceledOnTouchOutside(false);
+        sharedPreferences = getApplicationContext().getSharedPreferences("MANNA",MODE_PRIVATE);
 
         mProgress.setMessage("초기화 작업중 입니다.");
         mProgress.show();
@@ -121,7 +129,6 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
 
         googleCalendarAPI = new GoogleCalendarAPI(this);
         firebaseCommunicator = new FirebaseCommunicator(this);
-
         initTabHost();
 
         // realm
@@ -153,7 +160,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     userName.setText(mannaUser.getName());
                     firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
                     firebaseCommunicator.getFriendList(myInfo.getUid());
-
+                    startNotificationService();
                 } else {
                     friendList.add(mannaUser);
                     friend_list.getFriendListAdapter().notifyDataSetChanged();
@@ -231,11 +238,23 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     }
 
     public void startNotificationService(){
-        if(NotificationManagerCompat.from(getApplicationContext()).areNotificationsEnabled()){
-            Intent intent = new Intent(this,NotificationService.class);
-            intent.putExtra("MyInfo",myInfo);
+        if(notificationPermitted()) {
+            Intent intent = new Intent(this, NotificationService.class);
+            intent.putExtra("MyInfo", myInfo);
             startService(intent);
         }
+    }
+    public boolean notificationPermitted(){
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
+            NotificationManager manager = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
+            NotificationChannel channel =  manager.getNotificationChannel(NOTIFICATION_CHANNEL_ID);
+            if(channel==null){
+                channel = new NotificationChannel(NOTIFICATION_CHANNEL_ID, "약속 초대 알림", NotificationManager.IMPORTANCE_HIGH);
+                manager.createNotificationChannel(channel);
+            }
+            return channel.getImportance() != NotificationManager.IMPORTANCE_NONE;
+        }
+        else return NotificationManagerCompat.from(getApplicationContext()).areNotificationsEnabled();
     }
 
     protected void initTabHost() {
@@ -333,7 +352,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                     intent.putExtra("myInfo", myInfo);
                     startActivityForResult(intent, EditProfile.EDITPROFILE_REQUEST_CODE);
                 } else if (position == 1) {
-
+                    showNotificationSettingDialog();
                 } else if (position == 2) {
                     startActivity(new Intent(getApplicationContext(), SettingPersonalRoutine.class));
                     // 일정관리
@@ -355,6 +374,38 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
             tabHost.getTabWidget().getChildAt(i).getBackground().setColorFilter(getResources().getColor(R.color.lightBlue), PorterDuff.Mode.MULTIPLY);
         }
 
+    }
+    private void showNotificationSettingDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View notificationDialogView = inflater.inflate(R.layout.dialog_notification_setting,null);
+
+        settingNotificationRequestSwitch = notificationDialogView.findViewById(R.id.setting_notification_request_switch);
+        builder.setTitle("알림 설정");
+        builder.setView(notificationDialogView);
+        builder.setNegativeButton("취소",null);
+        builder.setPositiveButton("저장",dialogListner);
+        if(notificationPermitted()){
+            settingNotificationRequestSwitch.setChecked(true);
+        }
+        else{
+            settingNotificationRequestSwitch.setChecked(false);
+        }
+        notificationSettingDialog = builder.create();
+        notificationSettingDialog.show();
+    }
+    DialogInterface.OnClickListener dialogListner = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            if (dialogInterface == notificationSettingDialog && i == DialogInterface.BUTTON_POSITIVE) {
+                settingNotificationInSystem(settingNotificationRequestSwitch.isChecked());
+            }
+        }
+    };
+    public void settingNotificationInSystem(boolean get){
+        if(get){
+
+        }
     }
 
     @Override

@@ -608,6 +608,8 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         ArrayList<MannaUser> attendees = promise.getAttendees();
         for (MannaUser mannaUser : attendees) {
             if (accept.get(mannaUser.getUid()) == Promise.ACCEPTED) {
+                if(mannaUser.getRoutineList()==null)
+                    continue;
                 for (Routine routine : mannaUser.getRoutineList()) {
                     routines.add(routine);
                 }
