@@ -112,7 +112,6 @@ public class FirebaseCommunicator {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-
                 if (callBackListener != null) {
                     ArrayList<String> promises = new ArrayList<>();
                     for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
@@ -151,7 +150,7 @@ public class FirebaseCommunicator {
         });
     }
 
-    public void upLoadPromise(Promise promise){
+    public String upLoadPromise(Promise promise){
         DatabaseReference Ref = promises.push();
         String key = Ref.getKey();
         promise.setPromiseid(key);
@@ -169,6 +168,7 @@ public class FirebaseCommunicator {
         for(int i=0;i<size;i++){
             invitedPromises.child(invitedUser.get(i)).child(key).setValue(key);
         }
+        return key;
     }
 
     public void updatePromise(Promise promise){
@@ -186,6 +186,7 @@ public class FirebaseCommunicator {
         String promiseId = promise.getPromiseid();
         promises.child(promiseId).removeValue();
         comments.child(promiseId).removeValue();
+        promiseSchedules.child(promiseId).removeValue();
         ArrayList<MannaUser> attendees = promise.getAttendees();
         HashMap<String, Integer> acceptState = promise.getAcceptState();
         for(MannaUser mannaUser : attendees){
@@ -195,6 +196,7 @@ public class FirebaseCommunicator {
                 invitedPromises.child(uid).child(promiseId).removeValue();
             }
         }
+
     }
     public void acceptPromise(Promise promise, String uid){
         promises.child(promise.getPromiseid()).child("AcceptState").child(uid).setValue(Promise.ACCEPTED);
@@ -323,9 +325,9 @@ public class FirebaseCommunicator {
     }
     //----------------------------------------schedule에 관한 부분---------------------------------
 
-    public void updateSchdule(String promiseId, ArrayList<Schedule> schedules){
+    public void updateSchdule(String promiseId,String userId ,ArrayList<Schedule> schedules){
         for(Schedule element : schedules){
-            promiseSchedules.push().setValue(element.toMap());
+            promiseSchedules.child(promiseId).child(userId).push().setValue(element.toMap());
         }
     }
     public void getSchdules(String promiseId){
@@ -333,8 +335,11 @@ public class FirebaseCommunicator {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 ArrayList<Schedule> result = new ArrayList<>();
-                for(DataSnapshot scheduleSnapshot : dataSnapshot.getChildren()){
-                    result.add(new Schedule(scheduleSnapshot));
+
+                for(DataSnapshot postSnapshot : dataSnapshot.getChildren()){
+                    for(DataSnapshot scheduleSnapshot : postSnapshot.getChildren()){
+                        result.add(new Schedule(scheduleSnapshot));
+                    }
                 }
                 if(scheduleCallBackListner!= null)
                     scheduleCallBackListner.afterGetSchedules(result);
@@ -345,6 +350,9 @@ public class FirebaseCommunicator {
 
             }
         });
+    }
+    public void deleteSchedule(String promiseId, String userId){
+        promiseSchedules.child(promiseId).child(userId).removeValue();
     }
 
     //----------------------------------------getter setter-----------------------------------------

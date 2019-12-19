@@ -7,23 +7,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import androidx.annotation.NonNull;
-
-import com.example.manna_project.DBData;
 import com.example.manna_project.MainAgreementActivity;
-import com.example.manna_project.MainAgreementActivity_Util.MannaUser;
 import com.example.manna_project.MainAgreementActivity_Util.Promise;
 import com.example.manna_project.R;
 import com.example.manna_project.ShowDetailSchedule_Activity;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -53,7 +44,7 @@ public class Invited_List {
                 intent.putExtra("MyInfo", mainAgreementActivity.getMyInfo());
                 intent.putExtra("Promise_Info", invitedListAdapter.getItem(position));
 
-                ((MainAgreementActivity) context).startActivityForResult(intent,ShowDetailSchedule_Activity.SHOW_DETAIL_CHEDULE_CODE);
+                ((MainAgreementActivity) context).startActivityForResult(intent,ShowDetailSchedule_Activity.INVITED_PROMISE_CODE);
             }
         });
 
