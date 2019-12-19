@@ -45,6 +45,7 @@ import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 import com.google.api.services.calendar.model.Events;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 
 import java.text.SimpleDateFormat;
@@ -140,6 +141,13 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 Log.d(TAG, "afterGetUser: " + mannaUser.toString());
                 if (myInfo == null) {
                     myInfo = mannaUser;
+                    if(myInfo.getUid() == null){
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                        myInfo.setUid(user.getUid());
+                        myInfo.seteMail(user.getEmail());
+                        myInfo.setName(user.getDisplayName());
+                        firebaseCommunicator.updateUserInfo(myInfo.toMap(),myInfo.getUid());
+                    }
                     userName.setText(mannaUser.getName());
                     firebaseCommunicator.getAllPromiseKeyById(myInfo.getUid());
                     firebaseCommunicator.getFriendList(myInfo.getUid());
