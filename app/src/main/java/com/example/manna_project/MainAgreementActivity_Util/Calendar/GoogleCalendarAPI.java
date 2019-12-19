@@ -221,7 +221,6 @@ public class GoogleCalendarAPI {
             acquireGooglePlayServices();
         } else if (mCredential.getSelectedAccountName() == null) { // 유효한 Google 계정이 선택되어 있지 않은 경우
             chooseAccount();
-
         } else if (!isDeviceOnline()) {    // 인터넷을 사용할 수 없는 경우
             Log.d(TAG, "No network connection available.");
         } else {
