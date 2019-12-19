@@ -226,15 +226,15 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
     private String getConnectDate() {
         StringBuilder txt = new StringBuilder();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
         txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
 
         txt.append(" ~ ");
 
         if (promise.getEndTime().get(Calendar.YEAR) != promise.getStartTime().get(Calendar.YEAR))
-            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm");
-        else simpleDateFormat = new SimpleDateFormat("MM-dd hh:mm");
+            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+        else simpleDateFormat = new SimpleDateFormat("MM-dd kk:mm");
 
         txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
 

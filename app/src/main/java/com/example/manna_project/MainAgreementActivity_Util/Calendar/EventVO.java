@@ -2,6 +2,8 @@ package com.example.manna_project.MainAgreementActivity_Util.Calendar;
 
 
 
+import android.util.Log;
+
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -20,6 +22,7 @@ public class EventVO extends RealmObject {
     private String mLocation;
     private String mEtag;
     private String mUpdated;
+    private Long mMTStart;
     private String mStart;
     private String mEnd;
 
@@ -36,10 +39,13 @@ public class EventVO extends RealmObject {
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         this.mUpdated = simpleDateFormat.format(new Date(event.getUpdated().getValue()));
-        if (event.getStart().getDate() == null)
+        if (event.getStart().getDate() == null){
             this.mStart = simpleDateFormat.format(new Date(event.getStart().getDateTime().getValue()));
-        else
+            this.mMTStart = event.getStart().getDateTime().getValue();
+        } else {
             this.mStart = simpleDateFormat.format(new Date(event.getStart().getDate().getValue()));
+            this.mMTStart = event.getStart().getDate().getValue();
+        }
 
         if (event.getEnd().getDate() == null)
             this.mEnd = simpleDateFormat.format(new Date(event.getEnd().getDateTime().getValue()));
@@ -111,6 +117,14 @@ public class EventVO extends RealmObject {
         this.mEnd = mEnd;
     }
 
+    public Long getmMTStart() {
+        return mMTStart;
+    }
+
+    public void setmMTStart(Long mMTStart) {
+        this.mMTStart = mMTStart;
+    }
+
     public Event getEvent() {
         Event event =  new Event();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -131,6 +145,8 @@ public class EventVO extends RealmObject {
 
         return event;
     }
+
+
 
     @Override
     public String toString() {

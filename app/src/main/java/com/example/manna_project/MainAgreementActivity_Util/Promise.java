@@ -119,10 +119,10 @@ public class Promise implements Parcelable {
         if (dataSnapshot.child("StartTime").getValue() != null) {
             String temp = dataSnapshot.child("StartTime").getValue(String.class);
             String split[] = temp.split("/");
-            startTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
+            startTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1])-1, Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
             temp = dataSnapshot.child("EndTime").getValue(String.class);
             split = temp.split("/");
-            endTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1]), Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
+            endTime.set(Integer.parseInt(split[0]), Integer.parseInt(split[1])-1, Integer.parseInt(split[2]), Integer.parseInt(split[3]), Integer.parseInt(split[4]));
         } else {
             startTime = null;
             endTime = null;
@@ -357,9 +357,9 @@ public class Promise implements Parcelable {
         result.put("Latitude", Double.valueOf(this.latitude));
         result.put("Longitude", Double.valueOf(this.longitude));
         if (startTime != null)
-            result.put("StartTime", startTime.get(Calendar.YEAR) + "/" + startTime.get(Calendar.MONTH) + "/" + startTime.get(Calendar.DATE) + "/" + startTime.get(Calendar.HOUR_OF_DAY) + "/" + startTime.get(Calendar.MINUTE));
+            result.put("StartTime", startTime.get(Calendar.YEAR) + "/" + (startTime.get(Calendar.MONTH)+1) + "/" + startTime.get(Calendar.DATE) + "/" + startTime.get(Calendar.HOUR_OF_DAY) + "/" + startTime.get(Calendar.MINUTE));
         if (endTime != null)
-            result.put("EndTime", endTime.get(Calendar.YEAR) + "/" + endTime.get(Calendar.MONTH) + "/" + endTime.get(Calendar.DATE) + "/" + endTime.get(Calendar.HOUR_OF_DAY) + "/" + endTime.get(Calendar.MINUTE));
+            result.put("EndTime", endTime.get(Calendar.YEAR) + "/" + (endTime.get(Calendar.MONTH)+1) + "/" + endTime.get(Calendar.DATE) + "/" + endTime.get(Calendar.HOUR_OF_DAY) + "/" + endTime.get(Calendar.MINUTE));
         result.put("AcceptState", acceptState);
         result.put("isTimeFixed", this.isTimeFixed);
         return result;

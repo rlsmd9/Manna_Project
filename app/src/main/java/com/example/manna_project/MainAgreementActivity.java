@@ -128,7 +128,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
         realm = Realm.getDefaultInstance();
 
         firebaseInitializing();
-
+        googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.CREATE);
     }
 
     int google_switch = 0;
@@ -426,7 +426,7 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
     }
 
     public Events getSavedPromiseData(Calendar start, Calendar end) {
-        RealmResults<EventVO> realmResults = realm.where(EventVO.class).contains("mStart", start.get(Calendar.YEAR) + "-" + (start.get(Calendar.MONTH)+1)).findAll().sort("mStart", Sort.ASCENDING);
+        RealmResults<EventVO> realmResults = realm.where(EventVO.class).contains("mStart", start.get(Calendar.YEAR) + "-" + (start.get(Calendar.MONTH)+1)).findAll().sort("mMTStart", Sort.ASCENDING);
         Events events = new Events();
 
         ArrayList<Event> eventList = new ArrayList<>();
@@ -524,6 +524,8 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                         editor.apply();
                         googleCalendarAPI.mCredential.setSelectedAccountName(accountName);
                         googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.NONE);
+                        googleCalendarAPI.getResultsFromApi(GoogleCalendarAPI.APIMode.CREATE);
+                        downloadGoogleCalendarData();
                     }
                 }
                 break;
@@ -639,7 +641,13 @@ public class MainAgreementActivity extends Activity implements View.OnClickListe
                 if (resultCode == RESULT_OK) {
                     Log.d(TAG, "onActivityResult: OK");
                     Promise promise = data.getParcelableExtra("made_promise");
+
+                    Log.d(TAG, "JSJSJSJSonActivityResult: " + promise.toString());
+
                     String key = firebaseCommunicator.upLoadPromise(promise);
+
+
+
                     if(promise.isTimeFixed()==Promise.UNFIXEDTIME){
                         downloadGoogleCalendarData(promise.getStartTime(),promise.getEndTime(),key);
                     }
