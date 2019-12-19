@@ -117,6 +117,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         }
 
         Log.d("JS", "onCreate: " + promise.toString());
+        Log.d(TAG, "onCreateww: " + promise.getEndTime());
 
         setReferences();
 
@@ -226,17 +227,21 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
 
     private String getConnectDate() {
         StringBuilder txt = new StringBuilder();
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
         txt.append(simpleDateFormat.format(new Date(promise.getStartTime().getTimeInMillis())));
+
+        txt.append(" " + promise.getStartTime().get(Calendar.HOUR_OF_DAY) + ":" + promise.getStartTime().get(Calendar.MINUTE));
 
         txt.append(" ~ ");
 
         if (promise.getEndTime().get(Calendar.YEAR) != promise.getStartTime().get(Calendar.YEAR))
-            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
-        else simpleDateFormat = new SimpleDateFormat("MM-dd kk:mm");
+            simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        else simpleDateFormat = new SimpleDateFormat("MM-dd");
 
         txt.append(simpleDateFormat.format(new Date(promise.getEndTime().getTimeInMillis())));
+
+        txt.append(" " + promise.getEndTime().get(Calendar.HOUR_OF_DAY) + ":" + promise.getEndTime().get(Calendar.MINUTE));
 
         return txt.toString();
     }
@@ -345,7 +350,7 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
                 String comment = chatText.getText().toString();
                 chatText.setText(null);
                 Calendar calendar = Calendar.getInstance();
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd kk:MM:ss");
                 String date = simpleDateFormat.format(new Date(calendar.getTimeInMillis()));
                 NoticeBoard_Chat noticeBoard_chat = new NoticeBoard_Chat(myInfo.getUid(), comment, date);
                 firebaseCommunicator.addComment(promise.getPromiseid(), noticeBoard_chat);
