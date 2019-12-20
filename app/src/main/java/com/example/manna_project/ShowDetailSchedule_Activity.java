@@ -598,6 +598,12 @@ public class ShowDetailSchedule_Activity extends AppCompatActivity implements Vi
         firebaseCommunicator.addSchduleCallBackListner(new FirebaseCommunicator.ScheduleCallBackListner() {
             @Override
             public void afterGetSchedules(ArrayList<Schedule> schedules) {
+//                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//                Calendar calendar = Calendar.getInstance();
+//                for(Schedule schedule : schedules){
+//                    calendar.setTimeInMillis(schedule.getStartTime());
+//                    Log.d(TAG,"서버 데이터 : " + simpleDateFormat.format(calendar.getTime()));
+//                }
                 initialRecommend(schedules);
             }
         });
